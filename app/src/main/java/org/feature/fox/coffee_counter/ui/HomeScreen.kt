@@ -24,16 +24,7 @@ fun HomeScreen() {
             .fillMaxWidth()
     ) {
         SplashBox()
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            LoginButton()
-            SignUpButton()
-        }
+        ButtonBox()
     }
 }
 
@@ -76,6 +67,20 @@ fun Title() {
     Text(
         text = stringResource(id = R.string.app_name),
     )
+}
+
+@Composable
+fun ButtonBox() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        LoginButton()
+        SignUpButton()
+    }
 }
 
 @Composable
