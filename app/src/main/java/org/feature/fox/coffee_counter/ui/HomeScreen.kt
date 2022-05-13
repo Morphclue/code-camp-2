@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
@@ -51,7 +54,7 @@ fun BoxContent() {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(50.dp)
     ) {
         Title()
         CoffeeImage()
@@ -60,15 +63,15 @@ fun BoxContent() {
 
 @Composable
 fun CoffeeImage() {
-    Text(
-        text = "add image here",
-    )
+    Image(painterResource(id = R.drawable.coffee), "Image of Coffee")
 }
 
 @Composable
 fun Title() {
     Text(
         text = stringResource(id = R.string.app_name),
+        modifier = Modifier.padding(top = 100.dp),
+        fontSize = 30.sp
     )
 }
 
