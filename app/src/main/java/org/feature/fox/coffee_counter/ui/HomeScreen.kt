@@ -1,14 +1,16 @@
 package org.feature.fox.coffee_counter.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,14 +22,53 @@ fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+    ) {
+        SplashBox()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            LoginButton()
+            SignUpButton()
+        }
+    }
+}
+
+@Composable
+fun SplashBox() {
+    Box(
+        modifier = Modifier
+            .size(
+                LocalConfiguration.current.screenWidthDp.dp + 0.5.dp,
+                LocalConfiguration.current.screenHeightDp.dp * 0.7f
+            )
+            .clip(RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp))
+            .background(Color.Red)
+    ) {
+        BoxContent()
+    }
+}
+
+@Composable
+fun BoxContent() {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Title()
-        LoginButton()
-        SignUpButton()
+        CoffeeImage()
     }
+}
+
+@Composable
+fun CoffeeImage() {
+    Text(
+        text = "add image here",
+    )
 }
 
 @Composable
