@@ -9,12 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Preview(showSystemUi = true)
 @Composable
@@ -46,7 +46,7 @@ fun SplashBox() {
                 LocalConfiguration.current.screenHeightDp.dp * 0.7f
             )
             .clip(RoundedCornerShape(0.dp, 0.dp, 30.dp, 30.dp))
-            .background(Color.Red)
+            .background(CrayolaBrown)
     ) {
         BoxContent()
     }
