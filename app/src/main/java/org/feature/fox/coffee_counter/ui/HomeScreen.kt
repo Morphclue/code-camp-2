@@ -14,17 +14,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        SplashBox()
-        ButtonBox()
+    CoffeeCounterTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            SplashBox()
+            ButtonBox()
+        }
     }
 }
 
