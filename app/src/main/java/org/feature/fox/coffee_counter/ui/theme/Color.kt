@@ -2,7 +2,6 @@ package org.feature.fox.coffee_counter.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val LiverOrgan = Color(0xFF743013)
+val CrayolaBrown = Color(0xFFA75B3B)
+val CrayolaCopper = Color(0xFFDC8966)
