@@ -5,9 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "items")
 data class Item(
-    @PrimaryKey(autoGenerate = true)
-    val id: String? = null,
+    @PrimaryKey
+    val id: String,
+
     var name: String,
-    var amount:Int,
+
+    var amount:Int? = 0,
+
     var price: Double
 )
