@@ -22,8 +22,8 @@ import org.junit.runner.RunWith
 @SmallTest
 class UserDaoTest {
 
-    val user =
-        User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+      val user =
+          User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -76,7 +76,8 @@ class UserDaoTest {
 
     @Test
     fun testSuccessfulLogin() = runTest {
-        dao.insertUser(user)
+
+    dao.insertUser(user)
 
         assertThat(dao.login(user.id, user.password)).isEqualTo(true)
 
