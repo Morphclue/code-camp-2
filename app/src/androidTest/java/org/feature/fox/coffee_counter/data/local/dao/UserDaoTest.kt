@@ -22,6 +22,9 @@ import org.junit.runner.RunWith
 @SmallTest
 class UserDaoTest {
 
+    val user =
+        User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -44,8 +47,6 @@ class UserDaoTest {
 
     @Test
     fun insertUser() = runTest {
-        val user =
-            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
 
         val allUsers = dao.observeAllUsers().getOrAwaitValue()
@@ -55,8 +56,6 @@ class UserDaoTest {
 
     @Test
     fun deleteUser() = runTest {
-        val user =
-            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
         dao.deleteUser(user)
 
@@ -68,8 +67,6 @@ class UserDaoTest {
 
     @Test
     fun getUserById() = runTest {
-        val user =
-            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
 
         val userById = dao.getUserById(user.id)
@@ -78,20 +75,28 @@ class UserDaoTest {
     }
 
     @Test
-    fun testLogin() = runTest {
-        val user =
-            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+    fun testSuccessfulLogin() = runTest {
         dao.insertUser(user)
 
-        // successful login
         assertThat(dao.login(user.id, user.password)).isEqualTo(true)
 
-        // wrong password
+
+    }
+
+    @Test
+    fun testWrongPassword() = runTest {
+
+        dao.insertUser(user)
+
         assertThat(dao.login(user.id, "")).isEqualTo(false)
 
-        // wrong user id
+    }
+
+    @Test
+    fun testWrongUserId() = runTest {
+
+        dao.insertUser(user)
+
         assertThat(dao.login("", user.password)).isEqualTo(false)
-
-
     }
 }
