@@ -11,6 +11,6 @@ import org.feature.fox.coffee_counter.data.local.dao.UserDao
 )
 abstract class UserDatabase : RoomDatabase() {
 
-        abstract fun userDao() : UserDao
+    abstract fun userDao(): UserDao
 
 }

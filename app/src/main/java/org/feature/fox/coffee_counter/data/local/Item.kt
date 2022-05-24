@@ -10,7 +10,7 @@ data class Item(
 
     var name: String,
 
-    var amount:Int? = 0,
+    var amount: Int? = 0,
 
     var price: Double
 )

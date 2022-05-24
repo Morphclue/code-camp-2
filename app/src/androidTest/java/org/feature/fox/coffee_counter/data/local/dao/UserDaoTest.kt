@@ -29,7 +29,7 @@ class UserDaoTest {
     private lateinit var dao: UserDao
 
     @Before
-    fun setUp(){
+    fun setUp() {
         db = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             UserDatabase::class.java
@@ -43,8 +43,9 @@ class UserDaoTest {
     }
 
     @Test
-    fun insertUser() = runTest{
-        val user = User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+    fun insertUser() = runTest {
+        val user =
+            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
 
         val allUsers = dao.observeAllUsers().getOrAwaitValue()
@@ -53,8 +54,9 @@ class UserDaoTest {
     }
 
     @Test
-    fun deleteUser() = runTest{
-        val user = User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+    fun deleteUser() = runTest {
+        val user =
+            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
         dao.deleteUser(user)
 
@@ -66,7 +68,8 @@ class UserDaoTest {
 
     @Test
     fun getUserById() = runTest {
-        val user = User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+        val user =
+            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
 
         val userById = dao.getUserById(user.id)
@@ -76,7 +79,8 @@ class UserDaoTest {
 
     @Test
     fun testLogin() = runTest {
-        val user = User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
+        val user =
+            User("98432kljfaf-34980fklaf", name = "Foo", isAdmin = false, password = "324987")
         dao.insertUser(user)
 
         // successful login
@@ -84,6 +88,7 @@ class UserDaoTest {
 
         // wrong password
         assertThat(dao.login(user.id, "")).isEqualTo(false)
+
         // wrong user id
         assertThat(dao.login("", user.password)).isEqualTo(false)
 

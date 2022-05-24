@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.feature.fox.coffee_counter.data.local.Item
 import org.feature.fox.coffee_counter.data.local.ItemDatabase
@@ -30,7 +29,7 @@ class ItemDaoTest {
     private lateinit var itemDao: ItemDao
 
     @Before
-    fun setUp(){
+    fun setUp() {
         itemDb = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             ItemDatabase::class.java
@@ -48,17 +47,17 @@ class ItemDaoTest {
         val item1 = Item("98432kljfaf-34980fklaf", amount = 2, price = 23.20, name = "Cola")
         itemDao.insertItem(item1)
 
-        val item2 = Item(id="",amount = 3, price = 1.99, name = "Cola")
+        val item2 = Item(id = "", amount = 3, price = 1.99, name = "Cola")
         itemDao.insertItem(item2)
 
         val allItems = itemDao.observeAllItems().getOrAwaitValue()
-        
+
         assertThat(allItems.contains(item1) && allItems.contains(item2))
     }
 
     @Test
     fun insertItemEmptyAmount() = runTest {
-        val item = Item(id="", price = 1.99, name = "Cola")
+        val item = Item(id = "", price = 1.99, name = "Cola")
         itemDao.insertItem(item)
 
         val allItems = itemDao.observeAllItems().getOrAwaitValue()
@@ -89,7 +88,7 @@ class ItemDaoTest {
 
         val totalPriceSum = itemDao.observeTotalPrice().getOrAwaitValue()
 
-        assertThat(totalPriceSum).isEqualTo(2*0.99 + 5*1.50 + 10*20.0)
+        assertThat(totalPriceSum).isEqualTo(2 * 0.99 + 5 * 1.50 + 10 * 20.0)
     }
 
     @Test

@@ -9,10 +9,10 @@ interface ItemDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItem (item: Item)
+    suspend fun insertItem(item: Item)
 
     @Delete
-    suspend fun deleteItem (item: Item)
+    suspend fun deleteItem(item: Item)
 
     @Query("SELECT * FROM items WHERE id=:id")
     suspend fun getItemById(id: String): Item

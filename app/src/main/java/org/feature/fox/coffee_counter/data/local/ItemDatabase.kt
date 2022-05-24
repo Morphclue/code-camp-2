@@ -10,5 +10,5 @@ import org.feature.fox.coffee_counter.data.local.dao.ItemDao
 )
 abstract class ItemDatabase : RoomDatabase() {
 
-    abstract fun itemDao() : ItemDao
+    abstract fun itemDao(): ItemDao
 }
