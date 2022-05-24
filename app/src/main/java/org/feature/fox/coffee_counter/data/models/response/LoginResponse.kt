@@ -1,8 +1,12 @@
 package org.feature.fox.coffee_counter.data.models.response
 
+import com.squareup.moshi.Json
+
 data class LoginResponse(
+
+    @Json(name="token")
     val token: String,
 
-    // Unix Timestamp, expires after 5 minutes
+    @Json(name="expiration")
     val expiration: Long
 )
