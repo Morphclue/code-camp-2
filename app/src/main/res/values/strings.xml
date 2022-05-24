@@ -2,4 +2,6 @@
     <string name="app_name">coffee-counter</string>
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
+    <string name="password_hint">Password</string>
+    <string name="id_hint">ID</string>
 </resources>
