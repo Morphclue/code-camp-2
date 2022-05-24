@@ -4,4 +4,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="password_hint">Password</string>
     <string name="id_hint">ID</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
 </resources>
