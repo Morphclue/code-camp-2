@@ -1,9 +1,6 @@
 package org.feature.fox.coffee_counter.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -13,6 +10,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -36,6 +34,7 @@ fun LoginView() {
         LoginSignupHeader()
         IdTextField()
         PasswordTextField()
+        RememberMeCheckbox()
     }
 }
 
@@ -101,4 +100,18 @@ fun PasswordTextField() {
             }
         }
     )
+}
+
+@Composable
+fun RememberMeCheckbox() {
+    val isChecked = remember { mutableStateOf(false) }
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = isChecked.value,
+            onCheckedChange = { isChecked.value = it }
+        )
+        Text(text = stringResource(R.string.remember_me))
+    }
 }
