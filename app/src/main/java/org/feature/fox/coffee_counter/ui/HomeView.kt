@@ -21,7 +21,7 @@ import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Preview(showSystemUi = true)
 @Composable
-fun HomeScreen() {
+fun HomeView() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
