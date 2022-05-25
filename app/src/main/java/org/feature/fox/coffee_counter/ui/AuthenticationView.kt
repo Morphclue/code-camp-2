@@ -39,17 +39,28 @@ fun AuthenticationView() {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         LoginSignupHeader()
-        LoginFragment()
+        RegisterFragment()
     }
 }
 
 @Composable
 fun LoginFragment() {
-    IdTextField()
-    PasswordTextField()
+    NormalTextField(stringResource(R.string.id_hint))
+    PasswordTextField(stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
         text = stringResource(R.string.login)
+    )
+}
+
+@Composable
+fun RegisterFragment() {
+    NormalTextField(stringResource(R.string.name_hint))
+    NormalTextField(stringResource(R.string.optional_id_hint))
+    PasswordTextField(stringResource(R.string.password_hint))
+    PasswordTextField(stringResource(R.string.re_enter_password_hint))
+    CustomButton(
+        text = stringResource(R.string.sign_up)
     )
 }
 
@@ -83,13 +94,13 @@ fun HeaderButton(text: String, shadow: Shadow = Shadow()) {
 }
 
 @Composable
-fun IdTextField() {
+fun NormalTextField(text: String) {
     val idState = remember { mutableStateOf(TextFieldValue()) }
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = idState.value,
         onValueChange = { idState.value = it },
-        label = { Text(text = stringResource(R.string.id_hint)) },
+        label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
@@ -99,14 +110,14 @@ fun IdTextField() {
 }
 
 @Composable
-fun PasswordTextField() {
+fun PasswordTextField(text: String) {
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val showPassword = remember { mutableStateOf(false) }
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = passwordState.value,
         onValueChange = { passwordState.value = it },
-        label = { Text(text = stringResource(R.string.password_hint)) },
+        label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
