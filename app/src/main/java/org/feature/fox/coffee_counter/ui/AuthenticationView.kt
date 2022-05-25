@@ -25,21 +25,32 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 
+class LoginStateProvider : PreviewParameterProvider<Boolean> {
+    override val values: Sequence<Boolean> = sequenceOf(
+        true,
+        false,
+    )
+}
+
 @Preview(showSystemUi = true)
 @Composable
-fun AuthenticationView() {
+fun AuthenticationView(
+    @PreviewParameter(LoginStateProvider::class) login: Boolean,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        LoginSignupHeader()
-        RegisterFragment()
+        LoginSignupHeader(login)
+        if (login) LoginFragment() else RegisterFragment()
     }
 }
 
@@ -65,7 +76,7 @@ fun RegisterFragment() {
 }
 
 @Composable
-fun LoginSignupHeader() {
+fun LoginSignupHeader(login: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -75,8 +86,14 @@ fun LoginSignupHeader() {
             offset = Offset(8f, 8f),
             blurRadius = 8f
         )
-        HeaderButton(stringResource(R.string.login), dropShadow)
-        HeaderButton(stringResource(R.string.sign_up))
+        if (login) {
+            HeaderButton(stringResource(R.string.login), dropShadow)
+            HeaderButton(stringResource(R.string.sign_up))
+        } else {
+            HeaderButton(stringResource(R.string.login))
+            HeaderButton(stringResource(R.string.sign_up), dropShadow)
+        }
+
     }
 }
 

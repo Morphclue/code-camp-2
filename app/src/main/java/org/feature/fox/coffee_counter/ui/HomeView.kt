@@ -90,11 +90,18 @@ fun ButtonBox() {
         CustomButton(
             text = stringResource(id = R.string.login),
             fraction = 0.7f,
-            onClick = { context.startActivity(Intent(context, AuthenticationActivity::class.java)) }
+            onClick = {
+                context.startActivity(Intent(context,
+                    AuthenticationActivity::class.java).putExtra("login", true))
+            }
         )
         CustomButton(
             stringResource(id = R.string.sign_up),
             fraction = 0.7f,
+            onClick = {
+                context.startActivity(Intent(context,
+                    AuthenticationActivity::class.java).putExtra("login", false))
+            }
         )
     }
 }
