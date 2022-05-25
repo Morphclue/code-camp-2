@@ -100,7 +100,7 @@ fun BottomNavBar(
                 onClick = { onItemClick(item) },
                 selectedContentColor = CrayolaCopper,
                 unselectedContentColor = Color.White,
-                icon = { NavBarIcon(selected, item) }
+                icon = { NavBarIcon(item) }
             )
         }
     }
@@ -108,7 +108,6 @@ fun BottomNavBar(
 
 @Composable
 fun NavBarIcon(
-    selected: Boolean,
     item: BottomNavItem
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -116,12 +115,10 @@ fun NavBarIcon(
             imageVector = item.icon,
             contentDescription = item.name
         )
-        if(selected) {
-            Text(
-                text = item.name,
-                textAlign = TextAlign.Center,
-                fontSize = 10.sp
-            )
-        }
+        Text(
+            text = item.name,
+            textAlign = TextAlign.Center,
+            fontSize = 10.sp
+        )
     }
 }
