@@ -24,7 +24,7 @@ import org.feature.fox.coffee_counter.R
 
 @Preview(showSystemUi = true)
 @Composable
-fun LoginView() {
+fun AuthenticationView() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,13 +32,18 @@ fun LoginView() {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         LoginSignupHeader()
-        IdTextField()
-        PasswordTextField()
-        RememberMeCheckbox()
-        CustomButton(
-            text = stringResource(R.string.login)
-        )
+        LoginFragment()
     }
+}
+
+@Composable
+fun LoginFragment() {
+    IdTextField()
+    PasswordTextField()
+    RememberMeCheckbox()
+    CustomButton(
+        text = stringResource(R.string.login)
+    )
 }
 
 @Composable
