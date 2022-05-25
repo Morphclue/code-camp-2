@@ -1,22 +1,30 @@
 package org.feature.fox.coffee_counter.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import org.feature.fox.coffee_counter.data.local.Item
 
 @Preview(showSystemUi = true)
 @Composable
 fun ItemsView() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Text(text = "Items screen")
-    }
+    val items = listOf(
+        Item(id = "a", name = "coffee", amount = 69, price = 5.0),
+        Item(id = "b", name = "beer", amount = 42, price = 4.99),
+        Item(id = "c", name = "mate", amount = 1337, price = 9.99))
+        ItemList(items)
 }
 
 
