@@ -10,11 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(showSystemUi = true)
 @Composable
-fun HistoryScreen() {
+fun ItemsView() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-        Text(text = "History screen")
+        Text(text = "Items screen")
     }
 }

@@ -60,13 +60,13 @@ fun ButtonNavigationView(){
 fun Navigation(navController: NavHostController){
     NavHost(navController = navController, startDestination = "items"){
         composable("items"){
-            ItemsScreen()
+            ItemsView()
         }
         composable("history"){
-            HistoryScreen()
+            HistoryView()
         }
         composable("profile"){
-            ProfileScreen()
+            ProfileView()
         }
     }
 }
