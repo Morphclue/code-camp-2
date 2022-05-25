@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,8 +50,9 @@ fun AuthenticationView(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        LoginSignupHeader(login)
-        if (login) LoginFragment() else RegisterFragment()
+        val loginState = remember { mutableStateOf(login) }
+        LoginSignupHeader(loginState)
+        if (loginState.value) LoginFragment() else RegisterFragment()
     }
 }
 
@@ -76,7 +78,7 @@ fun RegisterFragment() {
 }
 
 @Composable
-fun LoginSignupHeader(login: Boolean) {
+fun LoginSignupHeader(loginState: MutableState<Boolean>) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -86,19 +88,28 @@ fun LoginSignupHeader(login: Boolean) {
             offset = Offset(8f, 8f),
             blurRadius = 8f
         )
-        if (login) {
+        if (loginState.value) {
             HeaderButton(stringResource(R.string.login), dropShadow)
-            HeaderButton(stringResource(R.string.sign_up))
+            HeaderButton(
+                text = stringResource(R.string.sign_up),
+                onClick = { loginState.value = false }
+            )
         } else {
-            HeaderButton(stringResource(R.string.login))
+            HeaderButton(
+                text = stringResource(R.string.login),
+                onClick = { loginState.value = true }
+            )
             HeaderButton(stringResource(R.string.sign_up), dropShadow)
         }
-
     }
 }
 
 @Composable
-fun HeaderButton(text: String, shadow: Shadow = Shadow()) {
+fun HeaderButton(
+    text: String,
+    shadow: Shadow = Shadow(),
+    onClick: (Int) -> Unit = {},
+) {
     ClickableText(
         style = TextStyle(
             shadow = shadow,
@@ -106,7 +117,7 @@ fun HeaderButton(text: String, shadow: Shadow = Shadow()) {
             fontWeight = FontWeight.Bold,
         ),
         text = AnnotatedString(text),
-        onClick = {}
+        onClick = onClick
     )
 }
 
