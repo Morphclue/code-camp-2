@@ -3,29 +3,70 @@ package org.feature.fox.coffee_counter.di.module
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.feature.fox.coffee_counter.BaseApplication
+import okhttp3.logging.HttpLoggingInterceptor
 import org.feature.fox.coffee_counter.data.network.apiservice.ApiService
 import org.feature.fox.coffee_counter.util.Constants
-import org.feature.fox.coffee_counter.util.Constants.Companion.BASE_URL
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-@InstallIn(BaseApplication::class)
+@InstallIn(SingletonComponent::class)
 object ApiModule {
 
+    @Provides
+    fun provideBaseUrl(): String {
+        return Constants.BASE_URL
+    }
+
+    @Provides
+    fun providesLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
 
     @Singleton
     @Provides
-    fun provideApi(): ApiService {
-        return Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create())
-            .baseUrl(BASE_URL)
+    fun provideOkHttpClient(
+        logingInterceptor: Interceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(logingInterceptor)
+            .callTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
             .build()
-            .create(ApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(
+        baseUrl: String,
+        convFact: Converter.Factory,
+        okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(convFact)
+            .baseUrl(baseUrl)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideConverterFactory(): Converter.Factory {
+        return MoshiConverterFactory.create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 
 }
