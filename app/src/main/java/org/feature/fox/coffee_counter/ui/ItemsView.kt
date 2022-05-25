@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.data.local.Item
@@ -26,8 +27,6 @@ fun ItemsView() {
         Item(id = "c", name = "mate", amount = 1337, price = 9.99))
         ItemList(items)
 }
-
-
 
 @Composable
 fun ItemList(items: List<Item>) {
@@ -53,28 +52,42 @@ fun ItemList(items: List<Item>) {
 @Composable
 fun ItemRow(item: Item){
     var buyItems by remember { mutableStateOf(0) }
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         Column {
-            Text(item.name)
-            Text("${item.price}€")
+            Text(item.name, fontWeight = FontWeight.Medium)
+            Text("${item.price}€", color = Color.Gray)
         }
-        Text("$buyItems/${item.amount}")
-        Button(onClick = {if (buyItems < item.amount) buyItems++},
-            modifier= Modifier.size(40.dp),
-            shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-        ) {
-            // Adding an Icon "Add" inside the Button
-            Icon(Icons.Default.Add ,contentDescription = "content description", tint=Color.White)
-        }
-        Button(onClick = {if (buyItems > 0) buyItems-=1},
-            modifier= Modifier.size(40.dp),
-            shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-        ) {
-            // Adding an Icon "Add" inside the Button
-            Icon(Icons.Default.Remove ,contentDescription = "content description", tint=Color.White)
+
+
+        Column{
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text("$buyItems/${item.amount}", fontWeight = FontWeight.Medium)
+
+                Button(onClick = {if (buyItems < item.amount) buyItems++},
+                    modifier= Modifier.size(35.dp),
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                ) {
+                    Icon(Icons.Default.Add ,contentDescription = "content description", tint=Color.White)
+                }
+
+                Button(onClick = {if (buyItems > 0) buyItems-=1},
+                    modifier= Modifier.size(35.dp),
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(0.dp),
+                ) {
+                    Icon(Icons.Default.Remove ,contentDescription = "content description", tint=Color.White)
+                }
+            }
         }
     }
-
 }
