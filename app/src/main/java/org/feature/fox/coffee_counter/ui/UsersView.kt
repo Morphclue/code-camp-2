@@ -10,11 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(showSystemUi = true)
 @Composable
-fun AdminView() {
+fun UsersView() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-        Text(text = "Admin screen")
+        Text(text = "Users screen")
     }
 }

@@ -46,8 +46,8 @@ fun BottomNavigationView(){
                         icon = Icons.Default.AccountCircle,
                     ),
                     BottomNavItem(
-                        name = "Admin",
-                        route = "admin",
+                        name = "Users",
+                        route = "users",
                         icon = Icons.Default.AccountBox,
                     ),
                 ),
@@ -74,8 +74,8 @@ fun Navigation(navController: NavHostController) {
         composable("profile") {
             ProfileView()
         }
-        composable("admin") {
-            AdminView()
+        composable("users") {
+            UsersView()
         }
     }
 }
