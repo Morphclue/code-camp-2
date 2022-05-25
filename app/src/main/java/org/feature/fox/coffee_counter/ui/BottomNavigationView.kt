@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
+import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
 @Composable
 fun BottomNavigationView(){
@@ -98,8 +99,8 @@ fun BottomNavBar(
             BottomNavigationItem(
                 selected = selected,
                 onClick = { onItemClick(item) },
-                selectedContentColor = CrayolaCopper,
-                unselectedContentColor = Color.White,
+                selectedContentColor = Color.White,
+                unselectedContentColor = LiverOrgan,
                 icon = { NavBarIcon(item) }
             )
         }
