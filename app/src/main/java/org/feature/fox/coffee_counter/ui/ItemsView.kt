@@ -35,9 +35,17 @@ fun ItemList(items: List<Item>) {
         modifier = Modifier
             .background(Color.White)
             .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items.forEach { item ->
             ItemRow(item)
+            Divider(
+                color = Color.Gray,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                thickness = 1.dp
+            )
         }
     }
 }
