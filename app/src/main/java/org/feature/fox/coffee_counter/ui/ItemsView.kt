@@ -9,13 +9,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.Item
 
 @Preview(showSystemUi = true)
@@ -32,19 +36,29 @@ fun ItemsView() {
 fun ItemList(items: List<Item>) {
     Column(
         modifier = Modifier
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(5.dp),
     ) {
-        items.forEach { item ->
-            ItemRow(item)
-            Divider(
-                color = Color.Gray,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                thickness = 1.dp
-            )
+        SearchBar()
+        Text(
+            stringResource(R.string.item_list_title),
+            fontWeight = FontWeight.Medium,
+            fontSize = 30.sp
+        )
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items.forEach { item ->
+                ItemRow(item)
+                Divider(
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    thickness = 1.dp
+                )
+            }
         }
     }
 }
@@ -90,4 +104,29 @@ fun ItemRow(item: Item){
             }
         }
     }
+}
+
+@Composable
+fun SearchBar(
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = "",
+        onValueChange = {},
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null
+            )
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = MaterialTheme.colors.surface
+        ),
+        placeholder = {
+            Text(stringResource(R.string.search_hint))
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 56.dp)
+    )
 }
