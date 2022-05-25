@@ -24,7 +24,7 @@ import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Composable
-fun ButtonNavigationView(){
+fun BottomNavigationView(){
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
