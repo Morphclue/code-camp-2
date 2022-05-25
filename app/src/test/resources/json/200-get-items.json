@@ -1,0 +1,14 @@
+[
+  {
+    "id": "001",
+    "name": "Espresso",
+    "amount": 93,
+    "price": 2.0
+  },
+  {
+    "id": "002",
+    "name": "Cappuccino",
+    "amount": 18,
+    "price": 3.5
+  }
+]
