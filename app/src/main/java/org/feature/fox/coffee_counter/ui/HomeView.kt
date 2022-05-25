@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,11 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.feature.fox.coffee_counter.AuthenticationActivity
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
@@ -90,8 +93,12 @@ fun ButtonBox() {
 
 @Composable
 fun LoginButton() {
+    val context = LocalContext.current
+
     Button(
-        onClick = {},
+        onClick = {
+            context.startActivity(Intent(context, AuthenticationActivity::class.java))
+        },
         modifier = Modifier.fillMaxWidth(0.7f),
     ) {
         Text(
