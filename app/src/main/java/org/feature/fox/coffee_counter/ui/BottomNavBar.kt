@@ -3,6 +3,7 @@ package org.feature.fox.coffee_counter.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
@@ -44,6 +45,11 @@ fun ButtonNavigationView(){
                         route = "profile",
                         icon = Icons.Default.AccountCircle,
                     ),
+                    BottomNavItem(
+                        name = "Admin",
+                        route = "admin",
+                        icon = Icons.Default.AccountBox,
+                    ),
                 ),
                 navController = navController,
                 onItemClick = {
@@ -57,16 +63,19 @@ fun ButtonNavigationView(){
 }
 
 @Composable
-fun Navigation(navController: NavHostController){
-    NavHost(navController = navController, startDestination = "items"){
-        composable("items"){
+fun Navigation(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "items") {
+        composable("items") {
             ItemsView()
         }
-        composable("history"){
+        composable("history") {
             HistoryView()
         }
-        composable("profile"){
+        composable("profile") {
             ProfileView()
+        }
+        composable("admin") {
+            AdminView()
         }
     }
 }
