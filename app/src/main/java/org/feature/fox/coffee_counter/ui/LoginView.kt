@@ -35,6 +35,9 @@ fun LoginView() {
         IdTextField()
         PasswordTextField()
         RememberMeCheckbox()
+        CustomButton(
+            text = stringResource(R.string.login)
+        )
     }
 }
 
