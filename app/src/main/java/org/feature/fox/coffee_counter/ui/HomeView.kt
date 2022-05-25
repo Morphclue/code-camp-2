@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -86,35 +85,14 @@ fun ButtonBox() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        LoginButton()
-        SignUpButton()
-    }
-}
+        val context = LocalContext.current
 
-@Composable
-fun LoginButton() {
-    val context = LocalContext.current
-
-    Button(
-        onClick = {
-            context.startActivity(Intent(context, AuthenticationActivity::class.java))
-        },
-        modifier = Modifier.fillMaxWidth(0.7f),
-    ) {
-        Text(
+        CustomButton(
             text = stringResource(id = R.string.login),
+            onClick = { context.startActivity(Intent(context, AuthenticationActivity::class.java)) }
         )
-    }
-}
-
-@Composable
-fun SignUpButton() {
-    Button(
-        onClick = {},
-        modifier = Modifier.fillMaxWidth(0.7f),
-    ) {
-        Text(
-            text = stringResource(id = R.string.sign_up),
+        CustomButton(
+            stringResource(id = R.string.sign_up)
         )
     }
 }
