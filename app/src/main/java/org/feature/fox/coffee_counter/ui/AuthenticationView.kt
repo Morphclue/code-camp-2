@@ -94,8 +94,7 @@ fun IdTextField() {
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),
-        shape = RoundedCornerShape(8.dp),
-        visualTransformation = PasswordVisualTransformation()
+        shape = RoundedCornerShape(8.dp)
     )
 }
 
