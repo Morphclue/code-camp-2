@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -84,7 +83,11 @@ fun ItemRow(item: Item){
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Text("$buyItems/${item.amount}", fontWeight = FontWeight.Medium)
+                Text(
+                    "$buyItems/${item.amount}",
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.width(60.dp)
+                )
 
                 Button(onClick = {if (buyItems < item.amount) buyItems++},
                     modifier= Modifier.size(35.dp),
