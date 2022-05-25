@@ -92,6 +92,7 @@ class ApiServiceTest {
             .setBody(javaClass.getResource("/json/200-get-item-by-id.json").readText())
 
         mockWebServer.enqueue(response)
+
         val actualResponse = apiService.getItemById("003")
 
         assertThat(actualResponse).isNotNull()
@@ -113,6 +114,7 @@ class ApiServiceTest {
             .setBody("Item with that ID does not exist")
 
         mockWebServer.enqueue(response)
+
         val actualResponse = apiService.getItemById("004")
 
         assertThat(actualResponse.code()).isEqualTo(404)
@@ -146,6 +148,7 @@ class ApiServiceTest {
         assertThat(actualResponse.body()).isEqualTo(userList)
 
         val request = mockWebServer.takeRequest()
+
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
 
@@ -153,16 +156,17 @@ class ApiServiceTest {
 
     @Test
     fun `POST login successful`() = runBlocking {
+
         val login = LoginResponse("abcdef", expiration = 123456789)
         val body = LoginBody("foo", "bar")
         val moshi = Moshi.Builder().build()
+        val adapterBody = moshi.adapter(LoginBody::class.java)
 
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setBody(javaClass.getResource("/json/200-post-login.json").readText())
         )
-
 
         val actualResponse = apiService.postLogin(body)
 
@@ -172,9 +176,6 @@ class ApiServiceTest {
 
         val request = mockWebServer.takeRequest()
 
-
-        val adapterBody = moshi.adapter(LoginBody::class.java)
-
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
         assertThat(adapterBody.fromJson(request.body.readUtf8())).isEqualTo(body)
@@ -183,7 +184,10 @@ class ApiServiceTest {
 
     @Test
     fun `POST login invalid body`() = runBlocking {
+
         val body = LoginBody("", "")
+        val moshi = Moshi.Builder().build()
+        val adapter = moshi.adapter(LoginBody::class.java)
 
         mockWebServer.enqueue(
             MockResponse()
@@ -191,18 +195,13 @@ class ApiServiceTest {
                 .setBody("ID or password incorrect")
         )
 
-
         val actualResponse = apiService.postLogin(body)
-
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(401)
         assertThat(actualResponse.body()).isNull()
 
         val request = mockWebServer.takeRequest()
-
-        val moshi = Moshi.Builder().build()
-        val adapter = moshi.adapter(LoginBody::class.java)
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
@@ -212,8 +211,10 @@ class ApiServiceTest {
 
     @Test
     fun `POST sign in`() = runBlocking {
-        val body = UserBody("123456789", "foo", "123456789")
 
+        val body = UserBody("123456789", "foo", "123456789")
+        val moshi = Moshi.Builder().build()
+        val adapter = moshi.adapter(UserBody::class.java)
         val response = MockResponse()
             .setResponseCode(201)
             .setBody(body.password)
@@ -222,21 +223,16 @@ class ApiServiceTest {
 
         val actualResponse = apiService.signIn(body)
 
-
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(201)
         assertThat(actualResponse.body()).isEqualTo(response.getBody()?.readUtf8())
 
         val request = mockWebServer.takeRequest()
 
-        val moshi = Moshi.Builder().build()
-        val adapter = moshi.adapter(UserBody::class.java)
-
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
 
     }
-
 
 }
