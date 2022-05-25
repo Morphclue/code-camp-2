@@ -23,22 +23,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 
 @Preview(showSystemUi = true)
 @Composable
 fun LoginView() {
-    CoffeeCounterTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            LoginSignupHeader()
-            IdTextField()
-            PasswordTextField()
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        LoginSignupHeader()
+        IdTextField()
+        PasswordTextField()
     }
 }
 
