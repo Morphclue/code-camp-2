@@ -9,9 +9,11 @@ import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val login = intent.extras!!.getBoolean("login")
+
         setContent {
             CoffeeCounterTheme {
-                AuthenticationView()
+                AuthenticationView(login)
             }
         }
     }
