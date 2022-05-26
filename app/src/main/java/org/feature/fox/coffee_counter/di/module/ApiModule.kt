@@ -7,7 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.feature.fox.coffee_counter.data.network.apiservice.ApiService
+import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Constants
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -32,10 +32,10 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
-        logingInterceptor: Interceptor
+        loggingInterceptor: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(logingInterceptor)
+            .addInterceptor(loggingInterceptor)
             .callTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
