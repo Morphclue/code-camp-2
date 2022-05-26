@@ -64,7 +64,7 @@ class ApiServiceTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(javaClass.getResource("/json/200-get-items.json").readText())
+                .setBody(javaClass.getResource("/json/200-get-items.json")!!.readText())
         )
 
         val actualResponse = apiService.getItems()
@@ -88,7 +88,7 @@ class ApiServiceTest {
 
         val response = MockResponse()
             .setResponseCode(200)
-            .setBody(javaClass.getResource("/json/200-get-item-by-id.json").readText())
+            .setBody(javaClass.getResource("/json/200-get-item-by-id.json")!!.readText())
 
         mockWebServer.enqueue(response)
 
@@ -136,7 +136,7 @@ class ApiServiceTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(javaClass.getResource("/json/200-get-users.json").readText())
+                .setBody(javaClass.getResource("/json/200-get-users.json")!!.readText())
         )
 
         val actualResponse = apiService.getUsers()
@@ -164,7 +164,7 @@ class ApiServiceTest {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(200)
-                .setBody(javaClass.getResource("/json/200-post-login.json").readText())
+                .setBody(javaClass.getResource("/json/200-post-login.json")!!.readText())
         )
 
         val actualResponse = apiService.postLogin(body)
