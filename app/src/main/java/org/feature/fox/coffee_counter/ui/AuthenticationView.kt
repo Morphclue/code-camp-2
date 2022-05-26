@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,28 +26,40 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 
+class LoginStateProvider : PreviewParameterProvider<Boolean> {
+    override val values: Sequence<Boolean> = sequenceOf(
+        true,
+        false,
+    )
+}
+
 @Preview(showSystemUi = true)
 @Composable
-fun AuthenticationView() {
+fun AuthenticationView(
+    @PreviewParameter(LoginStateProvider::class) login: Boolean,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        LoginSignupHeader()
-        LoginFragment()
+        val loginState = remember { mutableStateOf(login) }
+        LoginSignupHeader(loginState)
+        if (loginState.value) LoginFragment() else RegisterFragment()
     }
 }
 
 @Composable
 fun LoginFragment() {
-    IdTextField()
-    PasswordTextField()
+    NormalTextField(stringResource(R.string.id_hint))
+    PasswordTextField(stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
         text = stringResource(R.string.login)
@@ -54,7 +67,18 @@ fun LoginFragment() {
 }
 
 @Composable
-fun LoginSignupHeader() {
+fun RegisterFragment() {
+    NormalTextField(stringResource(R.string.name_hint))
+    NormalTextField(stringResource(R.string.optional_id_hint))
+    PasswordTextField(stringResource(R.string.password_hint))
+    PasswordTextField(stringResource(R.string.re_enter_password_hint))
+    CustomButton(
+        text = stringResource(R.string.sign_up)
+    )
+}
+
+@Composable
+fun LoginSignupHeader(loginState: MutableState<Boolean>) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -64,13 +88,28 @@ fun LoginSignupHeader() {
             offset = Offset(8f, 8f),
             blurRadius = 8f
         )
-        HeaderButton(stringResource(R.string.login), dropShadow)
-        HeaderButton(stringResource(R.string.sign_up))
+        if (loginState.value) {
+            HeaderButton(stringResource(R.string.login), dropShadow)
+            HeaderButton(
+                text = stringResource(R.string.sign_up),
+                onClick = { loginState.value = false }
+            )
+        } else {
+            HeaderButton(
+                text = stringResource(R.string.login),
+                onClick = { loginState.value = true }
+            )
+            HeaderButton(stringResource(R.string.sign_up), dropShadow)
+        }
     }
 }
 
 @Composable
-fun HeaderButton(text: String, shadow: Shadow = Shadow()) {
+fun HeaderButton(
+    text: String,
+    shadow: Shadow = Shadow(),
+    onClick: (Int) -> Unit = {},
+) {
     ClickableText(
         style = TextStyle(
             shadow = shadow,
@@ -78,18 +117,18 @@ fun HeaderButton(text: String, shadow: Shadow = Shadow()) {
             fontWeight = FontWeight.Bold,
         ),
         text = AnnotatedString(text),
-        onClick = {}
+        onClick = onClick
     )
 }
 
 @Composable
-fun IdTextField() {
+fun NormalTextField(text: String) {
     val idState = remember { mutableStateOf(TextFieldValue()) }
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = idState.value,
         onValueChange = { idState.value = it },
-        label = { Text(text = stringResource(R.string.id_hint)) },
+        label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
@@ -99,14 +138,14 @@ fun IdTextField() {
 }
 
 @Composable
-fun PasswordTextField() {
+fun PasswordTextField(text: String) {
     val passwordState = remember { mutableStateOf(TextFieldValue()) }
     val showPassword = remember { mutableStateOf(false) }
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = passwordState.value,
         onValueChange = { passwordState.value = it },
-        label = { Text(text = stringResource(R.string.password_hint)) },
+        label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent

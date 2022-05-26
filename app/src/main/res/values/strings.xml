@@ -3,7 +3,10 @@
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
     <string name="password_hint">Password</string>
+    <string name="re_enter_password_hint">Re-enter password</string>
+    <string name="name_hint">Name</string>
     <string name="id_hint">ID</string>
+    <string name="optional_id_hint">ID (optional)</string>
     <string name="hide_password">Hide password</string>
     <string name="show_password">Show password</string>
     <string name="remember_me">Remember me</string>
