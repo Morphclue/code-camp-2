@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.data.local
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -9,17 +10,17 @@ import androidx.room.PrimaryKey
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("timestamp"),
+        childColumns = arrayOf("userId"),
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE
     )]
 )
-
 data class Funding(
 
     @PrimaryKey
     val timestamp: Long,
 
+    @ColumnInfo(index = true)
     val userId: String,
 
     val value: Double,
