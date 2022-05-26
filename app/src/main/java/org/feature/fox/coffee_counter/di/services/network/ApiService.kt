@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.data.network.apiservice
+package org.feature.fox.coffee_counter.di.services.network
 
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody

@@ -12,9 +12,8 @@ import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
-
-import org.feature.fox.coffee_counter.data.network.apiservice.ApiService
 import org.feature.fox.coffee_counter.di.module.ApiModule
+import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Constants
 import org.junit.After
 import org.junit.Before
