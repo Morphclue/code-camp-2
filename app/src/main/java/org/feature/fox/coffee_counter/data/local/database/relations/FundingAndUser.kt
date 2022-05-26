@@ -1,9 +1,9 @@
-package org.feature.fox.coffee_counter.data.local.relations
+package org.feature.fox.coffee_counter.data.local.database.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import org.feature.fox.coffee_counter.data.local.Funding
-import org.feature.fox.coffee_counter.data.local.User
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 data class FundingAndUser(
     @Embedded
