@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.Item
+import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Preview(showSystemUi = true)
 @Composable
@@ -35,20 +37,20 @@ fun ItemsView() {
 
 @Composable
 fun ItemList(items: List<Item>) {
-    Column(
-        modifier = Modifier
-            .padding(5.dp),
-    ) {
+    Column{
         SearchBar()
         Text(
             stringResource(R.string.item_list_title),
             fontWeight = FontWeight.Medium,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            modifier = Modifier.padding(start = 10.dp)
         )
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(10.dp),
+                .padding(10.dp)
+                .fillMaxWidth()
+                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items.forEach { item ->
@@ -61,6 +63,7 @@ fun ItemList(items: List<Item>) {
                 )
             }
         }
+        BuyButton(amount = 55.0)
     }
 }
 
@@ -92,7 +95,7 @@ fun ItemRow(item: Item){
                 )
 
                 Button(onClick = {if (buyItems < item.amount) buyItems++},
-                    modifier= Modifier.size(35.dp),
+                    modifier = Modifier.size(35.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                 ) {
@@ -100,7 +103,7 @@ fun ItemRow(item: Item){
                 }
 
                 Button(onClick = {if (buyItems > 0) buyItems-=1},
-                    modifier= Modifier.size(35.dp),
+                    modifier = Modifier.size(35.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                 ) {
@@ -108,6 +111,26 @@ fun ItemRow(item: Item){
                 }
             }
         }
+    }
+}
+
+@Composable
+fun BuyButton(amount: Double){
+    Button(onClick = {},
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 56.dp) // looks like that is the height of the NavBar. No idea how to make it better right now
+            .height(70.dp),
+        shape = RectangleShape,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = CrayolaCopper,
+            contentColor = Color.White
+        )
+    ) {
+        Text(
+            "Buy (${String.format("%.2f", amount)}€)",
+            fontSize = 20.sp,
+        )
     }
 }
 
