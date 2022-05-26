@@ -2,9 +2,9 @@ package org.feature.fox.coffee_counter.data.local.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import org.feature.fox.coffee_counter.data.local.Funding
-import org.feature.fox.coffee_counter.data.local.User
-import org.feature.fox.coffee_counter.data.local.relations.FundingAndUser
+import org.feature.fox.coffee_counter.data.local.database.relations.FundingAndUser
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 @Dao
 interface UserDao {

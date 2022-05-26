@@ -8,9 +8,9 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.feature.fox.coffee_counter.data.local.Funding
-import org.feature.fox.coffee_counter.data.local.User
 import org.feature.fox.coffee_counter.data.local.UserDatabase
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.getOrAwaitValue
 import org.junit.After
 import org.junit.Before
