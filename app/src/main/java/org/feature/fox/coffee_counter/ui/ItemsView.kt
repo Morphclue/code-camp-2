@@ -81,7 +81,6 @@ fun ItemRow(item: Item){
             Text("${item.price}€", color = Color.Gray)
         }
 
-
         Column{
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -102,7 +101,7 @@ fun ItemRow(item: Item){
                     Icon(Icons.Default.Add ,contentDescription = "content description", tint=Color.White)
                 }
 
-                Button(onClick = {if (buyItems > 0) buyItems-=1},
+                Button(onClick = {if (buyItems > 0) buyItems--},
                     modifier = Modifier.size(35.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
