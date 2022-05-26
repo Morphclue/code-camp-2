@@ -8,6 +8,7 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.feature.fox.coffee_counter.data.local.Funding
 import org.feature.fox.coffee_counter.data.local.User
 import org.feature.fox.coffee_counter.data.local.UserDatabase
 import org.feature.fox.coffee_counter.getOrAwaitValue
@@ -52,6 +53,17 @@ class UserDaoTest {
         val allUsers = dao.observeAllUsers().getOrAwaitValue()
 
         assertThat(allUsers.contains(user))
+    }
+
+    @Test
+    fun insertFunding() = runTest {
+        dao.insertUser(user)
+        val funding = Funding(123456789, user.id, 20.0)
+        dao.insertFunding(listOf(funding))
+        val fundingAndUser = dao.getFundingsOfUser(user.id)
+
+        assertThat(fundingAndUser[0].fundings[0]).isEqualTo(funding)
+        assertThat(fundingAndUser[0].fundings[0].userId).isEqualTo(user.id)
     }
 
     @Test
