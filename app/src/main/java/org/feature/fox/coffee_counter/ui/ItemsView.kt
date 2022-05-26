@@ -43,12 +43,12 @@ fun ItemList(items: List<Item>) {
             stringResource(R.string.item_list_title),
             fontWeight = FontWeight.Medium,
             fontSize = 30.sp,
-            modifier = Modifier.padding(start = 10.dp)
+            modifier = Modifier.padding(start = 5.dp)
         )
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(10.dp)
+                .padding(5.dp)
                 .fillMaxWidth()
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -157,7 +157,8 @@ fun SearchBar(
         },
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 56.dp),
+            .heightIn(min = 56.dp)
+            .padding(all = 5.dp),
         shape = RoundedCornerShape(50.dp),
     )
 }
