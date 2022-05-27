@@ -1,0 +1,23 @@
+[
+  {
+    "type": "funding",
+    "value": 1000.0,
+    "timestamp": 1653634217128
+  },
+  {
+    "type": "purchase",
+    "value": -6.0,
+    "timestamp": 1653634994966,
+    "itemId": "001",
+    "itemName": "Espresso",
+    "amount": 3
+  },
+  {
+    "type": "purchase",
+    "value": -3.5,
+    "timestamp": 1653635004215,
+    "itemId": "003",
+    "itemName": "Latte Macchiato",
+    "amount": 1
+  }
+]
