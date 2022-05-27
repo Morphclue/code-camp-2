@@ -209,7 +209,7 @@ class ApiServiceTest {
     }
 
     @Test
-    fun `POST sign in`() = runBlocking {
+    fun `POST Users to SignUp`() = runBlocking {
 
         val body = UserBody("123456789", "foo", "123456789")
         val moshi = Moshi.Builder().build()
@@ -220,7 +220,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.signIn(body)
+        val actualResponse = apiService.signUp(body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(201)

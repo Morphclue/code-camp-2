@@ -30,5 +30,5 @@ interface ApiService {
     suspend fun getItemById(@Path("id") id: String): Response<ItemResponse>
 
     @POST(USERS_ENDPOINT)
-    suspend fun signIn(@Body userBody: UserBody): Response<String>
+    suspend fun signUp(@Body userBody: UserBody): Response<String>
 }
