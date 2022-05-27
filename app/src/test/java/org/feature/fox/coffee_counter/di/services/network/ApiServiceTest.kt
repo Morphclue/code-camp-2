@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.network.apiservice
+package org.feature.fox.coffee_counter.di.services.network
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
@@ -11,9 +11,9 @@ import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
+import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.di.module.ApiModule
-import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Constants
 import org.junit.After
 import org.junit.Before
@@ -151,6 +151,29 @@ class ApiServiceTest {
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
 
+    }
+
+    @Test
+    fun `GET User by id`() = runBlocking {
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val user = UserIdResponse(userId, "AndroidB", 100.0)
+
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(javaClass.getResource("/json/200-get-user-by-id.json")!!.readText())
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.getUserById(userId)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isEqualTo(user)
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("GET")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
     }
 
     @Test
