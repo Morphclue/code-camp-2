@@ -14,5 +14,5 @@ data class FundingAndUser(
         entityColumn = "userId",
         entity = Funding::class
     )
-    val fundings: List<Funding>
+    val fundingList: List<Funding>
 )
