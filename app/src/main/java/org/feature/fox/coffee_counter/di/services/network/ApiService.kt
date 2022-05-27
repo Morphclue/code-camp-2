@@ -27,9 +27,8 @@ interface ApiService {
     @GET("$USERS_ENDPOINT/{id}")
     suspend fun getUserById(@Path("id") id: String): Response<UserIdResponse>
 
-    // TODO: Currently not working (tested in Postman)
-    @PUT(USERS_ENDPOINT)
-    suspend fun updateUser(@Body userBody: UserBody)
+    @PUT("$USERS_ENDPOINT/{id}")
+    suspend fun updateUser(@Path("id") id: String, @Body userBody: UserBody): Response<String>
 
     @POST(USERS_ENDPOINT)
     suspend fun signUp(@Body userBody: UserBody): Response<String>
