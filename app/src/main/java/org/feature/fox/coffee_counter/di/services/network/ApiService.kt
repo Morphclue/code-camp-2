@@ -32,7 +32,7 @@ interface ApiService {
     suspend fun updateUser(@Body userBody: UserBody)
 
     @POST(USERS_ENDPOINT)
-    suspend fun signIn(@Body userBody: UserBody): Response<String>
+    suspend fun signUp(@Body userBody: UserBody): Response<String>
 
     @DELETE("$USERS_ENDPOINT/{id}")
     suspend fun deleteUser(@Path("id") id: String): Response<String>
