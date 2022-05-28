@@ -56,12 +56,11 @@ class ApiServiceTest {
         val item1 = ItemResponse("001", "Espresso", 93, 2.0)
         val item2 = ItemResponse("002", "Cappuccino", 18, 3.5)
         val itemList = ArrayList<ItemResponse>(listOf(item1, item2))
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(javaClass.getResource("/json/200-get-items.json")!!.readText())
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(javaClass.getResource("/json/200-get-items.json")!!.readText())
-        )
+        mockWebServer.enqueue(response)
 
         val actualResponse = apiService.getItems()
 
@@ -79,7 +78,6 @@ class ApiServiceTest {
     @Test
     fun `GET Item by id`() = runBlocking {
         val item = ItemResponse("003", "Latte Macchiato", 5, 3.5)
-
         val response = MockResponse()
             .setResponseCode(200)
             .setBody(javaClass.getResource("/json/200-get-item-by-id.json")!!.readText())
@@ -122,12 +120,11 @@ class ApiServiceTest {
         val user1 = UserResponse("koffee-admin", "admin")
         val user2 = UserResponse("ad582fa4-d17d-4e2e-9d51-2cae89533ecd", "AndroidB")
         val userList = ArrayList<UserResponse>(listOf(user1, user2))
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(javaClass.getResource("/json/200-get-users.json")!!.readText())
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(javaClass.getResource("/json/200-get-users.json")!!.readText())
-        )
+        mockWebServer.enqueue(response)
 
         val actualResponse = apiService.getUsers()
 
@@ -146,7 +143,6 @@ class ApiServiceTest {
     fun `GET User by id`() = runBlocking {
         val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
         val user = UserIdResponse(userId, "AndroidB", 100.0)
-
         val response = MockResponse()
             .setResponseCode(200)
             .setBody(javaClass.getResource("/json/200-get-user-by-id.json")!!.readText())
@@ -191,12 +187,11 @@ class ApiServiceTest {
         val body = LoginBody("foo", "bar")
         val moshi = Moshi.Builder().build()
         val adapter = moshi.adapter(LoginBody::class.java)
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(javaClass.getResource("/json/200-post-login.json")!!.readText())
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(javaClass.getResource("/json/200-post-login.json")!!.readText())
-        )
+        mockWebServer.enqueue(response)
 
         val actualResponse = apiService.postLogin(body)
 
@@ -216,12 +211,11 @@ class ApiServiceTest {
         val body = LoginBody("", "")
         val moshi = Moshi.Builder().build()
         val adapter = moshi.adapter(LoginBody::class.java)
+        val response = MockResponse()
+            .setResponseCode(401)
+            .setBody("ID or password incorrect")
 
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(401)
-                .setBody("ID or password incorrect")
-        )
+        mockWebServer.enqueue(response)
 
         val actualResponse = apiService.postLogin(body)
 
