@@ -5,12 +5,12 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserIdResponse(
-    @field:Json(name = "id")
+    @Json(name = "id")
     val id: String,
 
-    @field:Json(name = "name")
+    @Json(name = "name")
     val name: String,
 
-    @field:Json(name = "balance")
+    @Json(name = "balance")
     val balance: Double,
 )

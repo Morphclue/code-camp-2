@@ -6,10 +6,10 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class LoginBody(
 
-    @field:Json(name = "id")
+    @Json(name = "id")
     val id: String,
 
-    @field:Json(name = "password")
+    @Json(name = "password")
     val password: String,
 ) {
 }

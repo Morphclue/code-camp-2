@@ -3,21 +3,21 @@ package org.feature.fox.coffee_counter.data.models.response
 import com.squareup.moshi.Json
 
 data class TransactionResponse(
-    @field:Json(name = "type")
+    @Json(name = "type")
     val type: String,
 
-    @field:Json(name = "value")
+    @Json(name = "value")
     val value: Double,
 
-    @field:Json(name = "balance")
+    @Json(name = "balance")
     val timestamp: Long,
 
-    @field:Json(name = "itemId")
+    @Json(name = "itemId")
     val itemId: String,
 
-    @field:Json(name = "itemName")
+    @Json(name = "itemName")
     val itemName: String,
 
-    @field:Json(name = "amount")
+    @Json(name = "amount")
     val amount: Int,
 )
