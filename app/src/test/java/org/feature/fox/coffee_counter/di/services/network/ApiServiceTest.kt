@@ -29,14 +29,11 @@ class ApiServiceTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
-
     private var mockWebServer = MockWebServer()
-
     private lateinit var apiService: ApiService
 
     @Before
     fun setup() {
-
         mockWebServer.start()
         apiService = ApiModule.provideApiService(
             ApiModule.provideRetrofit(
@@ -56,7 +53,6 @@ class ApiServiceTest {
 
     @Test
     fun `GET Items`() = runBlocking {
-
         val item1 = ItemResponse("001", "Espresso", 93, 2.0)
         val item2 = ItemResponse("002", "Cappuccino", 18, 3.5)
         val itemList = ArrayList<ItemResponse>(listOf(item1, item2))
@@ -78,12 +74,10 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT)
-
     }
 
     @Test
     fun `GET Item by id`() = runBlocking {
-
         val item = ItemResponse("003", "Latte Macchiato", 5, 3.5)
 
         val response = MockResponse()
@@ -102,12 +96,10 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT + "/003")
-
     }
 
     @Test
     fun `GET Item by id with invalid id`() = runBlocking {
-
         val response = MockResponse()
             .setResponseCode(404)
             .setBody("Item with that ID does not exist")
@@ -123,12 +115,10 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT + "/004")
-
     }
 
     @Test
     fun `GET Users`() = runBlocking {
-
         val user1 = UserResponse("koffee-admin", "admin")
         val user2 = UserResponse("ad582fa4-d17d-4e2e-9d51-2cae89533ecd", "AndroidB")
         val userList = ArrayList<UserResponse>(listOf(user1, user2))
@@ -150,7 +140,6 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
-
     }
 
     @Test
@@ -198,7 +187,6 @@ class ApiServiceTest {
 
     @Test
     fun `POST login successful`() = runBlocking {
-
         val login = LoginResponse("abcdef", expiration = 123456789)
         val body = LoginBody("foo", "bar")
         val moshi = Moshi.Builder().build()
@@ -221,12 +209,10 @@ class ApiServiceTest {
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
         assertThat(adapterBody.fromJson(request.body.readUtf8())).isEqualTo(body)
-
     }
 
     @Test
     fun `POST login invalid body`() = runBlocking {
-
         val body = LoginBody("", "")
         val moshi = Moshi.Builder().build()
         val adapter = moshi.adapter(LoginBody::class.java)
@@ -248,12 +234,10 @@ class ApiServiceTest {
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
-
     }
 
     @Test
     fun `POST Users to SignUp`() = runBlocking {
-
         val body = UserBody("123456789", "foo", "123456789")
         val moshi = Moshi.Builder().build()
         val adapter = moshi.adapter(UserBody::class.java)
@@ -274,7 +258,5 @@ class ApiServiceTest {
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
-
     }
-
 }
