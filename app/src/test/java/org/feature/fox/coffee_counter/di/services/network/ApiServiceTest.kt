@@ -177,6 +177,26 @@ class ApiServiceTest {
     }
 
     @Test
+    fun `GET User by id with invalid id`() = runBlocking {
+        val wrongUserId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd123"
+        val response = MockResponse()
+            .setResponseCode(401)
+            .setBody("ID does not match path param")
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.getUserById(wrongUserId)
+
+        assertThat(actualResponse.code()).isEqualTo(401)
+        assertThat(actualResponse.body()).isNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("GET")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$wrongUserId")
+    }
+
+    @Test
     fun `POST login successful`() = runBlocking {
 
         val login = LoginResponse("abcdef", expiration = 123456789)
