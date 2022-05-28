@@ -190,7 +190,7 @@ class ApiServiceTest {
         val login = LoginResponse("abcdef", expiration = 123456789)
         val body = LoginBody("foo", "bar")
         val moshi = Moshi.Builder().build()
-        val adapterBody = moshi.adapter(LoginBody::class.java)
+        val adapter = moshi.adapter(LoginBody::class.java)
 
         mockWebServer.enqueue(
             MockResponse()
@@ -208,7 +208,7 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
-        assertThat(adapterBody.fromJson(request.body.readUtf8())).isEqualTo(body)
+        assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
     }
 
     @Test
