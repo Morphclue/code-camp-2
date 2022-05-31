@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.di.services.network
 
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
+import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.*
 import org.feature.fox.coffee_counter.util.Constants.Companion.ITEMS_ENDPOINT
@@ -40,5 +41,5 @@ interface ApiService {
     suspend fun getTransactions(@Path("id") id: String): Response<List<TransactionResponse>>
 
     @POST("$USERS_ENDPOINT/{id}/purchases")
-    suspend fun purchaseItem(@Path("id") id: String): Response<String>
+    suspend fun purchaseItem(@Path("id") id: String, @Body purchaseBody: PurchaseBody): Response<String>
 }

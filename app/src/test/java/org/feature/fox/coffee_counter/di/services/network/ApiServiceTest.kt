@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
+import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
@@ -243,6 +244,28 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+    }
+
+    @Test
+    fun `Post purchase item by id`() = runBlocking {
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val body = PurchaseBody("003", 2)
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody("Purchase.processed.successfully.")
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.purchaseItem(userId, body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("POST")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/purchases")
     }
 
     @Test
