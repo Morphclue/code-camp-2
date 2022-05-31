@@ -31,6 +31,9 @@ class UserDaoTest {
     private val funding1 = Funding(123456789, user1.id, 20.0)
     private val funding2 = Funding(123456799, user1.id, 10.0)
     private val funding3 = Funding(123456999, user2.id, 5.0)
+    private val purchase1 = Purchase(111111111, user1.id, -3.5, "item-1", "coffee", 2)
+    private val purchase2 = Purchase(222222222, user1.id, -20.0, "item-2", "beer", 5)
+    private val purchase3 = Purchase(333333333, user2.id, -8.0, "item-2", "beer", 2)
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -78,6 +81,21 @@ class UserDaoTest {
     }
 
     @Test
+    fun testInsertPurchase() = runTest {
+        dao.insertUser(user1)
+        dao.insertPurchase(purchase1)
+        dao.insertPurchase(purchase2)
+        val purchaseList = dao.getPurchaseListOfUser(user1.id)
+
+        assertThat(purchaseList.size).isEqualTo(2)
+        assertThat(purchaseList[0]).isEqualTo(purchase1)
+        assertThat(purchaseList[1]).isEqualTo(purchase2)
+
+        assertThat(purchaseList[0].userId).isEqualTo(user1.id)
+        assertThat(purchaseList[1].userId).isEqualTo(user1.id)
+    }
+
+    @Test
     fun testInsertAndDeleteFunding() = runTest {
         dao.insertUser(user1)
         dao.insertFunding(funding1)
@@ -96,10 +114,21 @@ class UserDaoTest {
     }
 
     @Test
-    fun testInsertPurchase() = runTest {
+    fun testInsertAndDeletePurchase() = runTest {
         dao.insertUser(user1)
-        val purchase = Purchase(123456789, user1.id, 20.0, "003", "coffee", 2)
-        dao.insertPurchase(listOf(purchase))
+        dao.insertPurchase(purchase1)
+        dao.insertPurchase(purchase2)
+        var purchaseList = dao.getPurchaseListOfUser(user1.id)
+
+        assertThat(purchaseList.size).isEqualTo(2)
+
+        dao.deletePurchase(purchase1)
+
+        purchaseList = dao.getPurchaseListOfUser(user1.id)
+
+        assertThat(purchaseList.size).isEqualTo(1)
+        assertThat(purchaseList[0]).isEqualTo(purchase2)
+
     }
 
     @Test
@@ -114,28 +143,54 @@ class UserDaoTest {
     }
 
     @Test
-    fun testFundingForeignKeyOnDelete() = runTest {
+    fun testFundingAndPurchaseForeignKeyOnDelete() = runTest {
         dao.insertUser(user1)
         dao.insertUser(user2)
         dao.insertFunding(funding1)
         dao.insertFunding(funding2)
         dao.insertFunding(funding3)
+        dao.insertPurchase(purchase1)
+        dao.insertPurchase(purchase2)
+        dao.insertPurchase(purchase3)
 
         var fundingList = dao.getFundingListOfUser(user1.id)
+        var purchaseList = dao.getPurchaseListOfUser(user1.id)
 
         assertThat(fundingList.size).isEqualTo(2)
+        assertThat(purchaseList.size).isEqualTo(2)
 
         dao.deleteUser(user1)
 
         fundingList = dao.getFundingListOfUser(user1.id)
+        purchaseList = dao.getPurchaseListOfUser(user1.id)
 
         assertThat(fundingList).isEmpty()
+        assertThat(purchaseList).isEmpty()
 
         fundingList = dao.getFundingListOfUser(user2.id)
+        purchaseList = dao.getPurchaseListOfUser(user2.id)
 
         assertThat(fundingList.size).isEqualTo(1)
+        assertThat(purchaseList.size).isEqualTo(1)
+
         assertThat(fundingList[0]).isEqualTo(funding3)
+        assertThat(purchaseList[0]).isEqualTo(purchase3)
+
         assertThat(fundingList[0].userId).isEqualTo(user2.id)
+        assertThat(purchaseList[0].userId).isEqualTo(user2.id)
+    }
+
+    @Test
+    fun testObserveTotalBalance() = runTest {
+        dao.insertUser(user1)
+        dao.insertFunding(funding1)
+        dao.insertFunding(funding2)
+        dao.insertPurchase(purchase1)
+        dao.insertPurchase(purchase2)
+
+        val totalBalance = dao.observeTotalBalanceOfUser(user1.id).getOrAwaitValue()
+
+        assertThat(totalBalance).isEqualTo(funding1.value + funding2.value + purchase1.totalValue + purchase2.totalValue)
     }
 
     @Test
