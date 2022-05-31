@@ -23,7 +23,7 @@ data class Purchase(
     @ColumnInfo(index = true)
     val userId: String,
 
-    val value: Double,
+    val totalValue: Double,
 
     val itemId: String,
 
