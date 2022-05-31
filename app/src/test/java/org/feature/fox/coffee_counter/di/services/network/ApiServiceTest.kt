@@ -2,6 +2,7 @@ package org.feature.fox.coffee_counter.di.services.network
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -188,7 +189,7 @@ class ApiServiceTest {
         val body = UserBody(userId, "foo", "123456789")
         val response = MockResponse()
             .setResponseCode(200)
-            .setBody("User.updated.successfully.")
+            .setBody(generateStringBody("User updated successfully."))
 
         mockWebServer.enqueue(response)
 
@@ -209,7 +210,7 @@ class ApiServiceTest {
         val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
         val response = MockResponse()
             .setResponseCode(200)
-            .setBody("User.deleted.successfully.")
+            .setBody(generateStringBody("User deleted successfully."))
 
         mockWebServer.enqueue(response)
 
@@ -252,7 +253,7 @@ class ApiServiceTest {
         val body = PurchaseBody("003", 2)
         val response = MockResponse()
             .setResponseCode(200)
-            .setBody("Purchase.processed.successfully.")
+            .setBody(generateStringBody("Purchase processed successfully."))
 
         mockWebServer.enqueue(response)
 
@@ -339,5 +340,11 @@ class ApiServiceTest {
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
+    }
+
+    private fun generateStringBody(string: String): String {
+        val moshi = Moshi.Builder().build()
+        val stringAdapter: JsonAdapter<String> = moshi.adapter(String::class.java)
+        return stringAdapter.toJson(string)
     }
 }
