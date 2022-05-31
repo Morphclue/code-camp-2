@@ -225,6 +225,27 @@ class ApiServiceTest {
     }
 
     @Test
+    fun `GET transactions by UserId`() = runBlocking {
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(javaClass.getResource("/json/200-get-transactions.json")!!.readText())
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.getTransactions(userId)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("GET")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+    }
+
+    @Test
     fun `POST login successful`() = runBlocking {
         val login = LoginResponse("abcdef", expiration = 123456789)
         val body = LoginBody("foo", "bar")
