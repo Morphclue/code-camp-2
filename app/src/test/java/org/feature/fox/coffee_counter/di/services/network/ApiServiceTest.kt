@@ -182,6 +182,12 @@ class ApiServiceTest {
     }
 
     @Test
+    fun `PUT update User by id`() = runBlocking {
+        /* TODO: currently not working due to some weird behaviour with Moshi and the MockResponse
+            (see Discord for additional information) */
+    }
+
+    @Test
     fun `POST login successful`() = runBlocking {
         val login = LoginResponse("abcdef", expiration = 123456789)
         val body = LoginBody("foo", "bar")
