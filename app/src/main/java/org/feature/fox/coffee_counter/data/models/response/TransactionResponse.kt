@@ -15,11 +15,11 @@ data class TransactionResponse(
     val timestamp: Long,
 
     @Json(name = "itemId")
-    val itemId: String,
+    val itemId: String?,
 
     @Json(name = "itemName")
-    val itemName: String,
+    val itemName: String?,
 
     @Json(name = "amount")
-    val amount: Int,
+    val amount: Int?,
 )
