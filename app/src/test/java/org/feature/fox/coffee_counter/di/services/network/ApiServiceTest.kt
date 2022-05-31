@@ -183,8 +183,24 @@ class ApiServiceTest {
 
     @Test
     fun `PUT update User by id`() = runBlocking {
-        /* TODO: currently not working due to some weird behaviour with Moshi and the MockResponse
-            (see Discord for additional information) */
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val body = UserBody(userId, "foo", "123456789")
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody("User.updated.successfully.")
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.updateUser(userId, body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("PUT")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
     }
 
     @Test
