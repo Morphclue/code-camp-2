@@ -16,7 +16,7 @@ interface UserDao {
     suspend fun insertFunding(funding: Funding)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPurchase(purchase: List<Purchase>)
+    suspend fun insertPurchase(purchase: Purchase)
 
     @Delete
     suspend fun deleteUser(user: User)
@@ -33,6 +33,14 @@ interface UserDao {
     @Transaction
     @Query("SELECT * FROM funding WHERE userId=:id")
     suspend fun getFundingListOfUser(id: String): List<Funding>
+
+    @Transaction
+    @Query("SELECT * FROM purchase WHERE userId=:id")
+    suspend fun getPurchaseListOfUser(id: String): List<Purchase>
+
+    @Transaction
+    @Query("SELECT(SELECT SUM(funding.value) FROM funding WHERE userId=:id) + (SELECT SUM(purchase.totalValue) FROM purchase WHERE userId=:id)")
+    fun observeTotalBalanceOfUser(id: String): LiveData<Double>
 
     @Query("SELECT CASE WHEN EXISTS (SELECT * FROM users WHERE id=:id AND password=:password) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END")
     suspend fun login(id: String, password: String): Boolean
