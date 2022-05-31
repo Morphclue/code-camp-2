@@ -11,7 +11,7 @@ data class TransactionResponse(
     @Json(name = "value")
     val value: Double,
 
-    @Json(name = "balance")
+    @Json(name = "timestamp")
     val timestamp: Long,
 
     @Json(name = "itemId")
