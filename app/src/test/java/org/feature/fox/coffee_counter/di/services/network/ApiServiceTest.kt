@@ -188,6 +188,27 @@ class ApiServiceTest {
     }
 
     @Test
+    fun `DELETE delete User by id`() = runBlocking {
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody("User.deleted.successfully.")
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.deleteUser(userId)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("DELETE")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+    }
+
+    @Test
     fun `POST login successful`() = runBlocking {
         val login = LoginResponse("abcdef", expiration = 123456789)
         val body = LoginBody("foo", "bar")
