@@ -1,10 +1,9 @@
-package org.feature.fox.coffee_counter.data.local
+package org.feature.fox.coffee_counter.data.local.database.tables
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
-
 data class User(
 
     @PrimaryKey
@@ -14,5 +13,6 @@ data class User(
 
     var isAdmin: Boolean,
 
-    var password: String
-)
+    var password: String,
+
+    )

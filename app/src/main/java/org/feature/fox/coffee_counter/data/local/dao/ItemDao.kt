@@ -2,7 +2,7 @@ package org.feature.fox.coffee_counter.data.local.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import org.feature.fox.coffee_counter.data.local.Item
+import org.feature.fox.coffee_counter.data.local.database.tables.Item
 
 @Dao
 interface ItemDao {
