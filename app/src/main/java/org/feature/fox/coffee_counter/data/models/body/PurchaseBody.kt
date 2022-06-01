@@ -11,5 +11,4 @@ data class PurchaseBody(
 
     @Json(name = "amount")
     val amount: Int,
-) {
-}
+)
