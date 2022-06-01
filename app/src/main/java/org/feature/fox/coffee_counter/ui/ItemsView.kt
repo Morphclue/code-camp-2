@@ -31,14 +31,18 @@ fun ItemsView() {
     val items = listOf(
         Item(id = "a", name = "coffee", amount = 69, price = 5.0),
         Item(id = "b", name = "beer", amount = 42, price = 4.99),
-        Item(id = "c", name = "mate", amount = 1337, price = 9.99))
+        Item(id = "c", name = "mate", amount = 1337, price = 9.99)
+    )
+    Column {
+        SearchBar()
         ItemList(items)
+        BuyButton(amount = 55.0)
+    }
 }
 
 @Composable
 fun ItemList(items: List<Item>) {
     Column{
-        SearchBar()
         Text(
             stringResource(R.string.item_list_title),
             fontWeight = FontWeight.Medium,
@@ -63,7 +67,6 @@ fun ItemList(items: List<Item>) {
                 )
             }
         }
-        BuyButton(amount = 55.0)
     }
 }
 
