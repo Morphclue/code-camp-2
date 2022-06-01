@@ -4,17 +4,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ItemResponse(
-
+data class UserIdResponse(
     @Json(name = "id")
     val id: String,
 
     @Json(name = "name")
     val name: String,
 
-    @Json(name = "amount")
-    val amount: Int,
-
-    @Json(name = "price")
-    val price: Double
+    @Json(name = "balance")
+    val balance: Double,
 )

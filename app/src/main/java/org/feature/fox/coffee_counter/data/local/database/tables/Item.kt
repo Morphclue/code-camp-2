@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.data.local
+package org.feature.fox.coffee_counter.data.local.database.tables
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

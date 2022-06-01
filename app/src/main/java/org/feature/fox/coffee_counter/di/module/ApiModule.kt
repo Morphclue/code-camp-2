@@ -60,7 +60,7 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideConverterFactory(): Converter.Factory {
-        return MoshiConverterFactory.create()
+        return MoshiConverterFactory.create().asLenient()
     }
 
     @Singleton
