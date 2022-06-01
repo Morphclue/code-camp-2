@@ -82,6 +82,7 @@ fun TransactionRow(color: Color, type: String, date: String, value: String) {
 @Composable
 fun TransactionType(type: String) {
     Text(
+        modifier = Modifier.width(80.dp),
         text = type,
         fontSize = rowTextFontSize,
         textAlign = TextAlign.Start
@@ -101,6 +102,7 @@ fun TransactionCircle(color: Color) {
 @Composable
 fun TransactionDate(date: String) {
     Text(
+        modifier = Modifier.width(100.dp),
         text = date,
         fontSize = rowTextFontSize,
         color = Color.Gray
@@ -110,8 +112,10 @@ fun TransactionDate(date: String) {
 @Composable
 fun TransactionValue(color: Color, value: String) {
     Text(
+        modifier = Modifier.width(80.dp),
         text = value,
         fontSize = rowTextFontSize,
-        color = color
+        color = color,
+        textAlign = TextAlign.End
     )
 }
