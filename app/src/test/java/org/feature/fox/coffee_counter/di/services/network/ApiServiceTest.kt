@@ -8,6 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -115,6 +116,135 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT + "/004")
+    }
+
+    @Test
+    fun `POST Item by id`() = runBlocking {
+        val body = ItemBody("003", "Coffee", 5, 1.23)
+
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(generateStringBody("Created new Item successfully."))
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.postItem(body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("POST")
+        assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT)
+    }
+
+    @Test
+    fun `PUT Item by id`() = runBlocking {
+        val itemID = "003"
+        val body = ItemBody(itemID, "Coffee", 5, 1.23)
+
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(generateStringBody("Updated Item successfully."))
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.updateItem(itemID, body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("PUT")
+        assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+    }
+
+    @Test
+    fun `DELETE Item by id`() = runBlocking {
+        val itemID = "003"
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(generateStringBody("Item deleted successfully."))
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.deleteItem(itemID)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("DELETE")
+        assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+    }
+
+    @Test
+    fun `POST funding by id`() = runBlocking {
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val body = 1.2
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(generateStringBody("Added funding successfully."))
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.addFunding(userId, body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("POST")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/funding")
+    }
+
+    @Test
+    fun `POST admin User`() = runBlocking {
+        val body = UserBody("ad582fa4-d17d-4e2e-9d51-2cae89533ecd", "admin", "321654", true)
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(generateStringBody("Added admin user successfully."))
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.adminSignUp(body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("POST")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin")
+    }
+
+    @Test
+    fun `PUT update admin User by id`() = runBlocking {
+        val userId = "ad582fa4-d17d-4e2e-9d51-2cae89533ecd"
+        val body = UserBody(userId, "foo", "123456789", true)
+        val response = MockResponse()
+            .setResponseCode(200)
+            .setBody(generateStringBody("Admin User updated successfully."))
+
+        mockWebServer.enqueue(response)
+
+        val actualResponse = apiService.updateAdmin(userId, body)
+
+        assertThat(actualResponse).isNotNull()
+        assertThat(actualResponse.code()).isEqualTo(200)
+        assertThat(actualResponse.body()).isNotNull()
+
+        val request = mockWebServer.takeRequest()
+
+        assertThat(request.method).isEqualTo("PUT")
+        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin/$userId")
     }
 
     @Test
@@ -325,7 +455,7 @@ class ApiServiceTest {
         val adapter = moshi.adapter(UserBody::class.java)
         val response = MockResponse()
             .setResponseCode(201)
-            .setBody(body.password)
+            .setBody(body.password!!)
 
         mockWebServer.enqueue(response)
 

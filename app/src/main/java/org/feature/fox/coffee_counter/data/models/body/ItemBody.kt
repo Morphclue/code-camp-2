@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserBody(
+class ItemBody(
 
     @Json(name = "id")
     val id: String,
@@ -12,9 +12,9 @@ data class UserBody(
     @Json(name = "name")
     val name: String,
 
-    @Json(name = "password")
-    val password: String? = null,
+    @Json(name = "amount")
+    val amount: Int,
 
-    @Json(name = "isAdmin")
-    val isAdmin: Boolean? = null,
+    @Json(name = "price")
+    val price: Double,
 )
