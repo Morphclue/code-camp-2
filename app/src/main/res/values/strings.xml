@@ -10,4 +10,6 @@
     <string name="hide_password">Hide password</string>
     <string name="show_password">Show password</string>
     <string name="remember_me">Remember me</string>
+    <string name="item_list_title">Beverage</string>
+    <string name="search_hint">Search</string>
 </resources>
