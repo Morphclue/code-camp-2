@@ -80,6 +80,8 @@ fun UserRow(user: User) {
         }
         Column() {
             Text(
+                //FIXME Extract balance from db
+                // - Use observeTotalBalanceOfUser method from UserDao
                 "42€",
                 fontWeight = FontWeight.Medium,
                 color = Color.Gray,
