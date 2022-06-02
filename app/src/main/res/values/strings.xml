@@ -12,4 +12,6 @@
     <string name="remember_me">Remember me</string>
     <string name="item_list_title">Beverage</string>
     <string name="search_hint">Search</string>
+    <string name="user_list_title">Users</string>
+    <string name="user_admin">admin</string>
 </resources>
