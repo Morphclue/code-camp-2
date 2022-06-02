@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.di.services.network
 
+import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -42,4 +43,22 @@ interface ApiService {
 
     @POST("$USERS_ENDPOINT/{id}/purchases")
     suspend fun purchaseItem(@Path("id") id: String, @Body purchaseBody: PurchaseBody): Response<String>
+
+    @POST("$USERS_ENDPOINT/admin")
+    suspend fun adminSignUp(@Body userBody: UserBody): Response<String>
+
+    @PUT("$USERS_ENDPOINT/admin/{id}")
+    suspend fun updateAdmin(@Path("id") id: String, @Body userBody: UserBody): Response<String>
+
+    @POST("$USERS_ENDPOINT/{id}/funding")
+    suspend fun addFunding(@Path("id") id: String, @Body fundingBody: Double): Response<String>
+
+    @POST(ITEMS_ENDPOINT)
+    suspend fun postItem(@Body itemBody: ItemBody): Response<String>
+
+    @PUT("$ITEMS_ENDPOINT/{id}")
+    suspend fun updateItem(@Path("id") id: String, @Body itemBody: ItemBody): Response<String>
+
+    @DELETE("$ITEMS_ENDPOINT/{id}")
+    suspend fun deleteItem(@Path("id") id: String): Response<String>
 }

@@ -11,5 +11,4 @@ data class LoginBody(
 
     @Json(name = "password")
     val password: String,
-) {
-}
+)
