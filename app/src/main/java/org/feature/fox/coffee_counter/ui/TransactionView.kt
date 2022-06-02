@@ -17,8 +17,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
+import java.text.SimpleDateFormat
+import java.util.*
 
 private val rowTextFontSize: TextUnit = 18.sp
+private const val datePattern = "dd.MM.yy"
+private val transactions = listOf(
+    Funding(1654153006000, "foo", 10.00),
+    Purchase(1645167406000, "foo", -9.89, "003", "Espresso", 3),
+    Purchase(1613285806000, "foo", -3.30, "001", "Cola", 2),
+)
 
 @Preview(showSystemUi = true)
 @Composable
@@ -38,25 +48,31 @@ fun TransactionContainer() {
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // FIXME: iterate over Transactions
-        TransactionRow(
-            Color.Green,
-            "Funding",
-            "01.06.2022",
-            "+10,00€"
-        )
-        Divider(
-            color = Color.Gray,
-            modifier = Modifier
-                .fillMaxWidth(),
-            thickness = 1.dp
-        )
-        TransactionRow(
-            Color.DarkGray,
-            "Order",
-            "03.06.2022",
-            "-9,89€"
-        )
+        transactions.forEach { transaction ->
+            if (transaction is Funding) {
+                TransactionRow(
+                    Color.Green,
+                    "Funding",
+                    SimpleDateFormat(datePattern, Locale.GERMAN)
+                        .format(Date(transaction.timestamp)),
+                    "${transaction.value}€"
+                )
+            } else if (transaction is Purchase) {
+                TransactionRow(
+                    Color.DarkGray,
+                    "Order",
+                    SimpleDateFormat(datePattern, Locale.GERMAN)
+                        .format(Date(transaction.timestamp)),
+                    "${transaction.totalValue}€"
+                )
+            }
+            Divider(
+                color = Color.Gray,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                thickness = 1.dp
+            )
+        }
     }
 }
 
