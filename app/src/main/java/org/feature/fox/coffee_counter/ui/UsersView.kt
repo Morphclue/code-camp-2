@@ -70,7 +70,6 @@ fun UserRow(user: User) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        // Not sure if there's a better inline solution
         Text(
             user.name + " ${if (user.isAdmin) "(${stringResource(id = R.string.user_admin)})" else ""}",
             fontWeight = FontWeight.Medium
