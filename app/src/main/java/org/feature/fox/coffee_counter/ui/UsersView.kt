@@ -59,7 +59,6 @@ fun UserList(users: List<User>) {
                 )
             }
         }
-
     }
 }
 
@@ -71,24 +70,19 @@ fun UserRow(user: User) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Column {
-            // Not sure if there's a better inline solution
-            Text(
-                user.name + " ${if (user.isAdmin) "(${stringResource(id = R.string.user_admin)})" else ""}",
-                fontWeight = FontWeight.Medium
-            )
-        }
-        Column() {
-            Text(
-                //FIXME Extract balance from db
-                // - Use observeTotalBalanceOfUser method from UserDao
-                "42€",
-                fontWeight = FontWeight.Medium,
-                color = Color.Gray,
-                modifier = Modifier.width(60.dp)
-            )
-
-        }
+        // Not sure if there's a better inline solution
+        Text(
+            user.name + " ${if (user.isAdmin) "(${stringResource(id = R.string.user_admin)})" else ""}",
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            //FIXME Extract balance from db
+            // - Use observeTotalBalanceOfUser method from UserDao
+            "42€",
+            fontWeight = FontWeight.Medium,
+            color = Color.Gray,
+            modifier = Modifier.width(60.dp)
+        )
     }
 }
 
