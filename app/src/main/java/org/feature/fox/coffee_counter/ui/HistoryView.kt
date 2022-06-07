@@ -1,20 +1,15 @@
 package org.feature.fox.coffee_counter.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.feature.fox.coffee_counter.R
 
 @Preview(showSystemUi = true)
 @Composable
 fun HistoryView() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Text(text = "History screen")
+    Column {
+        MoneyAppBar(title = stringResource(R.string.history_title))
     }
 }

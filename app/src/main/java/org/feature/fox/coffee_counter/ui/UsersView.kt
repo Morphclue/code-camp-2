@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
@@ -27,6 +26,7 @@ fun UsersView() {
         User(id = "d", name = "Nils", isAdmin = false, password = "nils"),
     )
     Column {
+        MoneyAppBar(title = stringResource(R.string.user_list_title))
         SearchBar()
         UserList(users)
     }
@@ -35,12 +35,6 @@ fun UsersView() {
 @Composable
 fun UserList(users: List<User>) {
     Column {
-        Text(
-            stringResource(id = R.string.user_list_title),
-            fontWeight = FontWeight.Medium,
-            fontSize = 30.sp,
-            modifier = Modifier.padding(start = 5.dp)
-        )
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())

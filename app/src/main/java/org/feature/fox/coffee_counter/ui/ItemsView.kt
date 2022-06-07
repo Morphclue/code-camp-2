@@ -31,6 +31,7 @@ fun ItemsView() {
         Item(id = "c", name = "mate", amount = 1337, price = 9.99)
     )
     Column {
+        MoneyAppBar(title = stringResource(R.string.item_list_title))
         SearchBar()
         ItemList(items)
         BuyButton(amount = 55.0)
@@ -39,13 +40,7 @@ fun ItemsView() {
 
 @Composable
 fun ItemList(items: List<Item>) {
-    Column{
-        Text(
-            stringResource(R.string.item_list_title),
-            fontWeight = FontWeight.Medium,
-            fontSize = 30.sp,
-            modifier = Modifier.padding(start = 5.dp)
-        )
+    Column {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -68,7 +63,7 @@ fun ItemList(items: List<Item>) {
 }
 
 @Composable
-fun ItemRow(item: Item){
+fun ItemRow(item: Item) {
     var buyItems by remember { mutableStateOf(0) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -81,7 +76,7 @@ fun ItemRow(item: Item){
             Text("${item.price}€", color = Color.Gray)
         }
 
-        Column{
+        Column {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -93,20 +88,26 @@ fun ItemRow(item: Item){
                     modifier = Modifier.width(60.dp)
                 )
 
-                Button(onClick = {if (buyItems < item.amount) buyItems++},
+                Button(
+                    onClick = { if (buyItems < item.amount) buyItems++ },
                     modifier = Modifier.size(35.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                 ) {
-                    Icon(Icons.Default.Add ,contentDescription = "content description", tint=Color.White)
+                    Icon(Icons.Default.Add,
+                        contentDescription = "content description",
+                        tint = Color.White)
                 }
 
-                Button(onClick = {if (buyItems > 0) buyItems--},
+                Button(
+                    onClick = { if (buyItems > 0) buyItems-- },
                     modifier = Modifier.size(35.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                 ) {
-                    Icon(Icons.Default.Remove ,contentDescription = "content description", tint=Color.White)
+                    Icon(Icons.Default.Remove,
+                        contentDescription = "content description",
+                        tint = Color.White)
                 }
             }
         }
@@ -114,7 +115,7 @@ fun ItemRow(item: Item){
 }
 
 @Composable
-fun BuyButton(amount: Double){
+fun BuyButton(amount: Double) {
     Button(onClick = {},
         modifier = Modifier
             .fillMaxWidth()
