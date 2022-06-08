@@ -34,6 +34,7 @@ class ApiServiceTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
     private var mockWebServer = MockWebServer()
     private lateinit var apiService: ApiService
+    private val bearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9Is"
 
     @Before
     fun setup() {
@@ -43,7 +44,8 @@ class ApiServiceTest {
                 mockWebServer.url("/").toString(),
                 ApiModule.provideConverterFactory(),
                 ApiModule.provideOkHttpClient(
-                    ApiModule.providesLoggingInterceptor()
+                    ApiModule.providesLoggingInterceptor(),
+                    ApiModule.providesBearerInterceptor()
                 )
             )
         )
