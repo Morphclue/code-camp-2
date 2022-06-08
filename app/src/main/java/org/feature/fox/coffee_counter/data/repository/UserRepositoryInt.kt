@@ -11,7 +11,7 @@ import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
-import retrofit2.Response
+import org.feature.fox.coffee_counter.util.Resource
 
 interface UserRepositoryInt{
 
@@ -39,25 +39,25 @@ interface UserRepositoryInt{
 
     fun observeAllUsers(): LiveData<List<User>>
 
-    suspend fun postLogin(loginBody: LoginBody): Response<LoginResponse>
+    suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>
 
-    suspend fun getUsers(): Response<List<UserResponse>>
+    suspend fun getUsers(): Resource<List<UserResponse>>
 
-    suspend fun getUserById(id: String): Response<UserIdResponse>
+    suspend fun getUserById(id: String): Resource<UserIdResponse>
 
-    suspend fun updateUser(id: String, userBody: UserBody): Response<String>
+    suspend fun updateUser(id: String, userBody: UserBody): Resource<String>
 
-    suspend fun signUp(userBody: UserBody): Response<String>
+    suspend fun signUp(userBody: UserBody): Resource<String>
 
-    suspend fun deleteUser(id: String): Response<String>
+    suspend fun deleteUser(id: String): Resource<String>
 
-    suspend fun getTransactions(id: String): Response<List<TransactionResponse>>
+    suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>
 
-    suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Response<String>
+    suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
 
-    suspend fun adminSignUp(userBody: UserBody): Response<String>
+    suspend fun adminSignUp(userBody: UserBody): Resource<String>
 
-    suspend fun updateAdmin(id: String, userBody: UserBody): Response<String>
+    suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>
 
-    suspend fun addFunding(id: String, fundingBody: Double): Response<String>
+    suspend fun addFunding(id: String, fundingBody: Double): Resource<String>
 }

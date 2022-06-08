@@ -13,7 +13,7 @@ import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.di.services.network.ApiService
-import retrofit2.Response
+import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -68,47 +68,168 @@ class UserRepository @Inject constructor(
         return userDao.observeAllUsers()
     }
 
-    override suspend fun postLogin(loginBody: LoginBody): Response<LoginResponse>{
-        return apiService.postLogin(loginBody)
+    override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>{
+        return try {
+            val response = apiService.postLogin(loginBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun getUsers(): Response<List<UserResponse>>{
-        return apiService.getUsers()
+    override suspend fun getUsers(): Resource<List<UserResponse>>{
+        return try {
+            val response = apiService.getUsers()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun getUserById(id: String): Response<UserIdResponse>{
-        return apiService.getUserById(id)
+    override suspend fun getUserById(id: String): Resource<UserIdResponse>{
+        return try {
+            val response = apiService.getUserById(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun updateUser(id: String, userBody: UserBody): Response<String>{
-        return apiService.updateUser(id, userBody)
+    override suspend fun updateUser(id: String, userBody: UserBody): Resource<String>{
+        return try {
+            val response = apiService.updateUser(id, userBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun signUp(userBody: UserBody): Response<String>{
-        return apiService.signUp(userBody)
+    override suspend fun signUp(userBody: UserBody): Resource<String>{
+        return try {
+            val response = apiService.signUp(userBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun deleteUser(id: String): Response<String>{
-        return apiService.deleteUser(id)
+    override suspend fun deleteUser(id: String): Resource<String>{
+        return try {
+            val response = apiService.deleteUser(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun getTransactions(id: String): Response<List<TransactionResponse>>{
-        return apiService.getTransactions(id)
+    override suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>{
+        return try {
+            val response = apiService.getTransactions(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Response<String>{
-        return apiService.purchaseItem(id, purchaseBody)
+    override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>{
+        return try {
+            val response = apiService.purchaseItem(id, purchaseBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun adminSignUp(userBody: UserBody): Response<String>{
-        return apiService.adminSignUp(userBody)
+    override suspend fun adminSignUp(userBody: UserBody): Resource<String>{
+        return try {
+            val response = apiService.adminSignUp(userBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun updateAdmin(id: String, userBody: UserBody): Response<String>{
-        return apiService.updateAdmin(id, userBody)
+    override suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>{
+        return try {
+            val response = apiService.updateAdmin(id, userBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside updateItem method", null)
+            } else {
+                Resource.error("Unknown error occurred inside updateItem method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 
-    override suspend fun addFunding(id: String, fundingBody: Double): Response<String>{
-        return apiService.addFunding(id, fundingBody)
+    override suspend fun addFunding(id: String, fundingBody: Double): Resource<String>{
+        return try {
+            val response = apiService.addFunding(id, fundingBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error("Unknown error occurred inside getItemById method", null)
+            } else {
+                Resource.error("Unknown error occurred inside getItemById method", null)
+            }
+        } catch (e: Exception) {
+            Resource.error("Could not reach the server.", null)
+        }
     }
 }
