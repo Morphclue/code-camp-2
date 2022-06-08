@@ -37,6 +37,7 @@ private val transactions = listOf(
 @Composable
 fun HistoryView() {
     Column {
+        MoneyAppBar(title = stringResource(R.string.history_title))
         ShowPeriodField()
         HistoryHeadline()
         TransactionContainer()
