@@ -6,13 +6,14 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
+import org.feature.fox.coffee_counter.di.module.ApiModule
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
 
 class ItemRepository @Inject constructor(
     private val itemDao: ItemDao,
-    private val apiService: ApiService
+    private val apiService: ApiService,
 ) : ItemRepositoryInt {
 
     override suspend fun insertItemDb(item: Item) {
@@ -26,7 +27,6 @@ class ItemRepository @Inject constructor(
     override suspend fun updateItemDb(item: Item) {
         itemDao.updateItem(item)
     }
-
 
     override suspend fun getItemByIdDb(itemId: String): Item {
         return itemDao.getItemById(itemId)
@@ -42,7 +42,8 @@ class ItemRepository @Inject constructor(
 
     override suspend fun postItem(itemBody: ItemBody): Resource<String> {
         return try {
-            val response = apiService.postItem(itemBody)
+            val response =
+                apiService.postItem(ApiModule.providesBearerInterceptor().bearerToken, itemBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -87,7 +88,8 @@ class ItemRepository @Inject constructor(
 
     override suspend fun deleteItemById(itemId: String): Resource<String> {
         return try {
-            val response = apiService.deleteItem(itemId)
+            val response =
+                apiService.deleteItem(ApiModule.providesBearerInterceptor().bearerToken, itemId)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -102,7 +104,9 @@ class ItemRepository @Inject constructor(
 
     override suspend fun updateItem(itemId: String, itemBody: ItemBody): Resource<String> {
         return try {
-            val response = apiService.updateItem(itemId, itemBody)
+            val response = apiService.updateItem(ApiModule.providesBearerInterceptor().bearerToken,
+                itemId,
+                itemBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -117,10 +121,13 @@ class ItemRepository @Inject constructor(
 
     override suspend fun purchaseItem(
         itemId: String,
-        purchaseBody: PurchaseBody
+        purchaseBody: PurchaseBody,
     ): Resource<String> {
         return try {
-            val response = apiService.purchaseItem(itemId, purchaseBody)
+            val response =
+                apiService.purchaseItem(ApiModule.providesBearerInterceptor().bearerToken,
+                    itemId,
+                    purchaseBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

@@ -129,7 +129,7 @@ class ApiServiceTest {
             .setBody(generateStringBody("Created new Item successfully."))
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.postItem(body)
+        val actualResponse = apiService.postItem(bearerToken, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -151,7 +151,7 @@ class ApiServiceTest {
             .setBody(generateStringBody("Updated Item successfully."))
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.updateItem(itemID, body)
+        val actualResponse = apiService.updateItem(bearerToken, itemID, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -172,7 +172,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.deleteItem(itemID)
+        val actualResponse = apiService.deleteItem(bearerToken, itemID)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -194,7 +194,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.addFunding(userId, body)
+        val actualResponse = apiService.addFunding(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -215,7 +215,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.adminSignUp(body)
+        val actualResponse = apiService.adminSignUp(bearerToken, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -237,7 +237,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.updateAdmin(userId, body)
+        val actualResponse = apiService.updateAdmin(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -283,7 +283,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.getUserById(userId)
+        val actualResponse = apiService.getUserById(bearerToken, userId)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -304,7 +304,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.getUserById(wrongUserId)
+        val actualResponse = apiService.getUserById(bearerToken, wrongUserId)
 
         assertThat(actualResponse.code()).isEqualTo(401)
         assertThat(actualResponse.body()).isNull()
@@ -325,7 +325,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.updateUser(userId, body)
+        val actualResponse = apiService.updateUser(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -346,7 +346,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.deleteUser(userId)
+        val actualResponse = apiService.deleteUser(bearerToken, userId)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -367,7 +367,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.getTransactions(userId)
+        val actualResponse = apiService.getTransactions(bearerToken, userId)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -389,7 +389,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.purchaseItem(userId, body)
+        val actualResponse = apiService.purchaseItem(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
