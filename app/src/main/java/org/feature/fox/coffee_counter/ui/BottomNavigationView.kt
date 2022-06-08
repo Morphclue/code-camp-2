@@ -21,11 +21,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
-import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
 @Composable
-fun BottomNavigationView(){
+fun BottomNavigationView() {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {

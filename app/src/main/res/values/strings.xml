@@ -12,6 +12,7 @@
     <string name="remember_me">Remember me</string>
     <string name="search_hint">Search</string>
     <string name="item_list_title">Beverage</string>
+    <string name="history_list_title">History</string>
     <string name="user_list_title">Users</string>
     <string name="history_title">History</string>
     <string name="profile_title">Profile</string>
