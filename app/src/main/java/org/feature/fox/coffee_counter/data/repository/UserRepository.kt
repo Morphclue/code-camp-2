@@ -36,7 +36,7 @@ class UserRepository @Inject constructor(
         userDao.deletePurchase(purchase)
     }
 
-    override suspend fun getUserById(id: String): User{
+    override suspend fun getUserByIdDb(id: String): User{
         return userDao.getUserById(id)
     }
 
