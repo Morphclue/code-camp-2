@@ -139,6 +139,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT)
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -161,6 +163,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("PUT")
         assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -182,6 +186,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("DELETE")
         assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -204,6 +210,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/funding")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -225,6 +233,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -247,6 +257,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("PUT")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -293,6 +305,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -313,6 +327,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$wrongUserId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -335,6 +351,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("PUT")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -356,6 +374,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("DELETE")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -376,7 +396,10 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+        assertThat(request.path)
+            .isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -399,6 +422,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/purchases")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
