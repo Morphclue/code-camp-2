@@ -25,20 +25,21 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
 @Composable
 fun UsersView() {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val users = listOf(
+        User(id = "a", name = "Julian", isAdmin = true, password = "julian"),
+        User(id = "b", name = "Steffen", isAdmin = true, password = "steffen"),
+        User(id = "c", name = "Kevin", isAdmin = true, password = "kevin"),
+        User(id = "d", name = "Nils", isAdmin = false, password = "nils"),
+    )
+
     ModalBottomSheetLayout(
         sheetState = bottomState,
         sheetContent = {
-            EditUserView()
+            EditUserView(users)
         }) {
         Scaffold(
             topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },
         ) {
-            val users = listOf(
-                User(id = "a", name = "Julian", isAdmin = true, password = "julian"),
-                User(id = "b", name = "Steffen", isAdmin = true, password = "steffen"),
-                User(id = "c", name = "Kevin", isAdmin = true, password = "kevin"),
-                User(id = "d", name = "Nils", isAdmin = false, password = "nils"),
-            )
             Column {
                 SearchBar()
                 UserList(users, bottomState)
