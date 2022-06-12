@@ -31,7 +31,7 @@ class UserListProvider : PreviewParameterProvider<List<User>> {
     )
 }
 
-@Preview()
+@Preview
 @Composable
 fun EditUserView(@PreviewParameter(UserListProvider::class) users: List<User>) {
     Column(
@@ -44,6 +44,7 @@ fun EditUserView(@PreviewParameter(UserListProvider::class) users: List<User>) {
         UserNameRow(users[0].name)
         MoneyRow()
         AdminRow(users[0].isAdmin)
+        ButtonRow()
     }
 }
 
@@ -98,3 +99,25 @@ fun AdminRow(admin: Boolean) {
         )
     }
 }
+
+@Composable
+fun ButtonRow() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        CustomButton(
+            text = "Cancel",
+            fraction = 0.3f,
+            onClick = {}
+        )
+        CustomButton(
+            text = "Save",
+            fraction = 0.4f,
+            onClick = {}
+        )
+    }
+}
+
