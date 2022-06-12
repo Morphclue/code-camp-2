@@ -53,6 +53,10 @@ android {
         }
     }
     namespace 'org.feature.fox.coffee_counter'
+
+    kotlin.sourceSets.all {
+        languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+    }
 }
 
 dependencies {
