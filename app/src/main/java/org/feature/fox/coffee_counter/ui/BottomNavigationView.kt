@@ -2,16 +2,12 @@ package org.feature.fox.coffee_counter.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -23,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
+@Preview()
 @Composable
 fun BottomNavigationView() {
     val navController = rememberNavController()
@@ -30,26 +27,10 @@ fun BottomNavigationView() {
         bottomBar = {
             BottomNavBar(
                 items = listOf(
-                    BottomNavItem(
-                        name = "Items",
-                        route = "items",
-                        icon = Icons.Default.Add
-                    ),
-                    BottomNavItem(
-                        name = "History",
-                        route = "history",
-                        icon = Icons.Default.List,
-                    ),
-                    BottomNavItem(
-                        name = "Profile",
-                        route = "profile",
-                        icon = Icons.Default.AccountCircle,
-                    ),
-                    BottomNavItem(
-                        name = "Users",
-                        route = "users",
-                        icon = Icons.Default.AccountBox,
-                    ),
+                    BottomNavItem.Items,
+                    BottomNavItem.History,
+                    BottomNavItem.Profile,
+                    BottomNavItem.Users,
                 ),
                 navController = navController,
                 onItemClick = {
@@ -64,17 +45,17 @@ fun BottomNavigationView() {
 
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "items") {
-        composable("items") {
+    NavHost(navController = navController, startDestination = BottomNavItem.Items.route) {
+        composable(BottomNavItem.Items.route) {
             ItemsView()
         }
-        composable("history") {
+        composable(BottomNavItem.History.route) {
             HistoryView()
         }
-        composable("profile") {
+        composable(BottomNavItem.Profile.route) {
             ProfileView()
         }
-        composable("users") {
+        composable(BottomNavItem.Users.route) {
             UsersView()
         }
     }
@@ -85,7 +66,7 @@ fun BottomNavBar(
     items: List<BottomNavItem>,
     navController: NavController,
     modifier: Modifier = Modifier,
-    onItemClick: (BottomNavItem) -> Unit
+    onItemClick: (BottomNavItem) -> Unit,
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
     BottomNavigation(
@@ -108,7 +89,7 @@ fun BottomNavBar(
 
 @Composable
 fun NavBarIcon(
-    item: BottomNavItem
+    item: BottomNavItem,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
