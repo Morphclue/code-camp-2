@@ -4,6 +4,7 @@ package org.feature.fox.coffee_counter.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -38,7 +40,6 @@ fun EditUserView(
         ButtonRow(bottomState)
     }
 }
-
 
 @Composable
 fun UserNameRow(userName: String) {
@@ -65,6 +66,7 @@ fun MoneyRow() {
                     text = stringResource(R.string.money_hint)
                 )
             },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
