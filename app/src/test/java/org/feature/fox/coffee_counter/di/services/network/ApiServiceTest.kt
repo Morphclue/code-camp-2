@@ -34,6 +34,7 @@ class ApiServiceTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
     private var mockWebServer = MockWebServer()
     private lateinit var apiService: ApiService
+    private val bearerToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9Is"
 
     @Before
     fun setup() {
@@ -43,7 +44,8 @@ class ApiServiceTest {
                 mockWebServer.url("/").toString(),
                 ApiModule.provideConverterFactory(),
                 ApiModule.provideOkHttpClient(
-                    ApiModule.providesLoggingInterceptor()
+                    ApiModule.providesLoggingInterceptor(),
+                    ApiModule.providesBearerInterceptor()
                 )
             )
         )
@@ -127,7 +129,7 @@ class ApiServiceTest {
             .setBody(generateStringBody("Created new Item successfully."))
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.postItem(body)
+        val actualResponse = apiService.postItem(bearerToken, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -137,6 +139,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT)
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -149,7 +153,7 @@ class ApiServiceTest {
             .setBody(generateStringBody("Updated Item successfully."))
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.updateItem(itemID, body)
+        val actualResponse = apiService.updateItem(bearerToken, itemID, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -159,6 +163,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("PUT")
         assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -170,7 +176,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.deleteItem(itemID)
+        val actualResponse = apiService.deleteItem(bearerToken, itemID)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -180,6 +186,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("DELETE")
         assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -192,7 +200,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.addFunding(userId, body)
+        val actualResponse = apiService.addFunding(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -202,6 +210,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/funding")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -213,7 +223,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.adminSignUp(body)
+        val actualResponse = apiService.adminSignUp(bearerToken, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -223,6 +233,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -235,7 +247,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.updateAdmin(userId, body)
+        val actualResponse = apiService.updateAdmin(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -245,6 +257,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("PUT")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -281,7 +295,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.getUserById(userId)
+        val actualResponse = apiService.getUserById(bearerToken, userId)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -291,6 +305,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -302,7 +318,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.getUserById(wrongUserId)
+        val actualResponse = apiService.getUserById(bearerToken, wrongUserId)
 
         assertThat(actualResponse.code()).isEqualTo(401)
         assertThat(actualResponse.body()).isNull()
@@ -311,6 +327,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$wrongUserId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -323,7 +341,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.updateUser(userId, body)
+        val actualResponse = apiService.updateUser(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -333,6 +351,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("PUT")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -344,7 +364,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.deleteUser(userId)
+        val actualResponse = apiService.deleteUser(bearerToken, userId)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -354,6 +374,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("DELETE")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -365,7 +387,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.getTransactions(userId)
+        val actualResponse = apiService.getTransactions(bearerToken, userId)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -374,7 +396,10 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+        assertThat(request.path)
+            .isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
@@ -387,7 +412,7 @@ class ApiServiceTest {
 
         mockWebServer.enqueue(response)
 
-        val actualResponse = apiService.purchaseItem(userId, body)
+        val actualResponse = apiService.purchaseItem(bearerToken, userId, body)
 
         assertThat(actualResponse).isNotNull()
         assertThat(actualResponse.code()).isEqualTo(200)
@@ -397,6 +422,8 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("POST")
         assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/purchases")
+        assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
+        assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
 
     @Test
