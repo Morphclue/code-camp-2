@@ -43,21 +43,21 @@ interface UserRepositoryInt{
 
     suspend fun getUsers(): Resource<List<UserResponse>>
 
-    suspend fun getUserById(id: String): Resource<UserIdResponse>
+    suspend fun getUserById(bearer: String, id: String): Resource<UserIdResponse>
 
-    suspend fun updateUser(id: String, userBody: UserBody): Resource<String>
+    suspend fun updateUser(bearer: String, id: String, userBody: UserBody): Resource<String>
 
     suspend fun signUp(userBody: UserBody): Resource<String>
 
-    suspend fun deleteUser(id: String): Resource<String>
+    suspend fun deleteUser(bearer: String, id: String): Resource<String>
 
-    suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>
+    suspend fun getTransactions(bearer: String, id: String): Resource<List<TransactionResponse>>
 
-    suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
+    suspend fun purchaseItem(bearer: String, id: String, purchaseBody: PurchaseBody): Resource<String>
 
-    suspend fun adminSignUp(userBody: UserBody): Resource<String>
+    suspend fun adminSignUp(bearer: String, userBody: UserBody): Resource<String>
 
-    suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>
+    suspend fun updateAdmin(bearer: String, id: String, userBody: UserBody): Resource<String>
 
-    suspend fun addFunding(id: String, fundingBody: Double): Resource<String>
+    suspend fun addFunding(bearer: String, id: String, fundingBody: Double): Resource<String>
 }

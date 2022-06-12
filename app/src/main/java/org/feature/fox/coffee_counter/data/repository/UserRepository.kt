@@ -98,9 +98,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserById(id: String): Resource<UserIdResponse>{
+    override suspend fun getUserById(bearer: String, id: String): Resource<UserIdResponse>{
         return try {
-            val response = apiService.getUserById(id)
+            val response = apiService.getUserById(bearer, id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -113,9 +113,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateUser(id: String, userBody: UserBody): Resource<String>{
+    override suspend fun updateUser(bearer: String, id: String, userBody: UserBody): Resource<String>{
         return try {
-            val response = apiService.updateUser(id, userBody)
+            val response = apiService.updateUser(bearer, id, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -143,9 +143,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(id: String): Resource<String>{
+    override suspend fun deleteUser(bearer: String, id: String): Resource<String>{
         return try {
-            val response = apiService.deleteUser(id)
+            val response = apiService.deleteUser(bearer, id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -158,9 +158,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>{
+    override suspend fun getTransactions(bearer: String, id: String): Resource<List<TransactionResponse>>{
         return try {
-            val response = apiService.getTransactions(id)
+            val response = apiService.getTransactions(bearer, id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -173,9 +173,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>{
+    override suspend fun purchaseItem(bearer: String, id: String, purchaseBody: PurchaseBody): Resource<String>{
         return try {
-            val response = apiService.purchaseItem(id, purchaseBody)
+            val response = apiService.purchaseItem(bearer, id, purchaseBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -188,9 +188,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun adminSignUp(userBody: UserBody): Resource<String>{
+    override suspend fun adminSignUp(bearer: String, userBody: UserBody): Resource<String>{
         return try {
-            val response = apiService.adminSignUp(userBody)
+            val response = apiService.adminSignUp(bearer, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -203,9 +203,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>{
+    override suspend fun updateAdmin(bearer: String, id: String, userBody: UserBody): Resource<String>{
         return try {
-            val response = apiService.updateAdmin(id, userBody)
+            val response = apiService.updateAdmin(bearer, id, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -218,9 +218,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun addFunding(id: String, fundingBody: Double): Resource<String>{
+    override suspend fun addFunding(bearer: String, id: String, fundingBody: Double): Resource<String>{
         return try {
-            val response = apiService.addFunding(id, fundingBody)
+            val response = apiService.addFunding(bearer, id, fundingBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
