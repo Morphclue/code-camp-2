@@ -35,7 +35,7 @@ fun UsersView() {
     ModalBottomSheetLayout(
         sheetState = bottomState,
         sheetContent = {
-            EditUserView(users)
+            EditUserView(users, bottomState)
         }) {
         Scaffold(
             topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },

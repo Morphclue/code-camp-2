@@ -1,39 +1,30 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package org.feature.fox.coffee_counter.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
-class UserListProvider : PreviewParameterProvider<List<User>> {
-    override val values: Sequence<List<User>> = sequenceOf(
-        listOf(
-            User(id = "a", name = "Nils", isAdmin = false, password = "nils"),
-            User(id = "b", name = "Max", isAdmin = true, password = "max"),
-        )
-    )
-}
-
-@Preview
 @Composable
-fun EditUserView(@PreviewParameter(UserListProvider::class) users: List<User>) {
+fun EditUserView(
+    users: List<User>,
+    bottomState: ModalBottomSheetState,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +35,7 @@ fun EditUserView(@PreviewParameter(UserListProvider::class) users: List<User>) {
         UserNameRow(users[0].name)
         MoneyRow()
         AdminRow(users[0].isAdmin)
-        ButtonRow()
+        ButtonRow(bottomState)
     }
 }
 
@@ -101,7 +92,8 @@ fun AdminRow(admin: Boolean) {
 }
 
 @Composable
-fun ButtonRow() {
+fun ButtonRow(bottomState: ModalBottomSheetState) {
+    val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -111,12 +103,12 @@ fun ButtonRow() {
         CustomButton(
             text = "Cancel",
             fraction = 0.3f,
-            onClick = {}
+            onClick = { scope.launch { bottomState.hide() } }
         )
         CustomButton(
             text = "Save",
             fraction = 0.4f,
-            onClick = {}
+            onClick = { scope.launch { bottomState.hide() } }
         )
     }
 }
