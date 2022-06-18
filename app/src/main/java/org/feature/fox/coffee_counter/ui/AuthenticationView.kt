@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.feature.fox.coffee_counter.AuthenticationViewModelPreview
+import org.feature.fox.coffee_counter.IAuthenticationViewModel
 import org.feature.fox.coffee_counter.R
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
@@ -41,8 +43,16 @@ class LoginStateProvider : PreviewParameterProvider<Boolean> {
 
 @Preview(showSystemUi = true)
 @Composable
-fun AuthenticationView(
+fun AuthenticationViewPreview(
     @PreviewParameter(LoginStateProvider::class) login: Boolean,
+) {
+    AuthenticationView(login, AuthenticationViewModelPreview())
+}
+
+@Composable
+fun AuthenticationView(
+    login: Boolean,
+    viewModel: IAuthenticationViewModel,
 ) {
     Column(
         modifier = Modifier
