@@ -62,12 +62,12 @@ fun AuthenticationView(
     ) {
         val loginState = remember { mutableStateOf(login) }
         LoginSignupHeader(loginState)
-        if (loginState.value) LoginFragment() else RegisterFragment()
+        if (loginState.value) LoginFragment(viewModel) else RegisterFragment(viewModel)
     }
 }
 
 @Composable
-fun LoginFragment() {
+fun LoginFragment(viewModel: IAuthenticationViewModel) {
     NormalTextField(stringResource(R.string.id_hint))
     PasswordTextField(stringResource(R.string.password_hint))
     RememberMeCheckbox()
@@ -77,7 +77,7 @@ fun LoginFragment() {
 }
 
 @Composable
-fun RegisterFragment() {
+fun RegisterFragment(viewModel: IAuthenticationViewModel) {
     NormalTextField(stringResource(R.string.name_hint))
     NormalTextField(stringResource(R.string.optional_id_hint))
     PasswordTextField(stringResource(R.string.password_hint))
