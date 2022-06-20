@@ -15,6 +15,11 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField "String", "BASE_URL", '"http://141.51.114.20:8080"'
+        buildConfigField "String", "USERS_ENDPOINT", '"/users"'
+        buildConfigField "String", "ITEMS_ENDPOINT", '"/items"'
+        buildConfigField "String", "LOGIN_ENDPOINT", '"/login"'
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -33,6 +38,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -68,6 +76,7 @@ dependencies {
     def arch_core_version = "2.1.0"
     def mockito_version = "4.6.1"
     def okhttp_version = '5.0.0-alpha.8'
+    def timber_version = "5.0.1"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -110,6 +119,10 @@ dependencies {
 
     // Accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
 
     // Local Unit Tests
     testImplementation 'junit:junit:4.13.2'

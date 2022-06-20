@@ -8,6 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
@@ -17,7 +18,6 @@ import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.di.module.ApiModule
-import org.feature.fox.coffee_counter.util.Constants
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -77,7 +77,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT)
+        assertThat(request.path).isEqualTo(BuildConfig.ITEMS_ENDPOINT)
     }
 
     @Test
@@ -98,7 +98,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT + "/003")
+        assertThat(request.path).isEqualTo(BuildConfig.ITEMS_ENDPOINT + "/003")
     }
 
     @Test
@@ -117,7 +117,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT + "/004")
+        assertThat(request.path).isEqualTo(BuildConfig.ITEMS_ENDPOINT + "/004")
     }
 
     @Test
@@ -138,7 +138,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo(Constants.ITEMS_ENDPOINT)
+        assertThat(request.path).isEqualTo(BuildConfig.ITEMS_ENDPOINT)
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -162,7 +162,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("PUT")
-        assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+        assertThat(request.path).isEqualTo("${BuildConfig.ITEMS_ENDPOINT}/$itemID")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -185,7 +185,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("DELETE")
-        assertThat(request.path).isEqualTo("${Constants.ITEMS_ENDPOINT}/$itemID")
+        assertThat(request.path).isEqualTo("${BuildConfig.ITEMS_ENDPOINT}/$itemID")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -209,7 +209,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/funding")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/$userId/funding")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -232,7 +232,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/admin")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -256,7 +256,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("PUT")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/admin/$userId")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/admin/$userId")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -282,7 +282,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
+        assertThat(request.path).isEqualTo(BuildConfig.USERS_ENDPOINT)
     }
 
     @Test
@@ -304,7 +304,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/$userId")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -326,7 +326,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("GET")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$wrongUserId")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/$wrongUserId")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -350,7 +350,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("PUT")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/$userId")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -373,7 +373,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("DELETE")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/$userId")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -397,7 +397,7 @@ class ApiServiceTest {
 
         assertThat(request.method).isEqualTo("GET")
         assertThat(request.path)
-            .isEqualTo("${Constants.USERS_ENDPOINT}/$userId/transactions")
+            .isEqualTo("${BuildConfig.USERS_ENDPOINT}/$userId/transactions")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -421,7 +421,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo("${Constants.USERS_ENDPOINT}/$userId/purchases")
+        assertThat(request.path).isEqualTo("${BuildConfig.USERS_ENDPOINT}/$userId/purchases")
         assertThat(request.headers["Authorization"]).isEqualTo("Bearer")
         assertThat(request.headers.values("Authorization")[0]).isEqualTo(bearerToken)
     }
@@ -447,7 +447,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
+        assertThat(request.path).isEqualTo(BuildConfig.LOGIN_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
     }
 
@@ -471,7 +471,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo(Constants.LOGIN_ENDPOINT)
+        assertThat(request.path).isEqualTo(BuildConfig.LOGIN_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
     }
 
@@ -495,7 +495,7 @@ class ApiServiceTest {
         val request = mockWebServer.takeRequest()
 
         assertThat(request.method).isEqualTo("POST")
-        assertThat(request.path).isEqualTo(Constants.USERS_ENDPOINT)
+        assertThat(request.path).isEqualTo(BuildConfig.USERS_ENDPOINT)
         assertThat(adapter.fromJson(request.body.readUtf8())).isEqualTo(body)
     }
 
