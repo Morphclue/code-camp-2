@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox

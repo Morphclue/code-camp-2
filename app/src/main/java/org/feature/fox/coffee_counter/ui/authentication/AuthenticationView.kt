@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.authentication
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,10 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -30,7 +27,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
     override val values: Sequence<Boolean> = sequenceOf(
@@ -41,8 +40,16 @@ class LoginStateProvider : PreviewParameterProvider<Boolean> {
 
 @Preview(showSystemUi = true)
 @Composable
-fun AuthenticationView(
+fun AuthenticationViewPreview(
     @PreviewParameter(LoginStateProvider::class) login: Boolean,
+) {
+    AuthenticationView(login, AuthenticationViewModelPreview())
+}
+
+@Composable
+fun AuthenticationView(
+    login: Boolean,
+    viewModel: IAuthenticationViewModel,
 ) {
     Column(
         modifier = Modifier
@@ -52,22 +59,25 @@ fun AuthenticationView(
     ) {
         val loginState = remember { mutableStateOf(login) }
         LoginSignupHeader(loginState)
-        if (loginState.value) LoginFragment() else RegisterFragment()
+        if (loginState.value) LoginFragment(viewModel) else RegisterFragment(viewModel)
     }
 }
 
 @Composable
-fun LoginFragment() {
+fun LoginFragment(viewModel: IAuthenticationViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     NormalTextField(stringResource(R.string.id_hint))
     PasswordTextField(stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
+        onClick = { coroutineScope.launch { viewModel.login() } },
         text = stringResource(R.string.login)
     )
 }
 
 @Composable
-fun RegisterFragment() {
+fun RegisterFragment(viewModel: IAuthenticationViewModel) {
     NormalTextField(stringResource(R.string.name_hint))
     NormalTextField(stringResource(R.string.optional_id_hint))
     PasswordTextField(stringResource(R.string.password_hint))

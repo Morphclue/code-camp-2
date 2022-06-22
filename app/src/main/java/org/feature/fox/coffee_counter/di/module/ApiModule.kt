@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.feature.fox.coffee_counter.BuildConfig
@@ -38,7 +37,7 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
-        loggingInterceptor: Interceptor,
+        loggingInterceptor: HttpLoggingInterceptor,
         bearerInterceptor: BearerInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
@@ -73,8 +72,16 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit): ApiService {
+    fun provideApiService(
+        retrofit: Retrofit = provideRetrofit(
+            BuildConfig.BASE_URL,
+            provideConverterFactory(),
+            provideOkHttpClient(
+                providesLoggingInterceptor(),
+                providesBearerInterceptor()
+            )
+        ),
+    ): ApiService {
         return retrofit.create(ApiService::class.java)
     }
-
 }

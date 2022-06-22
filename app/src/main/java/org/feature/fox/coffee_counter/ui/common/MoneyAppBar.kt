@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

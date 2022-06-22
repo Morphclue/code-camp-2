@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.user
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 @Composable
 fun EditUserView(

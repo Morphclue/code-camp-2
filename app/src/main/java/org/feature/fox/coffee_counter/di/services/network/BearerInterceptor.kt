@@ -9,6 +9,7 @@ import javax.inject.Singleton
 class BearerInterceptor : Interceptor {
 
     var bearerToken: String = ""
+    var expiration: Long = 0
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request().newBuilder()
