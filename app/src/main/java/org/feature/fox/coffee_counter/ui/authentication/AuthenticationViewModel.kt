@@ -1,13 +1,11 @@
-package org.feature.fox.coffee_counter
+package org.feature.fox.coffee_counter.ui.authentication
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
-import org.feature.fox.coffee_counter.di.module.ApiModule
 import javax.inject.Inject
 
 interface IAuthenticationViewModel {

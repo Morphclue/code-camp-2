@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.authentication
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,9 +28,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import org.feature.fox.coffee_counter.AuthenticationViewModelPreview
-import org.feature.fox.coffee_counter.IAuthenticationViewModel
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.CustomButton
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
     override val values: Sequence<Boolean> = sequenceOf(

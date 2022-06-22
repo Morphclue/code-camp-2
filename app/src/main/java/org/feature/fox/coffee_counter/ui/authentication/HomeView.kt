@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.authentication
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -17,8 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.feature.fox.coffee_counter.AuthenticationActivity
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.CustomButton
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Preview(showSystemUi = true)
