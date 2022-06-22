@@ -20,7 +20,7 @@ import javax.inject.Singleton
 object ApiModule {
 
     @Provides
-    fun provideBaseUrl(): String {
+    fun providesBaseUrl(): String {
         return BuildConfig.BASE_URL
     }
 
@@ -36,7 +36,7 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(
+    fun providesOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         bearerInterceptor: BearerInterceptor,
     ): OkHttpClient {
@@ -52,7 +52,7 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(
+    fun providesRetrofit(
         baseUrl: String,
         convFact: Converter.Factory,
         okHttpClient: OkHttpClient,
@@ -66,17 +66,17 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideConverterFactory(): Converter.Factory {
+    fun providesConverterFactory(): Converter.Factory {
         return MoshiConverterFactory.create().asLenient()
     }
 
     @Singleton
     @Provides
-    fun provideApiService(
-        retrofit: Retrofit = provideRetrofit(
+    fun providesApiService(
+        retrofit: Retrofit = providesRetrofit(
             BuildConfig.BASE_URL,
-            provideConverterFactory(),
-            provideOkHttpClient(
+            providesConverterFactory(),
+            providesOkHttpClient(
                 providesLoggingInterceptor(),
                 providesBearerInterceptor()
             )
