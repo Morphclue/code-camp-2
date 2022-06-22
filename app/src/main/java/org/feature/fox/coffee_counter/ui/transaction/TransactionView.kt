@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.ui
+package org.feature.fox.coffee_counter.ui.transaction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
+import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import java.text.SimpleDateFormat
 import java.util.*
 

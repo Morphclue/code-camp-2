@@ -21,10 +21,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import org.feature.fox.coffee_counter.ui.HistoryView
-import org.feature.fox.coffee_counter.ui.ItemsView
-import org.feature.fox.coffee_counter.ui.ProfileView
-import org.feature.fox.coffee_counter.ui.UsersView
+import org.feature.fox.coffee_counter.ui.transaction.HistoryView
+import org.feature.fox.coffee_counter.ui.items.ItemsView
+import org.feature.fox.coffee_counter.ui.profile.ProfileView
+import org.feature.fox.coffee_counter.ui.user.UsersView
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
