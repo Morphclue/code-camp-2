@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -26,7 +27,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private val rowTextFontSize: TextUnit = 18.sp
-private const val datePattern = "dd.MM.yy"
 private val transactions = listOf(
     Funding(1654153006000, "foo", 10.00),
     Purchase(1645167406000, "foo", -9.89, "003", "Espresso", 3),
@@ -57,7 +57,7 @@ fun TransactionContainer() {
                 TransactionRow(
                     Color.Green,
                     "Funding",
-                    SimpleDateFormat(datePattern, Locale.GERMAN)
+                    SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
                     "${transaction.value}€"
                 )
@@ -65,7 +65,7 @@ fun TransactionContainer() {
                 TransactionRow(
                     Color.DarkGray,
                     "Order",
-                    SimpleDateFormat(datePattern, Locale.GERMAN)
+                    SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
                     "${transaction.totalValue}€"
                 )
