@@ -7,9 +7,9 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.di.services.network.BearerInterceptor
-import org.feature.fox.coffee_counter.util.Constants
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -22,7 +22,7 @@ object ApiModule {
 
     @Provides
     fun provideBaseUrl(): String {
-        return Constants.BASE_URL
+        return BuildConfig.BASE_URL
     }
 
     @Provides

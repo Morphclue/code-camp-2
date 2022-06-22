@@ -1,4 +1,4 @@
-package org.feature.fox.coffee_counter.data.local.dao
+package org.feature.fox.coffee_counter.data.local.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
