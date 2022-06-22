@@ -19,7 +19,7 @@ android {
         buildConfigField "String", "USERS_ENDPOINT", '"/users"'
         buildConfigField "String", "ITEMS_ENDPOINT", '"/items"'
         buildConfigField "String", "LOGIN_ENDPOINT", '"/login"'
-        buildConfigField "String", "DATE_PATTERN", "dd.MM.yy"
+        buildConfigField "String", "DATE_PATTERN", '"dd.MM.yy"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
