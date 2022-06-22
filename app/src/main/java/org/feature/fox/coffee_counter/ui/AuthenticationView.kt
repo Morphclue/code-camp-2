@@ -8,10 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -30,6 +27,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.AuthenticationViewModelPreview
 import org.feature.fox.coffee_counter.IAuthenticationViewModel
 import org.feature.fox.coffee_counter.R
@@ -68,10 +66,13 @@ fun AuthenticationView(
 
 @Composable
 fun LoginFragment(viewModel: IAuthenticationViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     NormalTextField(stringResource(R.string.id_hint))
     PasswordTextField(stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
+        onClick = { coroutineScope.launch { viewModel.login() } },
         text = stringResource(R.string.login)
     )
 }

@@ -8,9 +8,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 interface IAuthenticationViewModel {
+
     var name: String
     var id: String
     var password: String
+
+    suspend fun login()
 }
 
 @HiltViewModel
@@ -18,10 +21,18 @@ class AuthenticationViewModel @Inject constructor() : ViewModel(), IAuthenticati
     override var name: String by mutableStateOf("")
     override var id: String by mutableStateOf("")
     override var password: String by mutableStateOf("")
+
+    override suspend fun login() {
+        TODO("Not yet implemented")
+    }
 }
 
 class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override var name: String by mutableStateOf("Peter")
     override var id: String by mutableStateOf("4242")
     override var password: String by mutableStateOf("1234")
+
+    override suspend fun login() {
+        TODO("Not yet implemented")
+    }
 }
