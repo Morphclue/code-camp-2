@@ -73,7 +73,16 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit): ApiService {
+    fun provideApiService(
+        retrofit: Retrofit = provideRetrofit(
+            BuildConfig.BASE_URL,
+            provideConverterFactory(),
+            provideOkHttpClient(
+                providesLoggingInterceptor(),
+                providesBearerInterceptor()
+            )
+        ),
+    ): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
