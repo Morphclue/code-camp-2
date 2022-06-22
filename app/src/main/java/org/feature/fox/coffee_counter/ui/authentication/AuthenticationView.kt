@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.ui.CustomButton
+import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
     override val values: Sequence<Boolean> = sequenceOf(

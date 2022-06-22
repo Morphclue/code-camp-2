@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
+import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Preview(showSystemUi = true)
