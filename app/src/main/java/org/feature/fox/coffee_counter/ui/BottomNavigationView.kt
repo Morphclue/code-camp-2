@@ -1,16 +1,21 @@
 package org.feature.fox.coffee_counter.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,29 +24,36 @@ import androidx.navigation.compose.rememberNavController
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
-@Preview()
+@Preview
 @Composable
-fun BottomNavigationView() {
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = {
-            BottomNavBar(
-                items = listOf(
-                    BottomNavItem.Items,
-                    BottomNavItem.History,
-                    BottomNavItem.Profile,
-                    BottomNavItem.Users,
-                ),
-                navController = navController,
-                onItemClick = {
-                    navController.navigate(it.route)
-                }
+fun PreviewBottomNavBar() {
+    BottomNavBar(navController = rememberNavController())
+}
+
+@Composable
+fun BottomNavBar(navController: NavHostController) {
+    val items = listOf(
+        BottomNavItem.Items,
+        BottomNavItem.History,
+        BottomNavItem.Profile,
+        BottomNavItem.Users,
+    )
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    BottomNavigation(
+        backgroundColor = CrayolaBrown,
+        elevation = 5.dp
+    ) {
+        items.forEach { item ->
+            AddItem(
+                item = item,
+                currentDestination = currentDestination,
+                navController = navController
             )
         }
-    ) {
-        Navigation(navController = navController)
     }
 }
+
 
 @Composable
 fun Navigation(navController: NavHostController) {
@@ -62,29 +74,20 @@ fun Navigation(navController: NavHostController) {
 }
 
 @Composable
-fun BottomNavBar(
-    items: List<BottomNavItem>,
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    onItemClick: (BottomNavItem) -> Unit,
+fun RowScope.AddItem(
+    item: BottomNavItem,
+    currentDestination: NavDestination?,
+    navController: NavHostController,
 ) {
-    val backStackEntry = navController.currentBackStackEntryAsState()
-    BottomNavigation(
-        modifier = modifier,
-        backgroundColor = CrayolaBrown,
-        elevation = 5.dp
-    ) {
-        items.forEach { item ->
-            val selected = item.route == backStackEntry.value?.destination?.route
-            BottomNavigationItem(
-                selected = selected,
-                onClick = { onItemClick(item) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = LiverOrgan,
-                icon = { NavBarIcon(item) }
-            )
-        }
-    }
+    BottomNavigationItem(
+        selected = currentDestination?.hierarchy?.any {
+            it.route == item.route
+        } == true,
+        onClick = { navController.navigate(item.route) },
+        selectedContentColor = Color.White,
+        unselectedContentColor = LiverOrgan,
+        icon = { NavBarIcon(item) },
+    )
 }
 
 @Composable

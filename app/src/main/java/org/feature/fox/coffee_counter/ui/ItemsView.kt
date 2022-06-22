@@ -119,7 +119,6 @@ fun BuyButton(amount: Double) {
     Button(onClick = {},
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 56.dp) // looks like that is the height of the NavBar. No idea how to make it better right now
             .height(70.dp),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
