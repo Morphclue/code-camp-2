@@ -67,8 +67,8 @@ fun AuthenticationView(
 fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
-    NormalTextField(stringResource(R.string.id_hint))
-    PasswordTextField(stringResource(R.string.password_hint))
+    NormalTextField(viewModel.idState, stringResource(R.string.id_hint))
+    PasswordTextField(viewModel.passwordState, stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
         onClick = { coroutineScope.launch { viewModel.login() } },
@@ -78,10 +78,13 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
 
 @Composable
 fun RegisterFragment(viewModel: IAuthenticationViewModel) {
-    NormalTextField(stringResource(R.string.name_hint))
-    NormalTextField(stringResource(R.string.optional_id_hint))
-    PasswordTextField(stringResource(R.string.password_hint))
-    PasswordTextField(stringResource(R.string.re_enter_password_hint))
+    NormalTextField(viewModel.nameState, stringResource(R.string.name_hint))
+    NormalTextField(viewModel.idState, stringResource(R.string.optional_id_hint))
+    PasswordTextField(viewModel.passwordState, stringResource(R.string.password_hint))
+    PasswordTextField(
+        viewModel.reEnteredPasswordState,
+        stringResource(R.string.re_enter_password_hint)
+    )
     CustomButton(
         text = stringResource(R.string.sign_up)
     )
@@ -132,12 +135,11 @@ fun HeaderButton(
 }
 
 @Composable
-fun NormalTextField(text: String) {
-    val idState = remember { mutableStateOf(TextFieldValue()) }
+fun NormalTextField(state: MutableState<TextFieldValue>, text: String) {
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = idState.value,
-        onValueChange = { idState.value = it },
+        value = state.value,
+        onValueChange = { state.value = it },
         label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
@@ -148,13 +150,12 @@ fun NormalTextField(text: String) {
 }
 
 @Composable
-fun PasswordTextField(text: String) {
-    val passwordState = remember { mutableStateOf(TextFieldValue()) }
+fun PasswordTextField(state: MutableState<TextFieldValue>, text: String) {
     val showPassword = remember { mutableStateOf(false) }
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = passwordState.value,
-        onValueChange = { passwordState.value = it },
+        value = state.value,
+        onValueChange = { state.value = it },
         label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
