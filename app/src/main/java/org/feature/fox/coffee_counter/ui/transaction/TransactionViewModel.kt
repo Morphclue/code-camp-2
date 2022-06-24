@@ -11,4 +11,8 @@ class TransactionViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val itemRepository: ItemRepository
 ) : ViewModel() {
+
+    //val transactions = userRepository.getTransactions()
+    //val totalBalance = userRepository.observeTotalBalanceOfUser()
+
 }
