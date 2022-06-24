@@ -78,6 +78,7 @@ dependencies {
     def mockito_version = "4.6.1"
     def okhttp_version = '5.0.0-alpha.8'
     def timber_version = "5.0.1"
+    def coil_version = "2.1.0"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -124,6 +125,8 @@ dependencies {
     // Timber
     implementation "com.jakewharton.timber:timber:$timber_version"
 
+    // Coil
+    implementation "io.coil-kt:coil-compose:$coil_version"
 
     // Local Unit Tests
     testImplementation 'junit:junit:4.13.2'
