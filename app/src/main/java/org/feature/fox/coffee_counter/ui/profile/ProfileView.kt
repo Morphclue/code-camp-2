@@ -34,21 +34,26 @@ import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 @Preview(showSystemUi = true)
 @Composable
 fun ProfileView() {
-    val user = User(id = "a", name = "Max Mustermann", false, "123456789")
-    Column(
-        modifier = Modifier.padding(5.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    val user = User(id = "a", name = "Max Mustermann", true, "123456789")
+
+    Column {
         MoneyAppBar(title = stringResource(R.string.profile_title))
-        ProfileIcon()
-        UserIdRow(user.id)
-        UserNameRow(user.name)
-        PasswordRow(user.password)
-        RetypePasswordRow(user.password)
-        if (user.isAdmin) AdminCheckbox(user.isAdmin)
-        ButtonRow()
+        Column(
+            modifier = Modifier.padding(5.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            ProfileIcon()
+            UserIdRow(user.id)
+            UserNameRow(user.name)
+            PasswordRow(user.password)
+            RetypePasswordRow(user.password)
+            if (user.isAdmin) AdminCheckbox(user.isAdmin)
+            ButtonRow()
+        }
     }
+
 }
 
 @Composable
