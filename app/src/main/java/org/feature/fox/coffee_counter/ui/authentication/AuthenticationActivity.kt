@@ -15,10 +15,7 @@ class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var login = true
-        if (intent != null && intent.extras != null) {
-            login = intent.extras!!.getBoolean("login")
-        }
+        val login = intent?.extras?.getBoolean("login") ?: true
 
         setContent {
             CoffeeCounterTheme {

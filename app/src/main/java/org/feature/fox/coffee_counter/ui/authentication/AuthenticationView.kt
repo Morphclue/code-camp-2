@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -9,11 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.CoreActivity
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
@@ -66,22 +70,34 @@ fun AuthenticationView(
 @Composable
 fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
+    val showCoreActivity = viewModel.showCoreActivity.observeAsState()
+    val context = LocalContext.current
 
-    NormalTextField(stringResource(R.string.id_hint))
-    PasswordTextField(stringResource(R.string.password_hint))
+    NormalTextField(viewModel.idState, stringResource(R.string.id_hint))
+    PasswordTextField(viewModel.passwordState, stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
-        onClick = { coroutineScope.launch { viewModel.login() } },
+        onClick = {
+            coroutineScope.launch {
+                viewModel.login()
+                if (showCoreActivity.value == true) {
+                    context.startActivity(Intent(context, CoreActivity::class.java))
+                }
+            }
+        },
         text = stringResource(R.string.login)
     )
 }
 
 @Composable
 fun RegisterFragment(viewModel: IAuthenticationViewModel) {
-    NormalTextField(stringResource(R.string.name_hint))
-    NormalTextField(stringResource(R.string.optional_id_hint))
-    PasswordTextField(stringResource(R.string.password_hint))
-    PasswordTextField(stringResource(R.string.re_enter_password_hint))
+    NormalTextField(viewModel.nameState, stringResource(R.string.name_hint))
+    NormalTextField(viewModel.idState, stringResource(R.string.optional_id_hint))
+    PasswordTextField(viewModel.passwordState, stringResource(R.string.password_hint))
+    PasswordTextField(
+        viewModel.reEnteredPasswordState,
+        stringResource(R.string.re_enter_password_hint)
+    )
     CustomButton(
         text = stringResource(R.string.sign_up)
     )
@@ -132,12 +148,11 @@ fun HeaderButton(
 }
 
 @Composable
-fun NormalTextField(text: String) {
-    val idState = remember { mutableStateOf(TextFieldValue()) }
+fun NormalTextField(state: MutableState<TextFieldValue>, text: String) {
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = idState.value,
-        onValueChange = { idState.value = it },
+        value = state.value,
+        onValueChange = { state.value = it },
         label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
@@ -148,13 +163,12 @@ fun NormalTextField(text: String) {
 }
 
 @Composable
-fun PasswordTextField(text: String) {
-    val passwordState = remember { mutableStateOf(TextFieldValue()) }
+fun PasswordTextField(state: MutableState<TextFieldValue>, text: String) {
     val showPassword = remember { mutableStateOf(false) }
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = passwordState.value,
-        onValueChange = { passwordState.value = it },
+        value = state.value,
+        onValueChange = { state.value = it },
         label = { Text(text = text) },
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
