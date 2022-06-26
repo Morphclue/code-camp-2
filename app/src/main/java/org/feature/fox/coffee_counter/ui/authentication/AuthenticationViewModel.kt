@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
+import org.feature.fox.coffee_counter.di.module.ApiModule
 import javax.inject.Inject
 
 interface IAuthenticationViewModel {
@@ -27,7 +29,15 @@ class AuthenticationViewModel @Inject constructor(
     override var reEnteredPasswordState = mutableStateOf(TextFieldValue())
 
     override suspend fun login() {
-        TODO("Not yet implemented")
+        val loginBody = LoginBody(idState.value.text, passwordState.value.text)
+        val response = userRepository.postLogin(loginBody)
+
+        if (response.data == null) {
+            return
+        }
+
+        ApiModule.providesBearerInterceptor().expiration = response.data.expiration
+        ApiModule.providesBearerInterceptor().bearerToken = response.data.token
     }
 }
 
