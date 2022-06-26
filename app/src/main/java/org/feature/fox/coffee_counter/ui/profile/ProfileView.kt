@@ -10,7 +10,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -251,7 +254,7 @@ fun ProfileIcon() {
     ) {
         Image(
             painter = painter,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.profile_image_label),
             modifier = Modifier
                 .wrapContentSize()
                 .size(150.dp),
@@ -277,7 +280,7 @@ fun ButtonRow() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             Card(
                 shape = CircleShape,
@@ -318,25 +321,6 @@ fun ButtonRow() {
                     )
                 }
             }
-            Card(
-                shape = CircleShape,
-                backgroundColor = CrayolaBrown,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(50.dp)
-            ) {
-                IconButton(
-                    onClick = { notification.value = "Cancelled" },
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        null,
-                        tint = Color.White,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-
         }
     }
 }

@@ -19,4 +19,5 @@
     <string name="history_title">History</string>
     <string name="profile_title">Profile</string>
     <string name="user_admin">admin</string>
+    <string name="profile_image_label">Profile Image</string>
 </resources>
