@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -9,11 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.CoreActivity
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
@@ -66,12 +70,21 @@ fun AuthenticationView(
 @Composable
 fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
+    val showCoreActivity = viewModel.showCoreActivity.observeAsState()
+    val context = LocalContext.current
 
     NormalTextField(viewModel.idState, stringResource(R.string.id_hint))
     PasswordTextField(viewModel.passwordState, stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
-        onClick = { coroutineScope.launch { viewModel.login() } },
+        onClick = {
+            coroutineScope.launch {
+                viewModel.login()
+                if (showCoreActivity.value == true) {
+                    context.startActivity(Intent(context, CoreActivity::class.java))
+                }
+            }
+        },
         text = stringResource(R.string.login)
     )
 }

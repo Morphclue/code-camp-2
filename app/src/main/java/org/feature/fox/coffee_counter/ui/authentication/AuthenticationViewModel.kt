@@ -3,6 +3,8 @@ package org.feature.fox.coffee_counter.ui.authentication
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
@@ -15,6 +17,7 @@ interface IAuthenticationViewModel {
     var idState: MutableState<TextFieldValue>
     var passwordState: MutableState<TextFieldValue>
     var reEnteredPasswordState: MutableState<TextFieldValue>
+    val showCoreActivity: MutableLiveData<Boolean>
 
     suspend fun login()
 }
@@ -27,6 +30,7 @@ class AuthenticationViewModel @Inject constructor(
     override var idState = mutableStateOf(TextFieldValue())
     override var passwordState = mutableStateOf(TextFieldValue())
     override var reEnteredPasswordState = mutableStateOf(TextFieldValue())
+    override val showCoreActivity = MutableLiveData<Boolean>()
 
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
@@ -38,6 +42,7 @@ class AuthenticationViewModel @Inject constructor(
 
         ApiModule.providesBearerInterceptor().expiration = response.data.expiration
         ApiModule.providesBearerInterceptor().bearerToken = response.data.token
+        showCoreActivity.value = true
     }
 }
 
@@ -46,6 +51,7 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override var idState = mutableStateOf(TextFieldValue("4242"))
     override var passwordState = mutableStateOf(TextFieldValue("1234"))
     override var reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
+    override val showCoreActivity = MutableLiveData<Boolean>()
 
     override suspend fun login() {
         TODO("Not yet implemented")
