@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Composable
-fun NormalTextField(text: String = "", label: String) {
+fun CommonTextField(text: String = "", label: String) {
     var textState by remember { mutableStateOf(text) }
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),

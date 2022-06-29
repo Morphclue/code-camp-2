@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
-import org.feature.fox.coffee_counter.ui.common.NormalTextField
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
@@ -40,8 +40,8 @@ fun ProfileView() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileIcon()
-            NormalTextField(text = user.id, label = stringResource(id = R.string.id_hint))
-            NormalTextField(text = user.name, label = stringResource(id = R.string.name_hint))
+            CommonTextField(text = user.id, label = stringResource(id = R.string.id_hint))
+            CommonTextField(text = user.name, label = stringResource(id = R.string.name_hint))
             PasswordTextField(
                 text = user.password,
                 label = stringResource(id = R.string.password_hint)

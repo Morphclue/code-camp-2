@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
-import org.feature.fox.coffee_counter.ui.common.NormalTextField
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 
 class LoginStateProvider : PreviewParameterProvider<Boolean> {
@@ -61,7 +61,7 @@ fun AuthenticationView(
 fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
-    NormalTextField(label = stringResource(R.string.id_hint))
+    CommonTextField(label = stringResource(R.string.id_hint))
     PasswordTextField(label = stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
@@ -72,8 +72,8 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
 
 @Composable
 fun RegisterFragment(viewModel: IAuthenticationViewModel) {
-    NormalTextField(label = stringResource(R.string.name_hint))
-    NormalTextField(label = stringResource(R.string.optional_id_hint))
+    CommonTextField(label = stringResource(R.string.name_hint))
+    CommonTextField(label = stringResource(R.string.optional_id_hint))
     PasswordTextField(label = stringResource(R.string.password_hint))
     PasswordTextField(label = stringResource(R.string.re_enter_password_hint))
     CustomButton(
