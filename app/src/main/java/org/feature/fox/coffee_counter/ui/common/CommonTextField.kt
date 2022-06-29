@@ -8,16 +8,17 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Composable
-fun CommonTextField(text: String = "", label: String) {
-    var textState by remember { mutableStateOf(text) }
+fun CommonTextField(state: MutableState<TextFieldValue>, label: String) {
+    val textState by remember { mutableStateOf(state) }
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = textState,
-        onValueChange = { textState = it },
+        value = textState.value,
+        onValueChange = { textState.value = it },
         label = { Text(label) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = CrayolaBrown,

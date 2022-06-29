@@ -13,19 +13,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Composable
-fun PasswordTextField(text: String = "", label: String) {
-    var textState by remember { mutableStateOf(text) }
+fun PasswordTextField(state: MutableState<TextFieldValue>, label: String) {
+    val textState by remember { mutableStateOf(state) }
     val showPassword = remember { mutableStateOf(false) }
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = textState,
-        onValueChange = { textState = it },
+        value = textState.value,
+        onValueChange = { textState.value = it },
         label = { Text(label) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = CrayolaBrown,
