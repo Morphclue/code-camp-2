@@ -3,13 +3,14 @@ package org.feature.fox.coffee_counter.ui.authentication
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.module.ApiModule
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import javax.inject.Inject
 
 interface IAuthenticationViewModel {
@@ -25,6 +26,7 @@ interface IAuthenticationViewModel {
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val preference: AppPreference,
 ) : ViewModel(), IAuthenticationViewModel {
     override var nameState = mutableStateOf(TextFieldValue())
     override var idState = mutableStateOf(TextFieldValue())
@@ -39,6 +41,9 @@ class AuthenticationViewModel @Inject constructor(
         if (response.data == null) {
             return
         }
+
+        preference.setTag(BuildConfig.USER_ID, idState.value.text)
+        preference.setTag(BuildConfig.USER_PASSWORD, passwordState.value.text)
 
         ApiModule.providesBearerInterceptor().expiration = response.data.expiration
         ApiModule.providesBearerInterceptor().bearerToken = response.data.token
