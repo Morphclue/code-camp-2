@@ -40,29 +40,33 @@ fun ProfileView() {
     val passwordState = mutableStateOf(TextFieldValue(user.password))
     val retypePasswordState = mutableStateOf(TextFieldValue(user.password))
 
-    Column {
-        MoneyAppBar(title = stringResource(R.string.profile_title))
-        Column(
-            modifier = Modifier.padding(5.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ProfileIcon()
-            CommonTextField(state = idState, label = stringResource(id = R.string.id_hint))
-            CommonTextField(state = nameState, label = stringResource(id = R.string.name_hint))
-            PasswordTextField(
-                state = passwordState,
-                label = stringResource(id = R.string.password_hint)
-            )
-            PasswordTextField(
-                state = retypePasswordState,
-                label = stringResource(id = R.string.re_enter_password_hint)
-            )
-            if (user.isAdmin) AdminCheckbox(user.isAdmin)
-            ButtonRow()
+    BoxWithConstraints {
+        Column {
+            MoneyAppBar(title = stringResource(R.string.profile_title))
+            Column(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .verticalScroll(rememberScrollState())
+                    .height(this@BoxWithConstraints.maxHeight),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ProfileIcon()
+                CommonTextField(state = idState, label = stringResource(id = R.string.id_hint))
+                CommonTextField(state = nameState, label = stringResource(id = R.string.name_hint))
+                PasswordTextField(
+                    state = passwordState,
+                    label = stringResource(id = R.string.password_hint)
+                )
+                PasswordTextField(
+                    state = retypePasswordState,
+                    label = stringResource(id = R.string.re_enter_password_hint)
+                )
+                if (user.isAdmin) AdminCheckbox(user.isAdmin)
+                ButtonRow()
+            }
         }
     }
-
 }
 
 @Composable
