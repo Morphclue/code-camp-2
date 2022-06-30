@@ -12,6 +12,7 @@ interface IProfileViewModel {
     val idState: MutableState<TextFieldValue>
     val passwordState: MutableState<TextFieldValue>
     val retypePasswordState: MutableState<TextFieldValue>
+    val isAdminState: MutableState<Boolean>
 
     suspend fun updateUserData()
 }
@@ -22,6 +23,7 @@ class ProfileViewModel @Inject constructor() : ViewModel(), IProfileViewModel {
     override val idState = mutableStateOf(TextFieldValue())
     override val passwordState = mutableStateOf(TextFieldValue())
     override val retypePasswordState = mutableStateOf(TextFieldValue())
+    override val isAdminState = mutableStateOf(true)
 
     override suspend fun updateUserData() {
         TODO("Not yet implemented")
@@ -33,6 +35,7 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val idState = mutableStateOf(TextFieldValue("a-cool-id"))
     override val passwordState = mutableStateOf(TextFieldValue("123456789"))
     override val retypePasswordState = mutableStateOf(TextFieldValue("123456789"))
+    override val isAdminState = mutableStateOf(false)
 
     override suspend fun updateUserData() {
         TODO("Not yet implemented")

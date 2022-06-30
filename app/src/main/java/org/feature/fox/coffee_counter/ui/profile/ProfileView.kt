@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.ui.profile
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,8 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
@@ -34,13 +30,10 @@ fun ProfileViewPreview() {
     ProfileView(ProfileViewModelPreview())
 }
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ProfileView(
     viewModel: IProfileViewModel,
 ) {
-    val user = User(id = "a", name = "Max Mustermann", true, "123456789")
-
     BoxWithConstraints {
         Column {
             MoneyAppBar(title = stringResource(R.string.profile_title))
@@ -64,7 +57,7 @@ fun ProfileView(
                     state = viewModel.retypePasswordState,
                     label = stringResource(id = R.string.re_enter_password_hint)
                 )
-                if (user.isAdmin) AdminCheckbox(user.isAdmin)
+                if (viewModel.isAdminState.value) AdminCheckbox(viewModel)
                 ButtonRow()
             }
         }
@@ -72,20 +65,18 @@ fun ProfileView(
 }
 
 @Composable
-fun AdminCheckbox(isAdmin: Boolean) {
-    val isChecked = remember { mutableStateOf(isAdmin) }
+fun AdminCheckbox(viewModel: IProfileViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Checkbox(
-            checked = isChecked.value,
-            onCheckedChange = { isChecked.value = it }
+            checked = viewModel.isAdminState.value,
+            onCheckedChange = { viewModel.isAdminState.value = it }
         )
         Text(text = stringResource(R.string.admin_label))
     }
 }
-
 
 @Composable
 fun ProfileIcon() {
@@ -110,7 +101,6 @@ fun ProfileIcon() {
 
 @Composable
 fun ButtonRow() {
-
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
