@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -29,16 +28,18 @@ import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
-
-@SuppressLint("UnrememberedMutableState")
 @Preview(showSystemUi = true)
 @Composable
-fun ProfileView() {
+fun ProfileViewPreview() {
+    ProfileView(ProfileViewModelPreview())
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun ProfileView(
+    viewModel: IProfileViewModel,
+) {
     val user = User(id = "a", name = "Max Mustermann", true, "123456789")
-    val nameState = mutableStateOf(TextFieldValue(user.name))
-    val idState = mutableStateOf(TextFieldValue(user.id))
-    val passwordState = mutableStateOf(TextFieldValue(user.password))
-    val retypePasswordState = mutableStateOf(TextFieldValue(user.password))
 
     BoxWithConstraints {
         Column {
@@ -52,14 +53,15 @@ fun ProfileView() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ProfileIcon()
-                CommonTextField(state = idState, label = stringResource(id = R.string.id_hint))
-                CommonTextField(state = nameState, label = stringResource(id = R.string.name_hint))
+                CommonTextField(viewModel.idState, label = stringResource(id = R.string.id_hint))
+                CommonTextField(viewModel.nameState,
+                    label = stringResource(id = R.string.name_hint))
                 PasswordTextField(
-                    state = passwordState,
+                    state = viewModel.passwordState,
                     label = stringResource(id = R.string.password_hint)
                 )
                 PasswordTextField(
-                    state = retypePasswordState,
+                    state = viewModel.retypePasswordState,
                     label = stringResource(id = R.string.re_enter_password_hint)
                 )
                 if (user.isAdmin) AdminCheckbox(user.isAdmin)
