@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -12,63 +13,65 @@ import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val preference: AppPreference,
 ) : UserRepositoryInt {
-    override suspend fun insertUser(user: User){
+    override suspend fun insertUser(user: User) {
         userDao.insertUser(user)
     }
 
-    override suspend fun insertFunding(funding: Funding){
+    override suspend fun insertFunding(funding: Funding) {
         userDao.insertFunding(funding)
     }
 
-    override suspend fun insertPurchase(purchase: Purchase){
+    override suspend fun insertPurchase(purchase: Purchase) {
         userDao.insertPurchase(purchase)
     }
 
-    override suspend fun deleteUser(user: User){
+    override suspend fun deleteUser(user: User) {
         userDao.deleteUser(user)
     }
 
-    override suspend fun deleteFunding(funding: Funding){
+    override suspend fun deleteFunding(funding: Funding) {
         userDao.deleteFunding(funding)
     }
 
-    override suspend fun deletePurchase(purchase: Purchase){
+    override suspend fun deletePurchase(purchase: Purchase) {
         userDao.deletePurchase(purchase)
     }
 
-    override suspend fun getUserByIdDb(id: String): User{
+    override suspend fun getUserByIdDb(id: String): User {
         return userDao.getUserById(id)
     }
 
-    override suspend fun getFundingListOfUser(id: String): List<Funding>{
+    override suspend fun getFundingListOfUser(id: String): List<Funding> {
         return userDao.getFundingListOfUser(id)
     }
 
-    override suspend fun getPurchaseListOfUser(id: String): List<Purchase>{
+    override suspend fun getPurchaseListOfUser(id: String): List<Purchase> {
         return userDao.getPurchaseListOfUser(id)
     }
 
-    override fun observeTotalBalanceOfUser(id: String): LiveData<Double>{
+    override fun observeTotalBalanceOfUser(id: String): LiveData<Double> {
         return userDao.observeTotalBalanceOfUser(id)
     }
 
-    override suspend fun login(id: String, password: String): Boolean{
+    override suspend fun login(id: String, password: String): Boolean {
         return userDao.login(id, password)
     }
 
-    override fun observeAllUsers(): LiveData<List<User>>{
+    override fun observeAllUsers(): LiveData<List<User>> {
         return userDao.observeAllUsers()
     }
 
-    override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>{
+    override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
         return try {
             val response = apiService.postLogin(loginBody)
             if (response.isSuccessful) {
@@ -84,7 +87,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUsers(): Resource<List<UserResponse>>{
+    override suspend fun getUsers(): Resource<List<UserResponse>> {
         return try {
             val response = apiService.getUsers()
             if (response.isSuccessful) {
@@ -99,9 +102,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserById(bearer: String, id: String): Resource<UserIdResponse>{
+    override suspend fun getUserById(id: String): Resource<UserIdResponse> {
         return try {
-            val response = apiService.getUserById(bearer, id)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.getUserById(bearerToken, id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -115,9 +119,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateUser(bearer: String, id: String, userBody: UserBody): Resource<String>{
+    override suspend fun updateUser(id: String, userBody: UserBody): Resource<String> {
         return try {
-            val response = apiService.updateUser(bearer, id, userBody)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.updateUser(bearerToken, id, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -130,7 +135,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun signUp(userBody: UserBody): Resource<String>{
+    override suspend fun signUp(userBody: UserBody): Resource<String> {
         return try {
             val response = apiService.signUp(userBody)
             if (response.isSuccessful) {
@@ -146,9 +151,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(bearer: String, id: String): Resource<String>{
+    override suspend fun deleteUser(id: String): Resource<String> {
         return try {
-            val response = apiService.deleteUser(bearer, id)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.deleteUser(bearerToken, id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -161,9 +167,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTransactions(bearer: String, id: String): Resource<List<TransactionResponse>>{
+    override suspend fun getTransactions(id: String): Resource<List<TransactionResponse>> {
         return try {
-            val response = apiService.getTransactions(bearer, id)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.getTransactions(bearerToken, id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -176,9 +183,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun purchaseItem(bearer: String, id: String, purchaseBody: PurchaseBody): Resource<String>{
+    override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String> {
         return try {
-            val response = apiService.purchaseItem(bearer, id, purchaseBody)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.purchaseItem(bearerToken, id, purchaseBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -191,9 +199,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun adminSignUp(bearer: String, userBody: UserBody): Resource<String>{
+    override suspend fun adminSignUp(userBody: UserBody): Resource<String> {
         return try {
-            val response = apiService.adminSignUp(bearer, userBody)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.adminSignUp(bearerToken, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -206,9 +215,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateAdmin(bearer: String, id: String, userBody: UserBody): Resource<String>{
+    override suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String> {
         return try {
-            val response = apiService.updateAdmin(bearer, id, userBody)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.updateAdmin(bearerToken, id, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -221,9 +231,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun addFunding(bearer: String, id: String, fundingBody: Double): Resource<String>{
+    override suspend fun addFunding(id: String, fundingBody: Double): Resource<String> {
         return try {
-            val response = apiService.addFunding(bearer, id, fundingBody)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.addFunding(bearerToken, id, fundingBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
