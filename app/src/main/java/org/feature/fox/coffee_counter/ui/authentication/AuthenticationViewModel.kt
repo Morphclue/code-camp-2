@@ -13,6 +13,7 @@ import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.module.ApiModule
 import org.feature.fox.coffee_counter.di.services.AppPreference
+import org.feature.fox.coffee_counter.di.services.ResourcesProvider
 import javax.inject.Inject
 
 interface IAuthenticationViewModel {
@@ -31,6 +32,7 @@ interface IAuthenticationViewModel {
 class AuthenticationViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
+    private val resource: ResourcesProvider,
 ) : ViewModel(), IAuthenticationViewModel {
     override val nameState = mutableStateOf(TextFieldValue())
     override val idState = mutableStateOf(TextFieldValue())
@@ -44,7 +46,7 @@ class AuthenticationViewModel @Inject constructor(
         val response = userRepository.postLogin(loginBody)
 
         if (response.data == null) {
-            toastMessage.value = response.message ?: R.string.unknown_error.toString()
+            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
             return
         }
 
@@ -58,6 +60,7 @@ class AuthenticationViewModel @Inject constructor(
 
     override suspend fun register() {
         if (passwordState.value.text != reEnteredPasswordState.value.text) {
+            toastMessage.value = resource.getString(R.string.match_password)
             return
         }
 
@@ -69,7 +72,7 @@ class AuthenticationViewModel @Inject constructor(
         val response = userRepository.signUp(registerBody)
 
         if (response.data == null) {
-            toastMessage.value = response.message ?: R.string.unknown_error.toString()
+            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
             return
         }
 
