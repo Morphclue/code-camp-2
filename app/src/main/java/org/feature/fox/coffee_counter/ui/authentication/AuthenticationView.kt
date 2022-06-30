@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -18,8 +21,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -29,24 +30,15 @@ import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 
-class LoginStateProvider : PreviewParameterProvider<Boolean> {
-    override val values: Sequence<Boolean> = sequenceOf(
-        true,
-        false,
-    )
-}
-
 @Preview(showSystemUi = true)
 @Composable
 fun AuthenticationViewPreview(
-    @PreviewParameter(LoginStateProvider::class) login: Boolean,
 ) {
-    AuthenticationView(login, AuthenticationViewModelPreview())
+    AuthenticationView(AuthenticationViewModelPreview())
 }
 
 @Composable
 fun AuthenticationView(
-    login: Boolean,
     viewModel: IAuthenticationViewModel,
 ) {
     Column(
@@ -55,9 +47,8 @@ fun AuthenticationView(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        val loginState = remember { mutableStateOf(login) }
-        LoginSignupHeader(loginState)
-        if (loginState.value) LoginFragment(viewModel) else RegisterFragment(viewModel)
+        LoginSignupHeader(viewModel)
+        if (viewModel.loginState.value) LoginFragment(viewModel) else RegisterFragment(viewModel)
     }
 }
 
@@ -68,7 +59,10 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val context = LocalContext.current
 
     CommonTextField(state = viewModel.idState, label = stringResource(R.string.id_hint))
-    PasswordTextField(state = viewModel.idState, label = stringResource(R.string.password_hint))
+    PasswordTextField(
+        state = viewModel.passwordState,
+        label = stringResource(R.string.password_hint)
+    )
     RememberMeCheckbox()
     CustomButton(
         onClick = {
@@ -85,6 +79,8 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
 
 @Composable
 fun RegisterFragment(viewModel: IAuthenticationViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     CommonTextField(state = viewModel.nameState, label = stringResource(R.string.name_hint))
     CommonTextField(state = viewModel.idState, label = stringResource(R.string.optional_id_hint))
     PasswordTextField(
@@ -96,12 +92,17 @@ fun RegisterFragment(viewModel: IAuthenticationViewModel) {
         label = stringResource(R.string.re_enter_password_hint)
     )
     CustomButton(
+        onClick = {
+            coroutineScope.launch {
+                viewModel.register()
+            }
+        },
         text = stringResource(R.string.sign_up)
     )
 }
 
 @Composable
-fun LoginSignupHeader(loginState: MutableState<Boolean>) {
+fun LoginSignupHeader(viewModel: IAuthenticationViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
@@ -111,16 +112,16 @@ fun LoginSignupHeader(loginState: MutableState<Boolean>) {
             offset = Offset(8f, 8f),
             blurRadius = 8f
         )
-        if (loginState.value) {
+        if (viewModel.loginState.value) {
             HeaderButton(stringResource(R.string.login), dropShadow)
             HeaderButton(
                 text = stringResource(R.string.sign_up),
-                onClick = { loginState.value = false }
+                onClick = { viewModel.loginState.value = false }
             )
         } else {
             HeaderButton(
                 text = stringResource(R.string.login),
-                onClick = { loginState.value = true }
+                onClick = { viewModel.loginState.value = true }
             )
             HeaderButton(stringResource(R.string.sign_up), dropShadow)
         }
