@@ -80,6 +80,8 @@ dependencies {
     def mockito_version = "4.6.1"
     def okhttp_version = '5.0.0-alpha.8'
     def timber_version = "5.0.1"
+    def coil_version = "2.1.0"
+    def lifecycle_version = "2.5.0-rc02"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -87,12 +89,14 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.activity:activity-compose:1.4.0"
     implementation "androidx.preference:preference-ktx:1.2.0"
 
     // Navbar
-    implementation "androidx.navigation:navigation-compose:2.5.0-rc01"
+    implementation "androidx.navigation:navigation-compose:2.5.0-rc02"
 
     // hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -128,6 +132,8 @@ dependencies {
     // Timber
     implementation "com.jakewharton.timber:timber:$timber_version"
 
+    // Coil
+    implementation "io.coil-kt:coil-compose:$coil_version"
 
     // Local Unit Tests
     testImplementation 'junit:junit:4.13.2'
