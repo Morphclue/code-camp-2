@@ -15,10 +15,10 @@ import org.feature.fox.coffee_counter.di.services.AppPreference
 import javax.inject.Inject
 
 interface IAuthenticationViewModel {
-    var nameState: MutableState<TextFieldValue>
-    var idState: MutableState<TextFieldValue>
-    var passwordState: MutableState<TextFieldValue>
-    var reEnteredPasswordState: MutableState<TextFieldValue>
+    val nameState: MutableState<TextFieldValue>
+    val idState: MutableState<TextFieldValue>
+    val passwordState: MutableState<TextFieldValue>
+    val reEnteredPasswordState: MutableState<TextFieldValue>
     val showCoreActivity: MutableLiveData<Boolean>
 
     suspend fun login()
@@ -30,10 +30,10 @@ class AuthenticationViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) : ViewModel(), IAuthenticationViewModel {
-    override var nameState = mutableStateOf(TextFieldValue())
-    override var idState = mutableStateOf(TextFieldValue())
-    override var passwordState = mutableStateOf(TextFieldValue())
-    override var reEnteredPasswordState = mutableStateOf(TextFieldValue())
+    override val nameState = mutableStateOf(TextFieldValue())
+    override val idState = mutableStateOf(TextFieldValue())
+    override val passwordState = mutableStateOf(TextFieldValue())
+    override val reEnteredPasswordState = mutableStateOf(TextFieldValue())
     override val showCoreActivity = MutableLiveData<Boolean>()
 
     override suspend fun login() {
@@ -79,10 +79,10 @@ class AuthenticationViewModel @Inject constructor(
 }
 
 class AuthenticationViewModelPreview : IAuthenticationViewModel {
-    override var nameState = mutableStateOf(TextFieldValue("Peter"))
-    override var idState = mutableStateOf(TextFieldValue("4242"))
-    override var passwordState = mutableStateOf(TextFieldValue("1234"))
-    override var reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
+    override val nameState = mutableStateOf(TextFieldValue("Peter"))
+    override val idState = mutableStateOf(TextFieldValue("4242"))
+    override val passwordState = mutableStateOf(TextFieldValue("1234"))
+    override val reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
     override val showCoreActivity = MutableLiveData<Boolean>()
 
     override suspend fun login() {
