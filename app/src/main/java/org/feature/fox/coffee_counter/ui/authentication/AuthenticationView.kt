@@ -85,6 +85,8 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
 
 @Composable
 fun RegisterFragment(viewModel: IAuthenticationViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     CommonTextField(state = viewModel.nameState, label = stringResource(R.string.name_hint))
     CommonTextField(state = viewModel.idState, label = stringResource(R.string.optional_id_hint))
     PasswordTextField(
@@ -96,6 +98,11 @@ fun RegisterFragment(viewModel: IAuthenticationViewModel) {
         label = stringResource(R.string.re_enter_password_hint)
     )
     CustomButton(
+        onClick = {
+            coroutineScope.launch {
+                viewModel.register()
+            }
+        },
         text = stringResource(R.string.sign_up)
     )
 }

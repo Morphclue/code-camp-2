@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
+import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.module.ApiModule
 import org.feature.fox.coffee_counter.di.services.AppPreference
@@ -21,6 +22,7 @@ interface IAuthenticationViewModel {
     val showCoreActivity: MutableLiveData<Boolean>
 
     suspend fun login()
+    suspend fun register()
 }
 
 @HiltViewModel
@@ -49,6 +51,31 @@ class AuthenticationViewModel @Inject constructor(
         ApiModule.providesBearerInterceptor().bearerToken = response.data.token
         showCoreActivity.value = true
     }
+
+    override suspend fun register() {
+        if (passwordState.value.text != reEnteredPasswordState.value.text) {
+            return
+        }
+
+        val registerBody = UserBody(
+            idState.value.text,
+            nameState.value.text,
+            passwordState.value.text,
+        )
+        val response = userRepository.signUp(registerBody)
+
+        if (response.data == null) {
+            return
+        }
+
+        resetValues()
+    }
+
+    private fun resetValues() {
+        nameState.value = TextFieldValue()
+        passwordState.value = TextFieldValue()
+        reEnteredPasswordState.value = TextFieldValue()
+    }
 }
 
 class AuthenticationViewModelPreview : IAuthenticationViewModel {
@@ -59,6 +86,10 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val showCoreActivity = MutableLiveData<Boolean>()
 
     override suspend fun login() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun register() {
         TODO("Not yet implemented")
     }
 }
