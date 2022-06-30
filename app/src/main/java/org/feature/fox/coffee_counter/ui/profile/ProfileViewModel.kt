@@ -33,7 +33,6 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // FIXME: currently receiving 401 Unauthorized
             val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
         }
     }

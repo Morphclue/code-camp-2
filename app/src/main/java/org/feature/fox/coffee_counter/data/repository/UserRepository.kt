@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
-import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -13,7 +12,6 @@ import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
-import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
@@ -21,7 +19,6 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
-    private val preference: AppPreference,
 ) : UserRepositoryInt {
     override suspend fun insertUser(user: User) {
         userDao.insertUser(user)
@@ -104,8 +101,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun getUserById(id: String): Resource<UserIdResponse> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.getUserById(bearerToken, id)
+            val response = apiService.getUserById(id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -121,8 +117,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun updateUser(id: String, userBody: UserBody): Resource<String> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.updateUser(bearerToken, id, userBody)
+            val response = apiService.updateUser(id, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -153,8 +148,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun deleteUser(id: String): Resource<String> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.deleteUser(bearerToken, id)
+            val response = apiService.deleteUser(id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -169,8 +163,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun getTransactions(id: String): Resource<List<TransactionResponse>> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.getTransactions(bearerToken, id)
+            val response = apiService.getTransactions(id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -185,8 +178,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.purchaseItem(bearerToken, id, purchaseBody)
+            val response = apiService.purchaseItem(id, purchaseBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -201,8 +193,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun adminSignUp(userBody: UserBody): Resource<String> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.adminSignUp(bearerToken, userBody)
+            val response = apiService.adminSignUp(userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -217,8 +208,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.updateAdmin(bearerToken, id, userBody)
+            val response = apiService.updateAdmin(id, userBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -233,8 +223,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun addFunding(id: String, fundingBody: Double): Resource<String> {
         return try {
-            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
-            val response = apiService.addFunding(bearerToken, id, fundingBody)
+            val response = apiService.addFunding(id, fundingBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

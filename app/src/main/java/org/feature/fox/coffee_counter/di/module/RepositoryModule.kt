@@ -16,8 +16,7 @@ object RepositoryModule {
     fun provideUserRepository(
         userDao: UserDao,
         apiService: ApiService,
-        preference: AppPreference,
     ): UserRepository {
-        return UserRepository(userDao, apiService, preference)
+        return UserRepository(userDao, apiService)
     }
 }
