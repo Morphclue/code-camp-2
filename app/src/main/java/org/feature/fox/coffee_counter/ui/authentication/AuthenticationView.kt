@@ -68,7 +68,7 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val context = LocalContext.current
 
     CommonTextField(state = viewModel.idState, label = stringResource(R.string.id_hint))
-    PasswordTextField(state = viewModel.idState, label = stringResource(R.string.password_hint))
+    PasswordTextField(state = viewModel.passwordState, label = stringResource(R.string.password_hint))
     RememberMeCheckbox()
     CustomButton(
         onClick = {
