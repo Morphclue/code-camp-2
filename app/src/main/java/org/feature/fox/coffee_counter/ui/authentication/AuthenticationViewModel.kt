@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
@@ -20,6 +21,7 @@ interface IAuthenticationViewModel {
     val passwordState: MutableState<TextFieldValue>
     val reEnteredPasswordState: MutableState<TextFieldValue>
     val showCoreActivity: MutableLiveData<Boolean>
+    val toastMessage: MutableLiveData<String>
 
     suspend fun login()
     suspend fun register()
@@ -35,12 +37,14 @@ class AuthenticationViewModel @Inject constructor(
     override val passwordState = mutableStateOf(TextFieldValue())
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue())
     override val showCoreActivity = MutableLiveData<Boolean>()
+    override val toastMessage = MutableLiveData<String>()
 
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
         val response = userRepository.postLogin(loginBody)
 
         if (response.data == null) {
+            toastMessage.value = response.message ?: R.string.unknown_error.toString()
             return
         }
 
@@ -65,6 +69,7 @@ class AuthenticationViewModel @Inject constructor(
         val response = userRepository.signUp(registerBody)
 
         if (response.data == null) {
+            toastMessage.value = response.message ?: R.string.unknown_error.toString()
             return
         }
 
@@ -84,6 +89,7 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val passwordState = mutableStateOf(TextFieldValue("1234"))
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
     override val showCoreActivity = MutableLiveData<Boolean>()
+    override val toastMessage = MutableLiveData<String>()
 
     override suspend fun login() {
         TODO("Not yet implemented")
