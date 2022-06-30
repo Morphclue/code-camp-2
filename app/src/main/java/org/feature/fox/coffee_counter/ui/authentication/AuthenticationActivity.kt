@@ -16,8 +16,7 @@ class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val login = intent?.extras?.getBoolean("login") ?: true
-
+        authenticationViewModel.loginState.value = intent?.extras?.getBoolean("login") ?: true
         authenticationViewModel.toastMessage.observe(this) { message ->
             Toast.makeText(this@AuthenticationActivity, message, Toast.LENGTH_SHORT).show()
         }
@@ -25,7 +24,6 @@ class AuthenticationActivity : ComponentActivity() {
         setContent {
             CoffeeCounterTheme {
                 AuthenticationView(
-                    login,
                     authenticationViewModel
                 )
             }

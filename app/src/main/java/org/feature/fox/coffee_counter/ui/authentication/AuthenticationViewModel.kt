@@ -23,6 +23,7 @@ interface IAuthenticationViewModel {
     val reEnteredPasswordState: MutableState<TextFieldValue>
     val showCoreActivity: MutableLiveData<Boolean>
     val toastMessage: MutableLiveData<String>
+    val loginState: MutableState<Boolean>
 
     suspend fun login()
     suspend fun register()
@@ -40,6 +41,7 @@ class AuthenticationViewModel @Inject constructor(
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue())
     override val showCoreActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
+    override val loginState = mutableStateOf(false)
 
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
@@ -76,7 +78,13 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
 
+        switchToLogin()
+    }
+
+    private fun switchToLogin() {
         resetValues()
+        loginState.value = true
+        toastMessage.value = resource.getString(R.string.created_account)
     }
 
     private fun resetValues() {
@@ -93,6 +101,7 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
     override val showCoreActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
+    override val loginState = mutableStateOf(true)
 
     override suspend fun login() {
         TODO("Not yet implemented")
