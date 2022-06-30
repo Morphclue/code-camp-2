@@ -1,12 +1,13 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.ItemDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
-import org.feature.fox.coffee_counter.di.module.ApiModule
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
@@ -14,6 +15,7 @@ import javax.inject.Inject
 class ItemRepository @Inject constructor(
     private val itemDao: ItemDao,
     private val apiService: ApiService,
+    private val preference: AppPreference,
 ) : ItemRepositoryInt {
 
     override suspend fun insertItemDb(item: Item) {
@@ -42,8 +44,9 @@ class ItemRepository @Inject constructor(
 
     override suspend fun postItem(itemBody: ItemBody): Resource<String> {
         return try {
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
             val response =
-                apiService.postItem(ApiModule.providesBearerInterceptor().bearerToken, itemBody)
+                apiService.postItem(bearerToken, itemBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -88,8 +91,9 @@ class ItemRepository @Inject constructor(
 
     override suspend fun deleteItemById(itemId: String): Resource<String> {
         return try {
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
             val response =
-                apiService.deleteItem(ApiModule.providesBearerInterceptor().bearerToken, itemId)
+                apiService.deleteItem(bearerToken, itemId)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -104,9 +108,8 @@ class ItemRepository @Inject constructor(
 
     override suspend fun updateItem(itemId: String, itemBody: ItemBody): Resource<String> {
         return try {
-            val response = apiService.updateItem(ApiModule.providesBearerInterceptor().bearerToken,
-                itemId,
-                itemBody)
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
+            val response = apiService.updateItem(bearerToken, itemId, itemBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
@@ -124,10 +127,9 @@ class ItemRepository @Inject constructor(
         purchaseBody: PurchaseBody,
     ): Resource<String> {
         return try {
+            val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
             val response =
-                apiService.purchaseItem(ApiModule.providesBearerInterceptor().bearerToken,
-                    itemId,
-                    purchaseBody)
+                apiService.purchaseItem(bearerToken, itemId, purchaseBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

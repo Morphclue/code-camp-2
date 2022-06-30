@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.di.services.network.BearerInterceptor
 import retrofit2.Converter
@@ -30,8 +31,10 @@ object ApiModule {
     }
 
     @Provides
-    fun providesBearerInterceptor(): BearerInterceptor {
-        return BearerInterceptor()
+    fun providesBearerInterceptor(
+        preference: AppPreference,
+    ): BearerInterceptor {
+        return BearerInterceptor(preference)
     }
 
     @Singleton
@@ -73,12 +76,13 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideApiService(
+        preference: AppPreference,
         retrofit: Retrofit = provideRetrofit(
             BuildConfig.BASE_URL,
             provideConverterFactory(),
             provideOkHttpClient(
                 providesLoggingInterceptor(),
-                providesBearerInterceptor()
+                providesBearerInterceptor(preference)
             )
         ),
     ): ApiService {

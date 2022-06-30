@@ -54,9 +54,9 @@ class AuthenticationViewModel @Inject constructor(
 
         preference.setTag(BuildConfig.USER_ID, idState.value.text)
         preference.setTag(BuildConfig.USER_PASSWORD, passwordState.value.text)
+        preference.setTag(BuildConfig.EXPIRATION, response.data.expiration.toString())
+        preference.setTag(BuildConfig.BEARER_TOKEN, response.data.token)
 
-        ApiModule.providesBearerInterceptor().expiration = response.data.expiration
-        ApiModule.providesBearerInterceptor().bearerToken = response.data.token
         showCoreActivity.value = true
     }
 
