@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import at.favre.lib.crypto.bcrypt.BCrypt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
@@ -44,6 +46,7 @@ class AuthenticationViewModel @Inject constructor(
     override val loginState = mutableStateOf(false)
 
     override suspend fun login() {
+
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
         val response = userRepository.postLogin(loginBody)
 
@@ -65,12 +68,23 @@ class AuthenticationViewModel @Inject constructor(
             toastMessage.value = resource.getString(R.string.match_password)
             return
         }
-
+        userRepository.insertUser(
+            User(
+                idState.value.text,
+                nameState.value.text,
+                false,
+                BCrypt.withDefaults().hashToString(
+                    12, passwordState.value.text.toCharArray()
+                )
+            )
+        )
         val registerBody = UserBody(
             idState.value.text,
             nameState.value.text,
             passwordState.value.text,
-        )
+
+            )
+
         val response = userRepository.signUp(registerBody)
 
         if (response.data == null) {
