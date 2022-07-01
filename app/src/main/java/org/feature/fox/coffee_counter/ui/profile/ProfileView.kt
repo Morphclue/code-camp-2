@@ -147,7 +147,11 @@ fun ButtonRow(viewModel: IProfileViewModel) {
                     .size(50.dp)
             ) {
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        coroutineScope.launch {
+                            viewModel.deleteUser()
+                        }
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,

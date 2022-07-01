@@ -88,7 +88,14 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun deleteUser() {
-        TODO("Not yet implemented")
+        val response = userRepository.deleteUser(preference.getTag(BuildConfig.USER_ID))
+
+        if (response.data == null) {
+            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
+            return
+        }
+
+        toastMessage.value = resource.getString(R.string.deleted_user)
     }
 }
 
