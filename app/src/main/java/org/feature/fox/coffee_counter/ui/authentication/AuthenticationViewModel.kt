@@ -11,7 +11,6 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
-import org.feature.fox.coffee_counter.di.module.ApiModule
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.ResourcesProvider
 import javax.inject.Inject

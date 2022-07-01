@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.ResourcesProvider
@@ -38,7 +39,7 @@ class ProfileViewModel @Inject constructor(
     override val idState = mutableStateOf(TextFieldValue())
     override val passwordState = mutableStateOf(TextFieldValue())
     override val retypePasswordState = mutableStateOf(TextFieldValue())
-    override val isAdminState = mutableStateOf(true)
+    override val isAdminState = mutableStateOf(false)
     override val toastMessage = MutableLiveData<String>()
 
     init {
@@ -60,14 +61,34 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun updateUser() {
-        TODO("Not yet implemented")
+        if (passwordState.value.text != retypePasswordState.value.text) {
+            toastMessage.value = resource.getString(R.string.match_password)
+            return
+        }
+
+        val userBody = UserBody(
+            idState.value.text,
+            nameState.value.text,
+            passwordState.value.text,
+            null
+        )
+
+        val response = userRepository.updateUser(
+            preference.getTag(BuildConfig.USER_ID),
+            userBody
+        )
+
+        if (response.data == null) {
+            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
+            return
+        }
+
+        toastMessage.value = resource.getString(R.string.updated_user)
     }
 
     override suspend fun deleteUser() {
         TODO("Not yet implemented")
     }
-
-
 }
 
 class ProfileViewModelPreview : IProfileViewModel {

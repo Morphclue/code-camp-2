@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
@@ -58,7 +60,7 @@ fun ProfileView(
                     label = stringResource(id = R.string.re_enter_password_hint)
                 )
                 if (viewModel.isAdminState.value) AdminCheckbox(viewModel)
-                ButtonRow()
+                ButtonRow(viewModel)
             }
         }
     }
@@ -100,7 +102,9 @@ fun ProfileIcon() {
 }
 
 @Composable
-fun ButtonRow() {
+fun ButtonRow(viewModel: IProfileViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -120,7 +124,11 @@ fun ButtonRow() {
                     .size(50.dp)
             ) {
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        coroutineScope.launch {
+                            viewModel.updateUser()
+                        }
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Filled.SaveAlt,
