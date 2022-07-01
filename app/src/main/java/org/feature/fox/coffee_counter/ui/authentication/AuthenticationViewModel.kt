@@ -78,19 +78,17 @@ class AuthenticationViewModel @Inject constructor(
         if (response.data == null) {
             toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
             return
-        } else {
-            userRepository.insertUser(
-                User(
-                    id = idState.value.text,
-                    name = nameState.value.text,
-                    false,
-                    password = BCrypt.withDefaults()
-                        .hashToString(12, passwordState.value.text.toCharArray())
-                )
-            )
         }
 
-
+        userRepository.insertUser(
+            User(
+                id = idState.value.text,
+                name = nameState.value.text,
+                false,
+                password = BCrypt.withDefaults()
+                    .hashToString(12, passwordState.value.text.toCharArray())
+            )
+        )
 
         switchToLogin()
     }
