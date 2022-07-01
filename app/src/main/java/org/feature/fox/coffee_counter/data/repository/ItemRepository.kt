@@ -48,7 +48,7 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error("Unknown error occured inside postItem method", null)
+                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
@@ -64,7 +64,7 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error("Unknown error occured inside getItems method", null)
+                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
@@ -80,7 +80,7 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error("Unknown error occured inside getItemById method", null)
+                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
@@ -96,7 +96,7 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error("Unknown error occured inside deleteItemById method", null)
+                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
@@ -112,7 +112,7 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error("Unknown error occured inside updateItem method", null)
+                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
@@ -131,7 +131,7 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error("Unknown error occured inside purchaseItem method", null)
+                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
