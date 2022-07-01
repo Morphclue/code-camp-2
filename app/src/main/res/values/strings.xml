@@ -19,4 +19,8 @@
     <string name="history_title">History</string>
     <string name="profile_title">Profile</string>
     <string name="user_admin">admin</string>
+    <string name="profile_image_label">Profile Image</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="match_password">Passwords do not match</string>
+    <string name="created_account">Account created. Please login!</string>
 </resources>
