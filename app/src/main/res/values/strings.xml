@@ -25,4 +25,5 @@
     <string name="created_account">Account created. Please login!</string>
     <string name="updated_user">Successfully updated user</string>
     <string name="deleted_user">Successfully deleted user</string>
+    <string name="server_not_reached">Could not reach server.</string>
 </resources>

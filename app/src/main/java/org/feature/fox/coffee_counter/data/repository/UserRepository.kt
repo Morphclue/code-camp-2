@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -12,6 +13,7 @@ import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
+import org.feature.fox.coffee_counter.di.services.ResourcesProvider
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
+    private val resource: ResourcesProvider,
 ) : UserRepositoryInt {
     override suspend fun insertUser(user: User) {
         userDao.insertUser(user)
@@ -80,7 +83,7 @@ class UserRepository @Inject constructor(
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -95,7 +98,7 @@ class UserRepository @Inject constructor(
                 Resource.error("Unknown error occurred inside updateItem method", null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -111,7 +114,7 @@ class UserRepository @Inject constructor(
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -127,7 +130,7 @@ class UserRepository @Inject constructor(
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -143,7 +146,7 @@ class UserRepository @Inject constructor(
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -159,7 +162,8 @@ class UserRepository @Inject constructor(
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            println(e)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -174,7 +178,7 @@ class UserRepository @Inject constructor(
                 Resource.error("Unknown error occurred inside updateItem method", null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -189,7 +193,7 @@ class UserRepository @Inject constructor(
                 Resource.error("Unknown error occurred inside updateItem method", null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -204,7 +208,7 @@ class UserRepository @Inject constructor(
                 Resource.error("Unknown error occurred inside updateItem method", null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -219,7 +223,7 @@ class UserRepository @Inject constructor(
                 Resource.error("Unknown error occurred inside updateItem method", null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 
@@ -234,7 +238,7 @@ class UserRepository @Inject constructor(
                 Resource.error("Unknown error occurred inside getItemById method", null)
             }
         } catch (e: Exception) {
-            Resource.error("Could not reach the server.", null)
+            Resource.error(resource.getString(R.string.server_not_reached), null)
         }
     }
 }
