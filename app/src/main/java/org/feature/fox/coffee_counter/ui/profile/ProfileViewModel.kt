@@ -83,6 +83,7 @@ class ProfileViewModel @Inject constructor(
             return
         }
 
+        preference.setTag(BuildConfig.USER_ID, idState.value.text)
         toastMessage.value = resource.getString(R.string.updated_user)
     }
 
