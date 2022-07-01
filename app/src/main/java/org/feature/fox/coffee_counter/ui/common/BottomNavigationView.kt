@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.feature.fox.coffee_counter.ui.transaction.HistoryView
 import org.feature.fox.coffee_counter.ui.items.ItemsView
+import org.feature.fox.coffee_counter.ui.items.ItemsViewModel
 import org.feature.fox.coffee_counter.ui.profile.ProfileView
 import org.feature.fox.coffee_counter.ui.user.UsersView
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
@@ -59,10 +60,13 @@ fun BottomNavBar(navController: NavHostController) {
 }
 
 @Composable
-fun Navigation(navController: NavHostController) {
+fun Navigation(
+    navController: NavHostController,
+    itemsViewModel: ItemsViewModel,
+    ) {
     NavHost(navController = navController, startDestination = BottomNavItem.Items.route) {
         composable(BottomNavItem.Items.route) {
-            ItemsView()
+            ItemsView(itemsViewModel)
         }
         composable(BottomNavItem.History.route) {
             HistoryView()

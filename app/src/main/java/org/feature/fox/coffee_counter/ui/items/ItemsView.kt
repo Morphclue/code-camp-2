@@ -26,17 +26,20 @@ import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Preview(showSystemUi = true)
 @Composable
-fun ItemsView() {
-    val items = listOf(
-        Item(id = "a", name = "coffee", amount = 69, price = 5.0),
-        Item(id = "b", name = "beer", amount = 42, price = 4.99),
-        Item(id = "c", name = "mate", amount = 1337, price = 9.99)
-    )
+fun ItemsViewPreview() {
+    ItemsView(ItemsViewModelPreview())
+}
+
+
+@Composable
+fun ItemsView(
+    viewModel: IItemsViewModel,
+) {
     Column {
         MoneyAppBar(title = stringResource(R.string.item_list_title))
         SearchBar()
-        ItemList(items)
-        BuyButton(amount = 55.0)
+        ItemList(viewModel.availableItemsState)
+        BuyButton(amount = viewModel.currentShoppingCartAmountState)
     }
 }
 
@@ -117,7 +120,7 @@ fun ItemRow(item: Item) {
 }
 
 @Composable
-fun BuyButton(amount: Double) {
+fun BuyButton(amount: MutableState<Double>) {
     Button(onClick = {},
         modifier = Modifier
             .fillMaxWidth()
@@ -129,7 +132,7 @@ fun BuyButton(amount: Double) {
         )
     ) {
         Text(
-            "Buy (${String.format("%.2f", amount)}€)",
+            "Buy (${String.format("%.2f", amount.value)}€)",
             fontSize = 20.sp,
         )
     }
