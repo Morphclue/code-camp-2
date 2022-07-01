@@ -50,8 +50,8 @@ fun ItemList(items: List<Item>) {
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .padding(5.dp)
-                .fillMaxWidth()
-                .weight(1f),
+                .fillMaxWidth(),
+//                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items.forEach { item ->
