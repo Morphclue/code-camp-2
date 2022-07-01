@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,6 +19,11 @@ class CoreActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        profileViewModel.toastMessage.observe(this) { message ->
+            Toast.makeText(this@CoreActivity, message, Toast.LENGTH_SHORT).show()
+        }
+
         setContent {
             CoffeeCounterTheme {
                 val navController = rememberNavController()

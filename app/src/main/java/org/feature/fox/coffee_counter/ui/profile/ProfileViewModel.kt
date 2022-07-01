@@ -3,13 +3,16 @@ package org.feature.fox.coffee_counter.ui.profile
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
+import org.feature.fox.coffee_counter.di.services.ResourcesProvider
 import javax.inject.Inject
 
 interface IProfileViewModel {
@@ -18,23 +21,40 @@ interface IProfileViewModel {
     val passwordState: MutableState<TextFieldValue>
     val retypePasswordState: MutableState<TextFieldValue>
     val isAdminState: MutableState<Boolean>
+    val toastMessage: MutableLiveData<String>
+
+    suspend fun loadData()
 }
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
+    private val resource: ResourcesProvider,
 ) : ViewModel(), IProfileViewModel {
     override val nameState = mutableStateOf(TextFieldValue())
     override val idState = mutableStateOf(TextFieldValue())
     override val passwordState = mutableStateOf(TextFieldValue())
     override val retypePasswordState = mutableStateOf(TextFieldValue())
     override val isAdminState = mutableStateOf(true)
+    override val toastMessage = MutableLiveData<String>()
 
     init {
         viewModelScope.launch {
-            val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
+            loadData()
         }
+    }
+
+    override suspend fun loadData() {
+        val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
+
+        if (response.data == null) {
+            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
+            return
+        }
+
+        idState.value = TextFieldValue(response.data.id)
+        nameState.value = TextFieldValue(response.data.name)
     }
 }
 
@@ -44,4 +64,9 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val passwordState = mutableStateOf(TextFieldValue("123456789"))
     override val retypePasswordState = mutableStateOf(TextFieldValue("123456789"))
     override val isAdminState = mutableStateOf(false)
+    override val toastMessage = MutableLiveData<String>()
+
+    override suspend fun loadData() {
+        TODO("Not yet implemented")
+    }
 }
