@@ -24,6 +24,8 @@ interface IProfileViewModel {
     val toastMessage: MutableLiveData<String>
 
     suspend fun loadData()
+    suspend fun updateUser()
+    suspend fun deleteUser()
 }
 
 @HiltViewModel
@@ -56,6 +58,16 @@ class ProfileViewModel @Inject constructor(
         idState.value = TextFieldValue(response.data.id)
         nameState.value = TextFieldValue(response.data.name)
     }
+
+    override suspend fun updateUser() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteUser() {
+        TODO("Not yet implemented")
+    }
+
+
 }
 
 class ProfileViewModelPreview : IProfileViewModel {
@@ -67,6 +79,14 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val toastMessage = MutableLiveData<String>()
 
     override suspend fun loadData() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateUser() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteUser() {
         TODO("Not yet implemented")
     }
 }
