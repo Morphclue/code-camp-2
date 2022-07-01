@@ -78,7 +78,7 @@ fun ItemRow(item: Item) {
     ) {
         Column {
             Text(item.name, fontWeight = FontWeight.Medium)
-            Text("${item.price}€", color = Color.Gray)
+            Text("${String.format("%.2f", item.price)}€", color = Color.Gray)
         }
 
         Column {
