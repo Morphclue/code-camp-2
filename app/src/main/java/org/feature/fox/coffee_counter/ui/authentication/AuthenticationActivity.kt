@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
