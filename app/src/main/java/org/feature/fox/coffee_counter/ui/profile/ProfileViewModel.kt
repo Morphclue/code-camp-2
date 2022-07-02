@@ -99,7 +99,7 @@ class ProfileViewModel @Inject constructor(
             return
         }
 
-        toastChannel.send(UIText.StringResource(resId = R.string.deleted_user))
+        toastChannel.send(UIText.StringResource(R.string.deleted_user))
         removeTags()
     }
 

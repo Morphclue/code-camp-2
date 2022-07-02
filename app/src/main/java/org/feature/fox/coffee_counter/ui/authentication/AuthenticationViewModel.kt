@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
@@ -19,7 +18,7 @@ import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
 
-interface IAuthenticationViewModel: IToast {
+interface IAuthenticationViewModel : IToast {
     val nameState: MutableState<TextFieldValue>
     val idState: MutableState<TextFieldValue>
     val passwordState: MutableState<TextFieldValue>
@@ -51,7 +50,7 @@ class AuthenticationViewModel @Inject constructor(
 
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
-                ?: UIText.StringResource(resId = R.string.unknown_error))
+                ?: UIText.StringResource(R.string.unknown_error))
             return
         }
 
@@ -65,7 +64,7 @@ class AuthenticationViewModel @Inject constructor(
 
     override suspend fun register() {
         if (passwordState.value.text != reEnteredPasswordState.value.text) {
-            toastChannel.send(UIText.StringResource(resId = R.string.match_password))
+            toastChannel.send(UIText.StringResource(R.string.match_password))
             return
         }
 
@@ -78,12 +77,12 @@ class AuthenticationViewModel @Inject constructor(
 
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
-                ?: UIText.StringResource(resId = R.string.unknown_error))
+                ?: UIText.StringResource(R.string.unknown_error))
             return
         }
 
         switchToLogin()
-        toastChannel.send(UIText.StringResource(resId = R.string.created_account))
+        toastChannel.send(UIText.StringResource(R.string.created_account))
     }
 
     private fun switchToLogin() {
