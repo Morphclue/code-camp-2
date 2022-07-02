@@ -69,7 +69,7 @@ class AuthenticationViewModel @Inject constructor(
         }
 
         val registerBody = UserBody(
-            idState.value.text,
+            idState.value.text.ifEmpty { null },
             nameState.value.text,
             passwordState.value.text,
         )
@@ -81,6 +81,7 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
 
+        idState.value = TextFieldValue(response.data)
         switchToLogin()
         toastChannel.send(UIText.StringResource(R.string.created_account))
     }
