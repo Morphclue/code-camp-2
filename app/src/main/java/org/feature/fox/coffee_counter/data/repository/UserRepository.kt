@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -20,11 +21,6 @@ class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
 ) : UserRepositoryInt {
-    private object ErrorConstants {
-        const val REACH_SERVER_ERROR = "Could not reach the server."
-        const val UNKNOWN_ERROR = "Unknown error occurred."
-    }
-
     override suspend fun insertUser(user: User) {
         userDao.insertUser(user)
     }
@@ -79,13 +75,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -95,13 +91,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -111,13 +107,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -127,13 +123,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -143,13 +139,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -159,14 +155,14 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
             println(e)
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -176,13 +172,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -192,13 +188,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -208,13 +204,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -224,13 +220,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -240,13 +236,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 }

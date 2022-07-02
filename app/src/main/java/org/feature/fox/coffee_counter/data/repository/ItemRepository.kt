@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.ItemDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
@@ -14,11 +15,6 @@ class ItemRepository @Inject constructor(
     private val itemDao: ItemDao,
     private val apiService: ApiService,
 ) : ItemRepositoryInt {
-    private object ErrorConstants {
-        const val REACH_SERVER_ERROR = "Could not reach the server."
-        const val UNKNOWN_ERROR = "Unknown error occurred."
-    }
-
     override suspend fun insertItemDb(item: Item) {
         itemDao.insertItem(item)
     }
@@ -49,13 +45,13 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -65,13 +61,13 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -81,13 +77,13 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -97,13 +93,13 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -113,13 +109,13 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -132,13 +128,13 @@ class ItemRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
         }
     }
 }
