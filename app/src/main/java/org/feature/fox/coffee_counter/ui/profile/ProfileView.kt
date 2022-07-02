@@ -1,5 +1,7 @@
 package org.feature.fox.coffee_counter.ui.profile
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
+import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.CoreActivity
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
@@ -65,7 +70,7 @@ fun ProfileView(
                     label = stringResource(id = R.string.re_enter_password_hint)
                 )
                 if (viewModel.isAdminState.value) AdminCheckbox(viewModel)
-                ButtonRow(viewModel)
+                ButtonRow(viewModel, context)
             }
         }
     }
@@ -107,8 +112,9 @@ fun ProfileIcon() {
 }
 
 @Composable
-fun ButtonRow(viewModel: IProfileViewModel) {
+fun ButtonRow(viewModel: IProfileViewModel, context: Context) {
     val coroutineScope = rememberCoroutineScope()
+    val showMainActivity = viewModel.showMainActivity.observeAsState()
 
     Column(
         modifier = Modifier
@@ -155,6 +161,9 @@ fun ButtonRow(viewModel: IProfileViewModel) {
                     onClick = {
                         coroutineScope.launch {
                             viewModel.deleteUser()
+                            if (showMainActivity.value == true) {
+                                context.startActivity(Intent(context, MainActivity::class.java))
+                            }
                         }
                     },
                 ) {

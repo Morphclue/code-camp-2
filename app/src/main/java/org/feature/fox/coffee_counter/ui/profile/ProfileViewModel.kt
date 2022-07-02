@@ -3,6 +3,7 @@ package org.feature.fox.coffee_counter.ui.profile
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +25,7 @@ interface IProfileViewModel : IToast {
     val passwordState: MutableState<TextFieldValue>
     val retypePasswordState: MutableState<TextFieldValue>
     val isAdminState: MutableState<Boolean>
+    val showMainActivity: MutableLiveData<Boolean>
 
     suspend fun loadData()
     suspend fun updateUser()
@@ -40,6 +42,7 @@ class ProfileViewModel @Inject constructor(
     override val passwordState = mutableStateOf(TextFieldValue())
     override val retypePasswordState = mutableStateOf(TextFieldValue())
     override val isAdminState = mutableStateOf(false)
+    override val showMainActivity = MutableLiveData<Boolean>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
@@ -101,6 +104,7 @@ class ProfileViewModel @Inject constructor(
 
         toastChannel.send(UIText.StringResource(R.string.deleted_user))
         removeTags()
+        showMainActivity.value = true
     }
 
     private fun removeTags() {
@@ -117,6 +121,7 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val passwordState = mutableStateOf(TextFieldValue("123456789"))
     override val retypePasswordState = mutableStateOf(TextFieldValue("123456789"))
     override val isAdminState = mutableStateOf(false)
+    override val showMainActivity = MutableLiveData<Boolean>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
