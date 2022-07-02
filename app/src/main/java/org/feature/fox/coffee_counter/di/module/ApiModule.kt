@@ -13,6 +13,7 @@ import org.feature.fox.coffee_counter.di.services.network.BearerInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -57,14 +58,22 @@ object ApiModule {
     @Provides
     fun provideRetrofit(
         baseUrl: String,
+        scalarsConverterFactory: ScalarsConverterFactory,
         convFact: Converter.Factory,
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
+            .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(convFact)
             .baseUrl(baseUrl)
             .client(okHttpClient)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesScalarsConverterFactory(): ScalarsConverterFactory {
+        return ScalarsConverterFactory.create()
     }
 
     @Singleton
@@ -79,6 +88,7 @@ object ApiModule {
         preference: AppPreference,
         retrofit: Retrofit = provideRetrofit(
             BuildConfig.BASE_URL,
+            providesScalarsConverterFactory(),
             provideConverterFactory(),
             provideOkHttpClient(
                 providesLoggingInterceptor(),
