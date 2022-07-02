@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
@@ -101,6 +100,14 @@ class ProfileViewModel @Inject constructor(
         }
 
         toastChannel.send(UIText.StringResource(resId = R.string.deleted_user))
+        removeTags()
+    }
+
+    private fun removeTags() {
+        preference.removeTag(BuildConfig.USER_ID)
+        preference.removeTag(BuildConfig.USER_PASSWORD)
+        preference.removeTag(BuildConfig.BEARER_TOKEN)
+        preference.removeTag(BuildConfig.EXPIRATION)
     }
 }
 

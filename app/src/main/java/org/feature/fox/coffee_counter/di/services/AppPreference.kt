@@ -17,4 +17,8 @@ class AppPreference @Inject constructor(@ApplicationContext context: Context) {
     fun setTag(name: String, content: String) {
         preferences.edit().putString(name, content).apply()
     }
+
+    fun removeTag(name: String) {
+        preferences.edit().remove(name).apply()
+    }
 }
