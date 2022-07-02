@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import at.favre.lib.crypto.bcrypt.BCrypt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
@@ -82,6 +84,15 @@ class AuthenticationViewModel @Inject constructor(
         }
 
         idState.value = TextFieldValue(response.data)
+        userRepository.insertUser(
+            User(
+                id = idState.value.text,
+                name = nameState.value.text,
+                false,
+                password = BCrypt.withDefaults()
+                    .hashToString(12, passwordState.value.text.toCharArray())
+            )
+        )
         switchToLogin()
         toastChannel.send(UIText.StringResource(R.string.created_account))
     }
