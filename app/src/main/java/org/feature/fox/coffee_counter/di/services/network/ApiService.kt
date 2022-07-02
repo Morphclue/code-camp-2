@@ -5,9 +5,19 @@ import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
-import org.feature.fox.coffee_counter.data.models.response.*
+import org.feature.fox.coffee_counter.data.models.response.ItemResponse
+import org.feature.fox.coffee_counter.data.models.response.LoginResponse
+import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
+import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
+import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 
 interface ApiService {
