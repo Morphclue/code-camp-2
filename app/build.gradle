@@ -22,6 +22,7 @@ android {
         buildConfigField "String", "DATE_PATTERN", '"dd.MM.yy"'
         buildConfigField "String", "USER_ID", '"USER_ID"'
         buildConfigField "String", "USER_PASSWORD", '"USER_PASSWORD"'
+        buildConfigField "String", "REMEMBER_ME", '"REMEMBER_ME"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

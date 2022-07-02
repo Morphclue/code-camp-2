@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import at.favre.lib.crypto.bcrypt.BCrypt
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -26,9 +28,11 @@ interface IAuthenticationViewModel {
     val showCoreActivity: MutableLiveData<Boolean>
     val toastMessage: MutableLiveData<String>
     val loginState: MutableState<Boolean>
+    val isChecked: MutableState<Boolean>
 
     suspend fun login()
     suspend fun register()
+    fun updateRememberMe(value: Boolean)
 }
 
 @HiltViewModel
@@ -44,6 +48,13 @@ class AuthenticationViewModel @Inject constructor(
     override val showCoreActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
     override val loginState = mutableStateOf(false)
+    override var isChecked = mutableStateOf(false)
+
+    init {
+        viewModelScope.launch {
+            loadValues()
+        }
+    }
 
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
@@ -93,6 +104,20 @@ class AuthenticationViewModel @Inject constructor(
         switchToLogin()
     }
 
+    override fun updateRememberMe(value: Boolean) {
+        isChecked.value = value
+        preference.setTag(BuildConfig.REMEMBER_ME, value)
+    }
+
+    private fun loadValues() {
+        isChecked.value = preference.getTag(BuildConfig.REMEMBER_ME, true)
+        if (!isChecked.value) {
+            return
+        }
+        idState.value = TextFieldValue(preference.getTag(BuildConfig.USER_ID))
+        passwordState.value = TextFieldValue(preference.getTag(BuildConfig.USER_PASSWORD))
+    }
+
     private fun switchToLogin() {
         resetValues()
         loginState.value = true
@@ -114,12 +139,17 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val showCoreActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
     override val loginState = mutableStateOf(true)
+    override val isChecked = mutableStateOf(true)
 
     override suspend fun login() {
         TODO("Not yet implemented")
     }
 
     override suspend fun register() {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateRememberMe(value: Boolean) {
         TODO("Not yet implemented")
     }
 }
