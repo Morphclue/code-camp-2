@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
-import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -56,7 +55,6 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val showCoreActivity = viewModel.showCoreActivity.observeAsState()
     val context = LocalContext.current
-    val activity = context as? Activity
 
     CommonTextField(state = viewModel.idState, label = stringResource(R.string.id_hint))
     PasswordTextField(
@@ -70,7 +68,7 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
                 viewModel.login()
                 if (showCoreActivity.value == true) {
                     val intent = Intent(context, CoreActivity::class.java)
-                    activity?.finish()
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     context.startActivity(intent)
                 }
             }
