@@ -20,10 +20,6 @@ class CoreActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        profileViewModel.toastMessage.observe(this) { message ->
-            Toast.makeText(this@CoreActivity, message, Toast.LENGTH_SHORT).show()
-        }
-
         setContent {
             CoffeeCounterTheme {
                 val navController = rememberNavController()

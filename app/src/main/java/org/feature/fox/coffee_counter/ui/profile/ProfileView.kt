@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Preview(showSystemUi = true)
@@ -36,6 +38,9 @@ fun ProfileViewPreview() {
 fun ProfileView(
     viewModel: IProfileViewModel,
 ) {
+    val context = LocalContext.current
+    ToastMessage(viewModel, context)
+
     BoxWithConstraints {
         Column {
             MoneyAppBar(title = stringResource(R.string.profile_title))

@@ -5,11 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -29,6 +26,7 @@ import org.feature.fox.coffee_counter.ui.CoreActivity
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 
 @Preview(showSystemUi = true)
 @Composable
@@ -41,6 +39,9 @@ fun AuthenticationViewPreview(
 fun AuthenticationView(
     viewModel: IAuthenticationViewModel,
 ) {
+    val context = LocalContext.current
+    ToastMessage(viewModel, context)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()

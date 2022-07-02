@@ -6,7 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import dagger.hilt.android.AndroidEntryPoint
 import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 
@@ -17,21 +19,10 @@ class AuthenticationActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         authenticationViewModel.loginState.value = intent?.extras?.getBoolean("login") ?: true
 
         setContent {
             CoffeeCounterTheme {
-                LaunchedEffect(rememberScaffoldState()) {
-                    authenticationViewModel.toasts.collect { message ->
-                        Toast.makeText(
-                            this@AuthenticationActivity,
-                            message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
                 AuthenticationView(
                     authenticationViewModel
                 )
@@ -39,4 +30,3 @@ class AuthenticationActivity : ComponentActivity() {
         }
     }
 }
-

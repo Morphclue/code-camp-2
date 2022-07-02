@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
-import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -13,7 +12,6 @@ import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
-import org.feature.fox.coffee_counter.di.services.ResourcesProvider
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
 import javax.inject.Inject
@@ -21,8 +19,12 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
-    private val resource: ResourcesProvider,
 ) : UserRepositoryInt {
+    private object ErrorConstants {
+        const val REACH_SERVER_ERROR = "Could not reach the server."
+        const val UNKNOWN_ERROR = "Unknown error occurred."
+    }
+
     override suspend fun insertUser(user: User) {
         userDao.insertUser(user)
     }
@@ -77,13 +79,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -93,13 +95,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -109,13 +111,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -125,13 +127,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -141,13 +143,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -157,14 +159,14 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
             println(e)
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -174,13 +176,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -190,13 +192,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -206,13 +208,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -222,13 +224,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 
@@ -238,13 +240,13 @@ class UserRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
-                } ?: Resource.error(resource.getString(R.string.unknown_error), null)
+                } ?: Resource.error(ErrorConstants.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
                 Resource.error(errorMessage, null)
             }
         } catch (e: Exception) {
-            Resource.error(resource.getString(R.string.server_not_reached), null)
+            Resource.error(ErrorConstants.REACH_SERVER_ERROR, null)
         }
     }
 }
