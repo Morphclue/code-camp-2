@@ -5,7 +5,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Switch
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,11 +78,11 @@ fun AdminCheckbox(isAdmin: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Checkbox(
+        Text(text = stringResource(R.string.admin_label))
+        Switch(
             checked = isChecked.value,
             onCheckedChange = { isChecked.value = it }
         )
-        Text(text = stringResource(R.string.admin_label))
     }
 }
 
