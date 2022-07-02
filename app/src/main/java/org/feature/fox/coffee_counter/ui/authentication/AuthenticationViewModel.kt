@@ -6,6 +6,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
@@ -21,8 +24,9 @@ interface IAuthenticationViewModel {
     val passwordState: MutableState<TextFieldValue>
     val reEnteredPasswordState: MutableState<TextFieldValue>
     val showCoreActivity: MutableLiveData<Boolean>
-    val toastMessage: MutableLiveData<String>
     val loginState: MutableState<Boolean>
+    val toastMessage: Channel<String>
+    val toasts: Flow<String>
 
     suspend fun login()
     suspend fun register()
@@ -39,15 +43,16 @@ class AuthenticationViewModel @Inject constructor(
     override val passwordState = mutableStateOf(TextFieldValue())
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue())
     override val showCoreActivity = MutableLiveData<Boolean>()
-    override val toastMessage = MutableLiveData<String>()
     override val loginState = mutableStateOf(false)
+    override val toastMessage = Channel<String>()
+    override val toasts = toastMessage.receiveAsFlow()
 
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
         val response = userRepository.postLogin(loginBody)
 
         if (response.data == null) {
-            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
+            toastMessage.send(response.message ?: resource.getString(R.string.unknown_error))
             return
         }
 
@@ -61,7 +66,7 @@ class AuthenticationViewModel @Inject constructor(
 
     override suspend fun register() {
         if (passwordState.value.text != reEnteredPasswordState.value.text) {
-            toastMessage.value = resource.getString(R.string.match_password)
+            toastMessage.send(resource.getString(R.string.match_password))
             return
         }
 
@@ -73,17 +78,17 @@ class AuthenticationViewModel @Inject constructor(
         val response = userRepository.signUp(registerBody)
 
         if (response.data == null) {
-            toastMessage.value = response.message ?: resource.getString(R.string.unknown_error)
+            toastMessage.send(response.message ?: resource.getString(R.string.unknown_error))
             return
         }
 
         switchToLogin()
+        toastMessage.send(resource.getString(R.string.created_account))
     }
 
     private fun switchToLogin() {
         resetValues()
         loginState.value = true
-        toastMessage.value = resource.getString(R.string.created_account)
     }
 
     private fun resetValues() {
@@ -99,8 +104,9 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val passwordState = mutableStateOf(TextFieldValue("1234"))
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
     override val showCoreActivity = MutableLiveData<Boolean>()
-    override val toastMessage = MutableLiveData<String>()
     override val loginState = mutableStateOf(true)
+    override val toastMessage = Channel<String>()
+    override val toasts = toastMessage.receiveAsFlow()
 
     override suspend fun login() {
         TODO("Not yet implemented")
