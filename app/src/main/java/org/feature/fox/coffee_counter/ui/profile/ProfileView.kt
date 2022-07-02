@@ -26,7 +26,6 @@ import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.ui.CoreActivity
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField

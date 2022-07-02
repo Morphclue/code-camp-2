@@ -5,10 +5,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import dagger.hilt.android.AndroidEntryPoint
 import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 
