@@ -1,8 +1,17 @@
 package org.feature.fox.coffee_counter.ui.profile
 
-import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -10,36 +19,40 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 
-
-@SuppressLint("UnrememberedMutableState")
 @Preview(showSystemUi = true)
 @Composable
-fun ProfileView() {
-    val user = User(id = "a", name = "Max Mustermann", true, "123456789")
-    val nameState = mutableStateOf(TextFieldValue(user.name))
-    val idState = mutableStateOf(TextFieldValue(user.id))
-    val passwordState = mutableStateOf(TextFieldValue(user.password))
-    val retypePasswordState = mutableStateOf(TextFieldValue(user.password))
+fun ProfileViewPreview() {
+    ProfileView(ProfileViewModelPreview())
+}
+
+@Composable
+fun ProfileView(
+    viewModel: IProfileViewModel,
+) {
+    val context = LocalContext.current
+    ToastMessage(viewModel, context)
     val additionalScrollDp = 120.dp
 
     BoxWithConstraints {
@@ -54,38 +67,37 @@ fun ProfileView() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ProfileIcon()
-                CommonTextField(state = idState, label = stringResource(id = R.string.id_hint))
-                CommonTextField(state = nameState, label = stringResource(id = R.string.name_hint))
+                CommonTextField(viewModel.idState, label = stringResource(id = R.string.id_hint))
+                CommonTextField(viewModel.nameState,
+                    label = stringResource(id = R.string.name_hint))
                 PasswordTextField(
-                    state = passwordState,
+                    state = viewModel.passwordState,
                     label = stringResource(id = R.string.password_hint)
                 )
                 PasswordTextField(
-                    state = retypePasswordState,
+                    state = viewModel.retypePasswordState,
                     label = stringResource(id = R.string.re_enter_password_hint)
                 )
-                if (user.isAdmin) AdminCheckbox(user.isAdmin)
-                ProfileButtons()
+                if (viewModel.isAdminState.value) AdminCheckbox(viewModel)
+                ProfileButtons(viewModel, context)
             }
         }
     }
 }
 
 @Composable
-fun AdminCheckbox(isAdmin: Boolean) {
-    val isChecked = remember { mutableStateOf(isAdmin) }
+fun AdminCheckbox(viewModel: IProfileViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(text = stringResource(R.string.admin_label))
         Switch(
-            checked = isChecked.value,
-            onCheckedChange = { isChecked.value = it }
+            checked = viewModel.isAdminState.value,
+            onCheckedChange = { viewModel.isAdminState.value = it }
         )
     }
 }
-
 
 @Composable
 fun ProfileIcon() {
@@ -109,8 +121,15 @@ fun ProfileIcon() {
 }
 
 @Composable
-fun ProfileButtons() {
-    CustomButton(text = stringResource(R.string.update_profile), fraction = 0.9f)
+fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
+    val coroutineScope = rememberCoroutineScope()
+    val showMainActivity = viewModel.showMainActivity.observeAsState()
+
+    CustomButton(text = stringResource(R.string.update_profile), fraction = 0.9f, onClick = {
+        coroutineScope.launch {
+            viewModel.updateUser()
+        }
+    })
     CustomButton(text = stringResource(R.string.logout), fraction = 0.9f)
 
     val versionName = BuildConfig.VERSION_NAME
@@ -118,7 +137,14 @@ fun ProfileButtons() {
 
     Button(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-        onClick = {},
+        onClick = {
+            coroutineScope.launch {
+                viewModel.deleteUser()
+                if (showMainActivity.value == true) {
+                    context.startActivity(Intent(context, MainActivity::class.java))
+                }
+            }
+        },
         modifier = Modifier.fillMaxWidth(0.9f),
     ) {
         Text(

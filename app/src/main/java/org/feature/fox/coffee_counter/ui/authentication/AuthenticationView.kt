@@ -1,14 +1,16 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
 import android.content.Intent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +31,7 @@ import org.feature.fox.coffee_counter.ui.CoreActivity
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 
 @Preview(showSystemUi = true)
 @Composable
@@ -41,6 +44,9 @@ fun AuthenticationViewPreview(
 fun AuthenticationView(
     viewModel: IAuthenticationViewModel,
 ) {
+    val context = LocalContext.current
+    ToastMessage(viewModel, context)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,13 +69,15 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
         state = viewModel.passwordState,
         label = stringResource(R.string.password_hint)
     )
-    RememberMeCheckbox()
+    RememberMeCheckbox(viewModel)
     CustomButton(
         onClick = {
             coroutineScope.launch {
                 viewModel.login()
                 if (showCoreActivity.value == true) {
-                    context.startActivity(Intent(context, CoreActivity::class.java))
+                    val intent = Intent(context, CoreActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    context.startActivity(intent)
                 }
             }
         },
@@ -146,14 +154,15 @@ fun HeaderButton(
 }
 
 @Composable
-fun RememberMeCheckbox() {
-    val isChecked = remember { mutableStateOf(false) }
+fun RememberMeCheckbox(viewModel: IAuthenticationViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
-            checked = isChecked.value,
-            onCheckedChange = { isChecked.value = it }
+            checked = viewModel.isChecked.value,
+            onCheckedChange = {
+                viewModel.updateRememberMe(it)
+            }
         )
         Text(text = stringResource(R.string.remember_me))
     }
