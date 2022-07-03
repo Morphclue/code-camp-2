@@ -29,4 +29,6 @@
     <string name="updated_user">Successfully updated user</string>
     <string name="deleted_user">Successfully deleted user</string>
     <string name="server_not_reached">Could not reach server.</string>
+    <string name="password_length">Password must contain at least 8 characters</string>
+    <string name="empty_name">Name may not be empty</string>
 </resources>

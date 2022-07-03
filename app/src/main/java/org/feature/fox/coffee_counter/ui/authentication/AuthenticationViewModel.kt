@@ -81,6 +81,16 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
 
+        if (passwordState.value.text.trim().length < 8) {
+            toastChannel.send(UIText.StringResource(R.string.password_length))
+            return
+        }
+
+        if (nameState.value.text.trim().isBlank()) {
+            toastChannel.send(UIText.StringResource(R.string.empty_name))
+            return
+        }
+
         val registerBody = UserBody(
             idState.value.text.trim().ifEmpty { java.util.UUID.randomUUID().toString() },
             nameState.value.text.trim(),
