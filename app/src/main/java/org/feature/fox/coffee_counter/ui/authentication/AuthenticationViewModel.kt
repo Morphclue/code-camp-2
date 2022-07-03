@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import at.favre.lib.crypto.bcrypt.BCrypt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -27,9 +29,11 @@ interface IAuthenticationViewModel : IToast {
     val reEnteredPasswordState: MutableState<TextFieldValue>
     val showCoreActivity: MutableLiveData<Boolean>
     val loginState: MutableState<Boolean>
+    val isChecked: MutableState<Boolean>
 
     suspend fun login()
     suspend fun register()
+    fun updateRememberMe(value: Boolean)
 }
 
 @HiltViewModel
@@ -43,8 +47,15 @@ class AuthenticationViewModel @Inject constructor(
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue())
     override val showCoreActivity = MutableLiveData<Boolean>()
     override val loginState = mutableStateOf(false)
+    override var isChecked = mutableStateOf(false)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+
+    init {
+        viewModelScope.launch {
+            loadValues()
+        }
+    }
 
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text, passwordState.value.text)
@@ -97,6 +108,20 @@ class AuthenticationViewModel @Inject constructor(
         toastChannel.send(UIText.StringResource(R.string.created_account))
     }
 
+    override fun updateRememberMe(value: Boolean) {
+        isChecked.value = value
+        preference.setTag(BuildConfig.REMEMBER_ME, value)
+    }
+
+    private fun loadValues() {
+        isChecked.value = preference.getTag(BuildConfig.REMEMBER_ME, true)
+        if (!isChecked.value) {
+            return
+        }
+        idState.value = TextFieldValue(preference.getTag(BuildConfig.USER_ID))
+        passwordState.value = TextFieldValue(preference.getTag(BuildConfig.USER_PASSWORD))
+    }
+
     private fun switchToLogin() {
         resetValues()
         loginState.value = true
@@ -116,6 +141,7 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val reEnteredPasswordState = mutableStateOf(TextFieldValue("1234"))
     override val showCoreActivity = MutableLiveData<Boolean>()
     override val loginState = mutableStateOf(true)
+    override val isChecked = mutableStateOf(true)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
@@ -124,6 +150,10 @@ class AuthenticationViewModelPreview : IAuthenticationViewModel {
     }
 
     override suspend fun register() {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateRememberMe(value: Boolean) {
         TODO("Not yet implemented")
     }
 }

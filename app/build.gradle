@@ -24,6 +24,7 @@ android {
         buildConfigField "String", "UNKNOWN_ERROR", '"Unknown error occurred."'
         buildConfigField "String", "USER_ID", '"USER_ID"'
         buildConfigField "String", "USER_PASSWORD", '"USER_PASSWORD"'
+        buildConfigField "String", "REMEMBER_ME", '"REMEMBER_ME"'
         buildConfigField "String", "EXPIRATION", '"EXPIRATION"'
         buildConfigField "String", "BEARER_TOKEN", '"BEARER_TOKEN"'
 
@@ -167,7 +168,6 @@ dependencies {
     kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 }
-
 
 kapt {
     correctErrorTypes = true
