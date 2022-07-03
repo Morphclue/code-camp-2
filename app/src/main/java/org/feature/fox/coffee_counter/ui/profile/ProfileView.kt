@@ -13,16 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.SaveAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,17 +27,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
+import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
-import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
 @Preview(showSystemUi = true)
 @Composable
@@ -56,16 +53,17 @@ fun ProfileView(
 ) {
     val context = LocalContext.current
     ToastMessage(viewModel, context)
+    val additionalScrollDp = 120.dp
 
     BoxWithConstraints {
         Column {
             MoneyAppBar(title = stringResource(R.string.profile_title))
             Column(
                 modifier = Modifier
-                    .padding(5.dp)
+                    .padding(4.dp)
                     .verticalScroll(rememberScrollState())
-                    .height(this@BoxWithConstraints.maxHeight),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                    .height(this@BoxWithConstraints.maxHeight + additionalScrollDp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ProfileIcon()
@@ -81,7 +79,7 @@ fun ProfileView(
                     label = stringResource(id = R.string.re_enter_password_hint)
                 )
                 if (viewModel.isAdminState.value) AdminCheckbox(viewModel)
-                ButtonRow(viewModel, context)
+                ProfileButtons(viewModel, context)
             }
         }
     }
@@ -93,11 +91,11 @@ fun AdminCheckbox(viewModel: IProfileViewModel) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Checkbox(
+        Text(text = stringResource(R.string.admin_label))
+        Switch(
             checked = viewModel.isAdminState.value,
             onCheckedChange = { viewModel.isAdminState.value = it }
         )
-        Text(text = stringResource(R.string.admin_label))
     }
 }
 
@@ -123,69 +121,35 @@ fun ProfileIcon() {
 }
 
 @Composable
-fun ButtonRow(viewModel: IProfileViewModel, context: Context) {
+fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
     val coroutineScope = rememberCoroutineScope()
     val showMainActivity = viewModel.showMainActivity.observeAsState()
 
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            Card(
-                shape = CircleShape,
-                backgroundColor = CrayolaBrown,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(50.dp)
-            ) {
-                IconButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.updateUser()
-                        }
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.SaveAlt,
-                        null,
-                        tint = Color.White,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-
-            Card(
-                shape = CircleShape,
-                backgroundColor = CrayolaBrown,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(50.dp)
-            ) {
-                IconButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.deleteUser()
-                            if (showMainActivity.value == true) {
-                                context.startActivity(Intent(context, MainActivity::class.java))
-                            }
-                        }
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        null,
-                        tint = Color.White,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
+    CustomButton(text = stringResource(R.string.update_profile), fraction = 0.9f, onClick = {
+        coroutineScope.launch {
+            viewModel.updateUser()
         }
+    })
+    CustomButton(text = stringResource(R.string.logout), fraction = 0.9f)
+
+    val versionName = BuildConfig.VERSION_NAME
+    Text(text = "version $versionName", fontWeight = FontWeight.Light)
+
+    Button(
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+        onClick = {
+            coroutineScope.launch {
+                viewModel.deleteUser()
+                if (showMainActivity.value == true) {
+                    context.startActivity(Intent(context, MainActivity::class.java))
+                }
+            }
+        },
+        modifier = Modifier.fillMaxWidth(0.9f),
+    ) {
+        Text(
+            text = stringResource(R.string.delete_account),
+            color = Color.Red
+        )
     }
 }
