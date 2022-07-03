@@ -7,11 +7,13 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.di.services.network.BearerInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -20,7 +22,7 @@ import javax.inject.Singleton
 object ApiModule {
 
     @Provides
-    fun providesBaseUrl(): String {
+    fun provideBaseUrl(): String {
         return BuildConfig.BASE_URL
     }
 
@@ -30,13 +32,15 @@ object ApiModule {
     }
 
     @Provides
-    fun providesBearerInterceptor(): BearerInterceptor {
-        return BearerInterceptor()
+    fun providesBearerInterceptor(
+        preference: AppPreference,
+    ): BearerInterceptor {
+        return BearerInterceptor(preference)
     }
 
     @Singleton
     @Provides
-    fun providesOkHttpClient(
+    fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         bearerInterceptor: BearerInterceptor,
     ): OkHttpClient {
@@ -52,12 +56,14 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun providesRetrofit(
+    fun provideRetrofit(
         baseUrl: String,
+        scalarsConverterFactory: ScalarsConverterFactory,
         convFact: Converter.Factory,
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
+            .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(convFact)
             .baseUrl(baseUrl)
             .client(okHttpClient)
@@ -66,19 +72,27 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun providesConverterFactory(): Converter.Factory {
+    fun providesScalarsConverterFactory(): ScalarsConverterFactory {
+        return ScalarsConverterFactory.create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideConverterFactory(): Converter.Factory {
         return MoshiConverterFactory.create().asLenient()
     }
 
     @Singleton
     @Provides
-    fun providesApiService(
-        retrofit: Retrofit = providesRetrofit(
+    fun provideApiService(
+        preference: AppPreference,
+        retrofit: Retrofit = provideRetrofit(
             BuildConfig.BASE_URL,
-            providesConverterFactory(),
-            providesOkHttpClient(
+            providesScalarsConverterFactory(),
+            provideConverterFactory(),
+            provideOkHttpClient(
                 providesLoggingInterceptor(),
-                providesBearerInterceptor()
+                providesBearerInterceptor(preference)
             )
         ),
     ): ApiService {

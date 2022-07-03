@@ -4,25 +4,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import org.feature.fox.coffee_counter.data.local.database.dao.ItemDao
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
-import org.feature.fox.coffee_counter.data.repository.ItemRepository
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
-
     @Provides
     fun provideUserRepository(
         userDao: UserDao,
-        apiService: ApiService
-    ) = UserRepository(userDao, apiService)
-
-    @Provides
-    fun provideItemRepository(
-        itemDao: ItemDao,
-        apiService: ApiService
-    ) = ItemRepository(itemDao, apiService)
+        apiService: ApiService,
+    ): UserRepository {
+        return UserRepository(userDao, apiService)
+    }
 }
