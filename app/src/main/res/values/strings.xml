@@ -31,4 +31,5 @@
     <string name="server_not_reached">Could not reach server.</string>
     <string name="password_length">Password must contain at least 8 characters</string>
     <string name="empty_name">Name may not be empty</string>
+    <string name="no_data">Nothing to show yet</string>
 </resources>
