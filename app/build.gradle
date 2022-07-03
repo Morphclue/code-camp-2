@@ -20,8 +20,12 @@ android {
         buildConfigField "String", "ITEMS_ENDPOINT", '"/items"'
         buildConfigField "String", "LOGIN_ENDPOINT", '"/login"'
         buildConfigField "String", "DATE_PATTERN", '"dd.MM.yy"'
+        buildConfigField "String", "REACH_SERVER_ERROR", '"Could not reach the server."'
+        buildConfigField "String", "UNKNOWN_ERROR", '"Unknown error occurred."'
         buildConfigField "String", "USER_ID", '"USER_ID"'
         buildConfigField "String", "USER_PASSWORD", '"USER_PASSWORD"'
+        buildConfigField "String", "EXPIRATION", '"EXPIRATION"'
+        buildConfigField "String", "BEARER_TOKEN", '"BEARER_TOKEN"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -120,6 +124,7 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
 
     // Moshi
     implementation "com.squareup.moshi:moshi:$moshi_version"
