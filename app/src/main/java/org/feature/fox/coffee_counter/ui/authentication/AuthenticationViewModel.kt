@@ -58,7 +58,7 @@ class AuthenticationViewModel @Inject constructor(
     }
 
     override suspend fun login() {
-        val loginBody = LoginBody(idState.value.text, passwordState.value.text)
+        val loginBody = LoginBody(idState.value.text.trim(), passwordState.value.text.trim())
         val response = userRepository.postLogin(loginBody)
 
         if (response.data == null) {
@@ -67,8 +67,8 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
 
-        preference.setTag(BuildConfig.USER_ID, idState.value.text)
-        preference.setTag(BuildConfig.USER_PASSWORD, passwordState.value.text)
+        preference.setTag(BuildConfig.USER_ID, idState.value.text.trim())
+        preference.setTag(BuildConfig.USER_PASSWORD, passwordState.value.text.trim())
         preference.setTag(BuildConfig.EXPIRATION, response.data.expiration.toString())
         preference.setTag(BuildConfig.BEARER_TOKEN, response.data.token)
 
@@ -76,15 +76,15 @@ class AuthenticationViewModel @Inject constructor(
     }
 
     override suspend fun register() {
-        if (passwordState.value.text != reEnteredPasswordState.value.text) {
+        if (passwordState.value.text.trim() != reEnteredPasswordState.value.text.trim()) {
             toastChannel.send(UIText.StringResource(R.string.match_password))
             return
         }
 
         val registerBody = UserBody(
-            idState.value.text.ifEmpty { null },
-            nameState.value.text,
-            passwordState.value.text,
+            idState.value.text.trim().ifEmpty { java.util.UUID.randomUUID().toString() },
+            nameState.value.text.trim(),
+            passwordState.value.text.trim(),
         )
         val response = userRepository.signUp(registerBody)
 
@@ -97,11 +97,11 @@ class AuthenticationViewModel @Inject constructor(
         idState.value = TextFieldValue(response.data)
         userRepository.insertUser(
             User(
-                id = idState.value.text,
-                name = nameState.value.text,
+                id = idState.value.text.trim(),
+                name = nameState.value.text.trim(),
                 false,
                 password = BCrypt.withDefaults()
-                    .hashToString(12, passwordState.value.text.toCharArray())
+                    .hashToString(12, passwordState.value.text.trim().toCharArray())
             )
         )
         switchToLogin()
