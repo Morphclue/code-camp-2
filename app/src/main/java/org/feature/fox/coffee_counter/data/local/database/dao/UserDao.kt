@@ -1,12 +1,7 @@
 package org.feature.fox.coffee_counter.data.local.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -14,13 +9,13 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
 @Dao
 interface UserDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun insertUser(user: User)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun insertFunding(funding: Funding)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun insertPurchase(purchase: Purchase)
 
     @Delete

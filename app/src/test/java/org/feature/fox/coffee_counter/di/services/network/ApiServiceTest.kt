@@ -41,11 +41,11 @@ class ApiServiceTest {
     @Before
     fun setup() {
         mockWebServer.start()
-        apiService = ApiModule.provideApiService(
-            ApiModule.provideRetrofit(
+        apiService = ApiModule.providesApiService(
+            ApiModule.providesRetrofit(
                 mockWebServer.url("/").toString(),
-                ApiModule.provideConverterFactory(),
-                ApiModule.provideOkHttpClient(
+                ApiModule.providesConverterFactory(),
+                ApiModule.providesOkHttpClient(
                     ApiModule.providesLoggingInterceptor(),
                     ApiModule.providesBearerInterceptor()
                 )

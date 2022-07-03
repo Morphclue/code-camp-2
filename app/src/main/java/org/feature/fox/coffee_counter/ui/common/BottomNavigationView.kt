@@ -27,6 +27,7 @@ import org.feature.fox.coffee_counter.ui.profile.ProfileViewModel
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 import org.feature.fox.coffee_counter.ui.transaction.HistoryView
+import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
 import org.feature.fox.coffee_counter.ui.user.UsersView
 
 @Preview
@@ -62,14 +63,15 @@ fun BottomNavBar(navController: NavHostController) {
 @Composable
 fun Navigation(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    transactionsViewModel: TransactionViewModel,
 ) {
     NavHost(navController = navController, startDestination = BottomNavItem.Items.route) {
         composable(BottomNavItem.Items.route) {
             ItemsView()
         }
         composable(BottomNavItem.History.route) {
-            HistoryView()
+            HistoryView(transactionsViewModel)
         }
         composable(BottomNavItem.Profile.route) {
             ProfileView(profileViewModel)
