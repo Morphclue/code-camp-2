@@ -39,7 +39,12 @@ import org.feature.fox.coffee_counter.ui.common.SearchBar
 
 @Preview(showSystemUi = true)
 @Composable
-fun UsersView() {
+fun UsersViewPreview() {
+    UsersView(UserListViewModelPreview())
+}
+
+@Composable
+fun UsersView(userListViewModel: IUserListViewModel) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val users = listOf(
         User(id = "a", name = "Julian", isAdmin = true, password = "julian"),
