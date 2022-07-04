@@ -38,13 +38,13 @@ fun ItemsView(
     Column {
         MoneyAppBar(title = stringResource(R.string.item_list_title))
         SearchBar()
-        ItemList(viewModel.availableItemsState)
+        ItemList(viewModel.availableItemsState.value)
         BuyButton(amount = viewModel.currentShoppingCartAmountState)
     }
 }
 
 @Composable
-fun ItemList(items: List<Item>) {
+fun ItemList(items: MutableList<Item>?) {
     Column {
         Column(
             modifier = Modifier
@@ -54,7 +54,7 @@ fun ItemList(items: List<Item>) {
 //                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items.forEach { item ->
+            items?.forEach { item ->
                 ItemRow(item)
                 Divider(
                     color = Color.Gray,
@@ -137,8 +137,3 @@ fun BuyButton(amount: MutableState<Double>) {
         )
     }
 }
-
-
-
-
-
