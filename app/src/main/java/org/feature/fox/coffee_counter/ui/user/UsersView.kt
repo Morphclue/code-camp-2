@@ -2,6 +2,7 @@
 
 package org.feature.fox.coffee_counter.ui.user
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,6 +58,7 @@ fun UsersViewPreview() {
 @Composable
 fun UsersView(viewModel: IUserListViewModel) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
 
     ModalBottomSheetLayout(
         sheetState = bottomState,
@@ -70,6 +72,14 @@ fun UsersView(viewModel: IUserListViewModel) {
                 SearchBar()
                 if (viewModel.isLoaded.value) UserList(viewModel, bottomState) else LoadingBox()
             }
+        }
+    }
+
+    BackHandler(
+        enabled = bottomState.isVisible
+    ) {
+        scope.launch {
+            bottomState.hide()
         }
     }
 }
