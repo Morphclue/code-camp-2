@@ -3,12 +3,14 @@
 package org.feature.fox.coffee_counter.ui.user
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -40,7 +42,14 @@ import org.feature.fox.coffee_counter.ui.common.SearchBar
 @Preview(showSystemUi = true)
 @Composable
 fun UsersViewPreview() {
-    UsersView(UserListViewModelPreview())
+    val preview = UserListViewModelPreview()
+    preview.userList.add(User(id = "a", name = "Julian", isAdmin = true, password = "julian", 42.0))
+    preview.userList.add(User(id = "b",
+        name = "Steffen",
+        isAdmin = true,
+        password = "steffen",
+        42.0))
+    UsersView(preview)
 }
 
 @Composable
@@ -63,24 +72,25 @@ fun UsersView(viewModel: IUserListViewModel) {
         ) {
             Column {
                 SearchBar()
-                UserList(users, bottomState)
+                if (viewModel.isLoaded.value) UserList(viewModel, bottomState)
             }
         }
     }
 }
 
 @Composable
-fun UserList(users: List<User>, bottomState: ModalBottomSheetState) {
+fun UserList(viewModel: IUserListViewModel, bottomState: ModalBottomSheetState) {
     Column {
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(viewModel.scrollState)
                 .padding(5.dp)
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .height((IntrinsicSize.Min)),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            users.forEach { user ->
+            viewModel.userList.forEach { user ->
                 UserRow(user, bottomState)
                 Divider(
                     color = Color.Gray,
@@ -89,6 +99,7 @@ fun UserList(users: List<User>, bottomState: ModalBottomSheetState) {
                     thickness = 1.dp
                 )
             }
+            Box(Modifier.height(30.dp))
         }
     }
 }
