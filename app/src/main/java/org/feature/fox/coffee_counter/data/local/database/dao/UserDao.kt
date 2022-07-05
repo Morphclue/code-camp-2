@@ -9,13 +9,13 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
 @Dao
 interface UserDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun insertUser(user: User)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun insertFunding(funding: Funding)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun insertPurchase(purchase: Purchase)
 
     @Delete

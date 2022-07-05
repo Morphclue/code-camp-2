@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.transaction
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,42 +20,60 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.Funding
-import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import java.text.SimpleDateFormat
 import java.util.*
 
 private val rowTextFontSize: TextUnit = 18.sp
-private val transactions = listOf(
-    Funding(1654153006000, "foo", 10.00),
-    Purchase(1645167406000, "foo", -9.89, "003", "Espresso", 3),
-    Purchase(1613285806000, "foo", -3.30, "001", "Cola", 2),
-)
+
 
 @Preview(showSystemUi = true)
 @Composable
-fun HistoryView() {
-    Column {
-        MoneyAppBar(title = stringResource(R.string.history_title))
-        ShowPeriodField()
-        TransactionContainer()
-    }
+fun HistoryViewPreview(
+) {
+    HistoryView(viewModel = TransactionViewModelPreview())
 }
 
 @Composable
-fun TransactionContainer() {
+fun HistoryView(
+    viewModel: ITransactionViewModel
+) {
+    Column {
+        MoneyAppBar(title = stringResource(R.string.history_title))
+        ShowPeriodField()
+        TransactionContainer(viewModel)
+    }
+}
+
+@SuppressLint("CoroutineCreationDuringComposition")
+@Composable
+fun TransactionContainer(viewModel: ITransactionViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(5.dp)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        transactions.forEach { transaction ->
-            if (transaction is Funding) {
+        coroutineScope.launch {
+            viewModel.refreshTransactions()
+        }
+        if (viewModel.transactions.isEmpty()) Text(
+            stringResource(id = R.string.no_data),
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            color = Color.LightGray
+        )
+
+
+        viewModel.transactions.forEach { transaction ->
+            if (transaction.type == "funding") {
                 TransactionRow(
                     Color.Green,
                     "Funding",
@@ -61,13 +81,13 @@ fun TransactionContainer() {
                         .format(Date(transaction.timestamp)),
                     "${transaction.value}€"
                 )
-            } else if (transaction is Purchase) {
+            } else if (transaction.type == "purchase") {
                 TransactionRow(
                     Color.DarkGray,
                     "Order",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${transaction.totalValue}€"
+                    "${transaction.value}€"
                 )
             }
             Divider(

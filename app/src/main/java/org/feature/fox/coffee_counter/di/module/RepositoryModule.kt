@@ -14,8 +14,8 @@ object RepositoryModule {
     @Provides
     fun provideUserRepository(
         userDao: UserDao,
-        apiService: ApiService
-    ) : UserRepository {
+        apiService: ApiService,
+    ): UserRepository {
         return UserRepository(userDao, apiService)
     }
 }

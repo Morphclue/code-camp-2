@@ -7,11 +7,13 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.di.services.network.BearerInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -30,8 +32,10 @@ object ApiModule {
     }
 
     @Provides
-    fun providesBearerInterceptor(): BearerInterceptor {
-        return BearerInterceptor()
+    fun providesBearerInterceptor(
+        preference: AppPreference,
+    ): BearerInterceptor {
+        return BearerInterceptor(preference)
     }
 
     @Singleton
@@ -54,14 +58,22 @@ object ApiModule {
     @Provides
     fun provideRetrofit(
         baseUrl: String,
+        scalarsConverterFactory: ScalarsConverterFactory,
         convFact: Converter.Factory,
         okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
+            .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(convFact)
             .baseUrl(baseUrl)
             .client(okHttpClient)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesScalarsConverterFactory(): ScalarsConverterFactory {
+        return ScalarsConverterFactory.create()
     }
 
     @Singleton
@@ -73,12 +85,14 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideApiService(
+        preference: AppPreference,
         retrofit: Retrofit = provideRetrofit(
             BuildConfig.BASE_URL,
+            providesScalarsConverterFactory(),
             provideConverterFactory(),
             provideOkHttpClient(
                 providesLoggingInterceptor(),
-                providesBearerInterceptor()
+                providesBearerInterceptor(preference)
             )
         ),
     ): ApiService {
