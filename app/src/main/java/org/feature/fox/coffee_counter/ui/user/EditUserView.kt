@@ -67,7 +67,7 @@ fun EditUserView(
         user.value?.name?.let { UserNameRow(it) }
         MoneyRow()
         user.value?.isAdmin?.let { AdminRow(it) }
-        ButtonRow(bottomState)
+        ButtonRow(viewModel, bottomState)
     }
 }
 
@@ -124,7 +124,7 @@ fun AdminRow(admin: Boolean) {
 }
 
 @Composable
-fun ButtonRow(bottomState: ModalBottomSheetState) {
+fun ButtonRow(viewModel: IUserListViewModel, bottomState: ModalBottomSheetState) {
     val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier
@@ -140,7 +140,12 @@ fun ButtonRow(bottomState: ModalBottomSheetState) {
         CustomButton(
             text = "Save",
             fraction = 0.4f,
-            onClick = { scope.launch { bottomState.hide() } }
+            onClick = {
+                scope.launch {
+                    viewModel.updateUser()
+                    bottomState.hide()
+                }
+            }
         )
     }
 }

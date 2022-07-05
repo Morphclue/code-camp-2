@@ -17,6 +17,8 @@ interface IUserListViewModel {
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
     var currentUser: MutableLiveData<User>
+
+    suspend fun updateUser()
 }
 
 @HiltViewModel
@@ -32,6 +34,10 @@ class UserListViewModel @Inject constructor(
         viewModelScope.launch {
             loadUsers()
         }
+    }
+
+    override suspend fun updateUser() {
+        TODO("Not yet implemented")
     }
 
     private suspend fun loadUsers() {
@@ -64,4 +70,8 @@ class UserListViewModelPreview : IUserListViewModel {
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
     override var currentUser = MutableLiveData<User>()
+
+    override suspend fun updateUser() {
+        TODO("Not yet implemented")
+    }
 }
