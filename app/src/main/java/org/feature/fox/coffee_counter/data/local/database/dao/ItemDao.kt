@@ -9,8 +9,6 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 
 @Dao
 interface ItemDao {
-
-
     @Update
     suspend fun insertItem(item: Item)
 
