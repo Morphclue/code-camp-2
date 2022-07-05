@@ -32,4 +32,8 @@
     <string name="password_length">Password must contain at least 8 characters</string>
     <string name="empty_name">Name may not be empty</string>
     <string name="no_data">Nothing to show yet</string>
+    <string name="delete_item">Successfully deleted item</string>
+    <string name="add_item">Successfully added item</string>
+    <string name="update_item">Successfully updated item</string>
+    <string name="amount">Amount</string>
 </resources>

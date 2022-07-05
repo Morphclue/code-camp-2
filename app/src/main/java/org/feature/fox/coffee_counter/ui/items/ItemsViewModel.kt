@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
+import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
 import org.feature.fox.coffee_counter.util.IToast
@@ -22,15 +23,17 @@ interface IItemsViewModel : IToast {
     val availableItemsState: MutableLiveData<MutableList<Item>>
     val itemsInShoppingCartState: MutableLiveData<MutableList<Item>>
     val currentShoppingCartAmountState: MutableState<Double>
+    val adminView: MutableState<Boolean>
+    val isAdmin: MutableState<Boolean>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item)
     suspend fun removeItemFromShoppingCart(item: Item)
     suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
-    suspend fun addItem()
-    suspend fun updateItem()
-    suspend fun deleteItem()
+    suspend fun addItem(item: Item)
+    suspend fun updateItem(itemId: String, item: Item)
+    suspend fun deleteItem(id: String)
 }
 
 @HiltViewModel
@@ -42,6 +45,8 @@ class ItemsViewModel @Inject constructor(
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override val adminView = mutableStateOf(false)
+    override val isAdmin = mutableStateOf(true)
 
     init {
         viewModelScope.launch {
@@ -124,22 +129,56 @@ class ItemsViewModel @Inject constructor(
     override suspend fun buyItems() {
         itemsInShoppingCartState.value?.forEach { cartItem ->
             if (cartItem.amount > 0) {
-                // TODO validate
+                // TODO validate and delete from cart if successful
                 itemRepository.purchaseItem(cartItem.id, PurchaseBody(cartItem.id, cartItem.amount))
             }
         }
     }
 
-    override suspend fun addItem() {
-        TODO("Not yet implemented")
+    override suspend fun addItem(item: Item) {
+        val response = itemRepository.postItem(ItemBody(
+            id = item.id,
+            name = item.name,
+            amount = item.amount,
+            price = item.price
+        ))
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        toastChannel.send(UIText.StringResource(R.string.add_item))
     }
 
-    override suspend fun updateItem() {
-        TODO("Not yet implemented")
+    override suspend fun updateItem(itemId: String, item: Item) {
+        val response = itemRepository.updateItem(
+            itemId = itemId,
+            itemBody = ItemBody(
+                id = item.id,
+                name = item.name,
+                amount = item.amount,
+                price = item.price,
+            )
+        )
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        toastChannel.send(UIText.StringResource(R.string.update_item))
     }
 
-    override suspend fun deleteItem() {
-        TODO("Not yet implemented")
+    override suspend fun deleteItem(id: String) {
+        val response = itemRepository.deleteItemById(id)
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        toastChannel.send(UIText.StringResource(R.string.delete_item))
     }
 }
 
@@ -149,6 +188,8 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override val adminView = mutableStateOf(false)
+    override val isAdmin = mutableStateOf(true)
 
     init {
         availableItemsState.value = mutableListOf(
@@ -182,15 +223,15 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addItem() {
+    override suspend fun addItem(item: Item) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateItem() {
+    override suspend fun updateItem(itemId: String, item: Item) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteItem() {
+    override suspend fun deleteItem(id: String) {
         TODO("Not yet implemented")
     }
 }
