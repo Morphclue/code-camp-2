@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.items
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,18 +52,21 @@ fun ItemsViewPreview() {
 
 @Composable
 fun ItemsView(
-    viewModel: IItemsViewModel,
+    itemViewModel: IItemsViewModel,
 ) {
     Column {
         MoneyAppBar(title = stringResource(R.string.item_list_title))
         SearchBar()
-        ItemList(viewModel)
-        BuyButton(viewModel)
+        ItemList(itemViewModel)
+        BuyButton(itemViewModel)
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemList(viewModel: IItemsViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column {
         Column(
             modifier = Modifier
@@ -72,6 +76,9 @@ fun ItemList(viewModel: IItemsViewModel) {
 //                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            coroutineScope.launch {
+                viewModel.getItems()
+            }
             viewModel.availableItemsState.value?.forEach { item ->
                 ItemRow(viewModel, item)
                 Divider(
@@ -85,10 +92,15 @@ fun ItemList(viewModel: IItemsViewModel) {
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemRow(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
     var buyItems by remember { mutableStateOf(0) }
+
+    coroutineScope.launch {
+        buyItems = viewModel.getItemCartAmount(item)
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

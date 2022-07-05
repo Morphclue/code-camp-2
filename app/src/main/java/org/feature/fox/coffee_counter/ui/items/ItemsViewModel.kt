@@ -59,7 +59,7 @@ class ItemsViewModel @Inject constructor(
         }
 
         availableItemsState.value = mutableListOf()
-        itemsInShoppingCartState.value = mutableListOf()
+
         response.data.forEach { item ->
             availableItemsState.value?.add(
                 Item(
@@ -69,14 +69,20 @@ class ItemsViewModel @Inject constructor(
                     price = item.price,
                 )
             )
-            itemsInShoppingCartState.value?.add(
-                Item(
-                    id = item.id,
-                    name = item.name,
-                    amount = 0,
-                    price = item.price,
+        }
+
+        if(itemsInShoppingCartState.value.isNullOrEmpty()){
+            itemsInShoppingCartState.value = mutableListOf()
+            availableItemsState.value?.forEach { item ->
+                itemsInShoppingCartState.value?.add(
+                    Item(
+                        id = item.id,
+                        name = item.name,
+                        amount = 0,
+                        price = item.price,
+                    )
                 )
-            )
+            }
         }
     }
 
