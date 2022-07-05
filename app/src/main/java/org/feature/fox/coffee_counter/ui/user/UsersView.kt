@@ -44,13 +44,13 @@ fun UsersViewPreview() {
 }
 
 @Composable
-fun UsersView(userListViewModel: IUserListViewModel) {
+fun UsersView(viewModel: IUserListViewModel) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val users = listOf(
-        User(id = "a", name = "Julian", isAdmin = true, password = "julian"),
-        User(id = "b", name = "Steffen", isAdmin = true, password = "steffen"),
-        User(id = "c", name = "Kevin", isAdmin = true, password = "kevin"),
-        User(id = "d", name = "Nils", isAdmin = false, password = "nils"),
+        User(id = "a", name = "Julian", isAdmin = true, password = "julian", 42.0),
+        User(id = "b", name = "Steffen", isAdmin = true, password = "steffen", 42.0),
+        User(id = "c", name = "Kevin", isAdmin = true, password = "kevin", 42.0),
+        User(id = "d", name = "Nils", isAdmin = false, password = "nils", 42.0),
     )
 
     ModalBottomSheetLayout(

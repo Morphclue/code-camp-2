@@ -111,7 +111,8 @@ class AuthenticationViewModel @Inject constructor(
                 name = nameState.value.text.trim(),
                 false,
                 password = BCrypt.withDefaults()
-                    .hashToString(12, passwordState.value.text.trim().toCharArray())
+                    .hashToString(12, passwordState.value.text.trim().toCharArray()),
+                balance = 0.0
             )
         )
         switchToLogin()
