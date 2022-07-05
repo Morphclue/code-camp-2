@@ -3,6 +3,7 @@ package org.feature.fox.coffee_counter.ui.user
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,7 @@ interface IUserListViewModel {
     val userList: MutableList<User>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
+    var currentUser: MutableLiveData<User>
 }
 
 @HiltViewModel
@@ -24,6 +26,7 @@ class UserListViewModel @Inject constructor(
     override val userList = mutableListOf<User>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
+    override var currentUser = MutableLiveData<User>()
 
     init {
         viewModelScope.launch {
@@ -60,4 +63,5 @@ class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableListOf<User>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
+    override var currentUser = MutableLiveData<User>()
 }

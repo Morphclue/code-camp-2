@@ -57,17 +57,11 @@ fun UsersViewPreview() {
 @Composable
 fun UsersView(viewModel: IUserListViewModel) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val users = listOf(
-        User(id = "a", name = "Julian", isAdmin = true, password = "julian", 42.0),
-        User(id = "b", name = "Steffen", isAdmin = true, password = "steffen", 42.0),
-        User(id = "c", name = "Kevin", isAdmin = true, password = "kevin", 42.0),
-        User(id = "d", name = "Nils", isAdmin = false, password = "nils", 42.0),
-    )
 
     ModalBottomSheetLayout(
         sheetState = bottomState,
         sheetContent = {
-            EditUserView(users, bottomState)
+            EditUserView(viewModel, bottomState)
         }) {
         Scaffold(
             topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },
@@ -105,7 +99,7 @@ fun UserList(viewModel: IUserListViewModel, bottomState: ModalBottomSheetState) 
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             viewModel.userList.forEach { user ->
-                UserRow(user, bottomState)
+                UserRow(viewModel, user, bottomState)
                 Divider(
                     color = Color.Gray,
                     modifier = Modifier
@@ -119,7 +113,7 @@ fun UserList(viewModel: IUserListViewModel, bottomState: ModalBottomSheetState) 
 }
 
 @Composable
-fun UserRow(user: User, bottomState: ModalBottomSheetState) {
+fun UserRow(viewModel: IUserListViewModel, user: User, bottomState: ModalBottomSheetState) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -130,27 +124,30 @@ fun UserRow(user: User, bottomState: ModalBottomSheetState) {
             user.name + " ${if (user.isAdmin) "(${stringResource(id = R.string.user_admin)})" else ""}",
             fontWeight = FontWeight.Medium
         )
-        MoneyEditRow(bottomState)
+        MoneyEditRow(viewModel, user, bottomState)
     }
 }
 
 @Composable
-fun MoneyEditRow(bottomState: ModalBottomSheetState) {
+fun MoneyEditRow(viewModel: IUserListViewModel, user: User, bottomState: ModalBottomSheetState) {
     val scope = rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
         Text(
-            //FIXME Extract balance from db
-            // - Use observeTotalBalanceOfUser method from UserDao
-            "42€",
+            "${user.balance}€",
             fontWeight = FontWeight.Medium,
             color = Color.Gray,
             modifier = Modifier.width(60.dp)
         )
         Button(
-            onClick = { scope.launch { bottomState.show() } })
+            onClick = {
+                viewModel.currentUser.value = user
+                scope.launch {
+                    bottomState.show()
+                }
+            })
         {
             Icon(
                 imageVector = Icons.Filled.Edit,
