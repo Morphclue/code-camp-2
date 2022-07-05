@@ -7,7 +7,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.feature.fox.coffee_counter.BuildConfig
-import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.di.services.network.BearerInterceptor
 import retrofit2.Converter
@@ -29,13 +28,6 @@ object ApiModule {
     @Provides
     fun providesLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
-
-    @Provides
-    fun providesBearerInterceptor(
-        preference: AppPreference,
-    ): BearerInterceptor {
-        return BearerInterceptor(preference)
     }
 
     @Singleton
@@ -85,14 +77,14 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideApiService(
-        preference: AppPreference,
+        bearerInterceptor: BearerInterceptor,
         retrofit: Retrofit = provideRetrofit(
             BuildConfig.BASE_URL,
             providesScalarsConverterFactory(),
             provideConverterFactory(),
             provideOkHttpClient(
                 providesLoggingInterceptor(),
-                providesBearerInterceptor(preference)
+                bearerInterceptor,
             )
         ),
     ): ApiService {
