@@ -3,15 +3,7 @@ package org.feature.fox.coffee_counter.ui.profile
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -35,11 +27,7 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.ui.common.CommonTextField
-import org.feature.fox.coffee_counter.ui.common.CustomButton
-import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
-import org.feature.fox.coffee_counter.ui.common.PasswordTextField
-import org.feature.fox.coffee_counter.ui.common.ToastMessage
+import org.feature.fox.coffee_counter.ui.common.*
 
 @Preview(showSystemUi = true)
 @Composable
@@ -57,7 +45,7 @@ fun ProfileView(
 
     BoxWithConstraints {
         Column {
-            MoneyAppBar(title = stringResource(R.string.profile_title))
+            MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
             Column(
                 modifier = Modifier
                     .padding(4.dp)

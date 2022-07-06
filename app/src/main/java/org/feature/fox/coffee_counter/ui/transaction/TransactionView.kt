@@ -42,7 +42,7 @@ fun HistoryView(
     viewModel: ITransactionViewModel
 ) {
     Column {
-        MoneyAppBar(title = stringResource(R.string.history_title))
+        MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         ShowPeriodField()
         TransactionContainer(viewModel)
     }
