@@ -23,10 +23,11 @@ interface IUserListViewModel : IToast {
     val userList: MutableList<UserIdResponse>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
+    val dialogVisible: MutableState<Boolean>
     val funding: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<UserIdResponse>
 
-    suspend fun updateUser()
+    suspend fun addFunding()
 }
 
 @HiltViewModel
@@ -36,6 +37,7 @@ class UserListViewModel @Inject constructor(
     override val userList = mutableListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
+    override val dialogVisible = mutableStateOf(false)
     override val funding = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
@@ -47,7 +49,13 @@ class UserListViewModel @Inject constructor(
         }
     }
 
-    override suspend fun updateUser() {
+    override suspend fun addFunding() {
+        funding.value = TextFieldValue(funding.value.text.replace(",", "."))
+        if (funding.value.text.count { '.' == it } > 1) {
+            toastChannel.send(UIText.StringResource(R.string.incorrect_money_format))
+            return
+        }
+
         currentUser.value?.let {
             val id = currentUser.value?.id ?: ""
             val response = userRepository.addFunding(id, FundingBody(funding.value.text.toDouble()))
@@ -55,6 +63,9 @@ class UserListViewModel @Inject constructor(
             toastChannel.send(response.data?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
         }
+
+        funding.value = TextFieldValue()
+        dialogVisible.value = false
     }
 
     private suspend fun loadUsers() {
@@ -80,12 +91,13 @@ class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
+    override val dialogVisible = mutableStateOf(true)
     override val funding = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
-    override suspend fun updateUser() {
+    override suspend fun addFunding() {
         TODO("Not yet implemented")
     }
 }
