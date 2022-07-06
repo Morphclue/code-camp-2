@@ -23,8 +23,10 @@ interface ITransactionViewModel : IToast {
     val showMainActivity: MutableLiveData<Boolean>
     val toastMessage: MutableLiveData<String>
     val transactions: MutableList<TransactionResponse>
+    val balance: MutableLiveData<Double>
 
     suspend fun refreshTransactions()
+    suspend fun getTotalBalance()
 }
 
 @HiltViewModel
@@ -38,10 +40,12 @@ class TransactionViewModel @Inject constructor(
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override var transactions = mutableListOf<TransactionResponse>()
+    override var balance = MutableLiveData<Double>()
 
     init {
         viewModelScope.launch {
             refreshTransactions()
+            getTotalBalance()
         }
     }
 
@@ -80,6 +84,22 @@ class TransactionViewModel @Inject constructor(
         }
     }
 
+    override suspend fun getTotalBalance() {
+        val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            balance.value =
+                userRepository.observeTotalBalanceOfUser(preference.getTag(BuildConfig.USER_ID)).value
+            return
+        }
+
+        balance.value = response.data.balance
+
+
+    }
+
 }
 
 class TransactionViewModelPreview : ITransactionViewModel {
@@ -88,10 +108,16 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val toastMessage = MutableLiveData<String>()
     override val transactions: MutableList<TransactionResponse>
         get() = TODO("Not yet implemented")
+    override val balance: MutableLiveData<Double>
+        get() = TODO("Not yet implemented")
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
     override suspend fun refreshTransactions() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTotalBalance() {
         TODO("Not yet implemented")
     }
 
