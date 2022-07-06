@@ -2,6 +2,7 @@ package org.feature.fox.coffee_counter.ui.user
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
@@ -34,7 +35,7 @@ interface IUserListViewModel : IToast {
 class UserListViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel(), IUserListViewModel {
-    override val userList = mutableListOf<UserIdResponse>()
+    override val userList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
     override val dialogVisible = mutableStateOf(false)
@@ -55,13 +56,22 @@ class UserListViewModel @Inject constructor(
             toastChannel.send(UIText.StringResource(R.string.incorrect_money_format))
             return
         }
+        val fundingAmount = funding.value.text.toDouble()
 
         currentUser.value?.let {
-            val id = currentUser.value?.id ?: ""
-            val response = userRepository.addFunding(id, FundingBody(funding.value.text.toDouble()))
+            val response = userRepository.addFunding(it.id, FundingBody(fundingAmount))
 
             toastChannel.send(response.data?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
+
+            val index = userList.indexOf(currentUser.value)
+            userList.remove(currentUser.value)
+            currentUser.value
+            userList.add(index, UserIdResponse(
+                it.id,
+                it.name,
+                it.balance + fundingAmount
+            ))
         }
 
         funding.value = TextFieldValue()
