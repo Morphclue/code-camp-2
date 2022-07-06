@@ -11,11 +11,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
@@ -45,6 +47,7 @@ interface IItemsViewModel : IToast {
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
+    private val preference: AppPreference,
 ) : ViewModel(), IItemsViewModel {
     override val availableItemsState = MutableLiveData<MutableList<Item>>()
     override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
@@ -141,7 +144,8 @@ class ItemsViewModel @Inject constructor(
         itemsInShoppingCartState.value?.forEach { cartItem ->
             if (cartItem.amount > 0) {
                 // TODO validate and delete from cart if successful
-                itemRepository.purchaseItem(cartItem.id, PurchaseBody(cartItem.id, cartItem.amount))
+                itemRepository.purchaseItem(preference.getTag(BuildConfig.USER_ID),
+                    PurchaseBody(cartItem.id, cartItem.amount))
             }
         }
     }
@@ -165,7 +169,7 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun updateItem() {
-        if(currentItemPrice.value.text.toDouble() < 0){
+        if (currentItemPrice.value.text.toDouble() < 0) {
             toastChannel.send(UIText.StringResource(R.string.price_negative))
             return
         }
