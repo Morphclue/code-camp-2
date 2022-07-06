@@ -13,6 +13,4 @@ data class User(
     var isAdmin: Boolean,
 
     var password: String,
-
-    var balance: Double
 )
