@@ -38,4 +38,5 @@
     <string name="amount">Amount</string>
     <string name="price_hint">Price (€)</string>
     <string name="price_negative">The Price should not be negative</string>
+    <string name="delete">Delete</string>
 </resources>

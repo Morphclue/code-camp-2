@@ -127,8 +127,18 @@ fun ButtonRow(viewModel: IItemsViewModel, bottomState: ModalBottomSheetState) {
             onClick = { scope.launch { bottomState.hide() } }
         )
         CustomButton(
-            text = "Save",
+            text = stringResource(R.string.delete),
             fraction = 0.4f,
+            onClick = {
+                scope.launch {
+                    viewModel.deleteItem()
+                    bottomState.hide()
+                }
+            }
+        )
+        CustomButton(
+            text = "Save",
+            fraction = 0.5f,
             onClick = {
                 scope.launch {
                     viewModel.updateItem()

@@ -39,7 +39,7 @@ interface IItemsViewModel : IToast {
     suspend fun buyItems()
     suspend fun addItem()
     suspend fun updateItem()
-    suspend fun deleteItem(id: String)
+    suspend fun deleteItem()
 }
 
 @HiltViewModel
@@ -188,8 +188,8 @@ class ItemsViewModel @Inject constructor(
         toastChannel.send(UIText.StringResource(R.string.update_item))
     }
 
-    override suspend fun deleteItem(id: String) {
-        val response = itemRepository.deleteItemById(id)
+    override suspend fun deleteItem() {
+        val response = itemRepository.deleteItemById(originalItemId.value)
 
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
@@ -254,7 +254,7 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteItem(id: String) {
+    override suspend fun deleteItem() {
         TODO("Not yet implemented")
     }
 }
