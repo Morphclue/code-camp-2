@@ -58,8 +58,8 @@ class UserListViewModel @Inject constructor(
         }
         val fundingAmount = funding.value.text.toDouble()
 
-        currentUser.value?.let {
-            val response = userRepository.addFunding(it.id, FundingBody(fundingAmount))
+        currentUser.value?.let { userIdResponse ->
+            val response = userRepository.addFunding(userIdResponse.id, FundingBody(fundingAmount))
 
             toastChannel.send(response.data?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
@@ -68,9 +68,9 @@ class UserListViewModel @Inject constructor(
             userList.remove(currentUser.value)
             currentUser.value
             userList.add(index, UserIdResponse(
-                it.id,
-                it.name,
-                it.balance + fundingAmount
+                userIdResponse.id,
+                userIdResponse.name,
+                userIdResponse.balance + fundingAmount
             ))
         }
 
