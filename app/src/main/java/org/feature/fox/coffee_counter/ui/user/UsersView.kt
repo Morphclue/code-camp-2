@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
@@ -48,12 +48,9 @@ import org.feature.fox.coffee_counter.ui.common.ToastMessage
 @Composable
 fun UsersViewPreview() {
     val preview = UserListViewModelPreview()
-    preview.userList.add(User(id = "a", name = "Julian", isAdmin = true, password = "julian", 42.0))
-    preview.userList.add(User(id = "b",
-        name = "Steffen",
-        isAdmin = true,
-        password = "steffen",
-        42.0))
+    preview.userList.add(UserIdResponse("a", "Julian", 15.0))
+    preview.userList.add(UserIdResponse("b", "Kevin", -15.0))
+    preview.userList.add(UserIdResponse("c", "Steffen", 42.0))
     UsersView(preview)
 }
 
@@ -127,7 +124,11 @@ fun UserList(viewModel: IUserListViewModel, bottomState: ModalBottomSheetState) 
 }
 
 @Composable
-fun UserRow(viewModel: IUserListViewModel, user: User, bottomState: ModalBottomSheetState) {
+fun UserRow(
+    viewModel: IUserListViewModel,
+    user: UserIdResponse,
+    bottomState: ModalBottomSheetState,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -135,7 +136,7 @@ fun UserRow(viewModel: IUserListViewModel, user: User, bottomState: ModalBottomS
             .fillMaxWidth()
     ) {
         Text(
-            user.name + " ${if (user.isAdmin) "(${stringResource(id = R.string.user_admin)})" else ""}",
+            user.name,
             fontWeight = FontWeight.Medium
         )
         MoneyEditRow(viewModel, user, bottomState)
@@ -143,7 +144,11 @@ fun UserRow(viewModel: IUserListViewModel, user: User, bottomState: ModalBottomS
 }
 
 @Composable
-fun MoneyEditRow(viewModel: IUserListViewModel, user: User, bottomState: ModalBottomSheetState) {
+fun MoneyEditRow(
+    viewModel: IUserListViewModel,
+    user: UserIdResponse,
+    bottomState: ModalBottomSheetState,
+) {
     val scope = rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,

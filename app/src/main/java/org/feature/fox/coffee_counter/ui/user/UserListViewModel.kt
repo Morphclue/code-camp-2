@@ -12,19 +12,19 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
+import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
 
 interface IUserListViewModel : IToast {
-    val userList: MutableList<User>
+    val userList: MutableList<UserIdResponse>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
     val funding: MutableState<TextFieldValue>
-    var currentUser: MutableLiveData<User>
+    var currentUser: MutableLiveData<UserIdResponse>
 
     suspend fun updateUser()
 }
@@ -33,11 +33,11 @@ interface IUserListViewModel : IToast {
 class UserListViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ) : ViewModel(), IUserListViewModel {
-    override val userList = mutableListOf<User>()
+    override val userList = mutableListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
     override val funding = mutableStateOf(TextFieldValue())
-    override var currentUser = MutableLiveData<User>()
+    override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
@@ -70,24 +70,18 @@ class UserListViewModel @Inject constructor(
                 return@forEach
             }
 
-            userList.add(User(
-                id = idResponse.data.id,
-                name = idResponse.data.name,
-                isAdmin = false,
-                password = "",
-                balance = idResponse.data.balance
-            ))
+            userList.add(idResponse.data)
         }
         isLoaded.value = true
     }
 }
 
 class UserListViewModelPreview : IUserListViewModel {
-    override val userList = mutableListOf<User>()
+    override val userList = mutableListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
     override val funding = mutableStateOf(TextFieldValue())
-    override var currentUser = MutableLiveData<User>()
+    override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 

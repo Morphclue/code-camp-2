@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 
@@ -39,13 +39,7 @@ import org.feature.fox.coffee_counter.ui.common.CustomButton
 fun EditUserPreview() {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Expanded)
     val viewModelPreview = UserListViewModelPreview()
-    viewModelPreview.currentUser.value = User(
-        "Preview",
-        "Peter",
-        true,
-        "1234",
-        0.0
-    )
+    viewModelPreview.currentUser.value = UserIdResponse("Preview", "Peter", 0.0)
     EditUserView(viewModelPreview, bottomState)
 }
 
@@ -64,7 +58,7 @@ fun EditUserView(
     ) {
         user.value?.name?.let { UserNameRow(it) }
         MoneyRow(viewModel)
-        user.value?.isAdmin?.let { AdminRow(it) }
+        AdminRow()
         ButtonRow(viewModel, bottomState)
         Box(Modifier.height(50.dp))
     }
@@ -85,7 +79,6 @@ fun MoneyRow(viewModel: IUserListViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-
         CommonTextField(
             viewModel.funding,
             stringResource(R.string.money_hint),
@@ -96,7 +89,7 @@ fun MoneyRow(viewModel: IUserListViewModel) {
 }
 
 @Composable
-fun AdminRow(admin: Boolean) {
+fun AdminRow() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -104,7 +97,7 @@ fun AdminRow(admin: Boolean) {
             text = stringResource(R.string.admin_label),
             fontWeight = FontWeight.Medium
         )
-        val checkedState = remember { mutableStateOf(admin) }
+        val checkedState = remember { mutableStateOf(false) }
         Checkbox(
             checked = checkedState.value,
             onCheckedChange = { checkedState.value = it }
