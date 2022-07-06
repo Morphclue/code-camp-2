@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -53,6 +54,7 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Preview(showSystemUi = true)
@@ -67,6 +69,9 @@ fun ItemsView(
     itemViewModel: IItemsViewModel,
 ) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+    val context = LocalContext.current
+    ToastMessage(itemViewModel, context)
 
     ModalBottomSheetLayout(
         sheetState = bottomState,
