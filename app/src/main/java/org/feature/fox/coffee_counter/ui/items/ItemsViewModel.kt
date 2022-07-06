@@ -190,6 +190,7 @@ class ItemsViewModel @Inject constructor(
             return
         }
         toastChannel.send(UIText.StringResource(R.string.update_item))
+        getItems()
     }
 
     override suspend fun deleteItem() {
