@@ -165,6 +165,11 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun updateItem() {
+        if(currentItemPrice.value.text.toDouble() < 0){
+            toastChannel.send(UIText.StringResource(R.string.price_negative))
+            return
+        }
+
         val response = itemRepository.updateItem(
             itemId = originalItemId.value,
             itemBody = ItemBody(
