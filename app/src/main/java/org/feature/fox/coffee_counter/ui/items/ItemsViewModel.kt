@@ -157,11 +157,21 @@ class ItemsViewModel @Inject constructor(
     override suspend fun buyItems() {
         itemsInShoppingCartState.value?.forEach { cartItem ->
             if (cartItem.amount > 0) {
-                // TODO validate and delete from cart if successful
-                itemRepository.purchaseItem(preference.getTag(BuildConfig.USER_ID),
+                val response = itemRepository.purchaseItem(preference.getTag(BuildConfig.USER_ID),
                     PurchaseBody(cartItem.id, cartItem.amount))
+
+                if (response.data == null) {
+                    toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                        ?: UIText.StringResource(R.string.unknown_error))
+                    return
+                }
+
+                currentShoppingCartAmountState.value -= cartItem.price * cartItem.amount
+                cartItem.amount = 0
             }
         }
+
+        getItems()
     }
 
     override suspend fun addItem() {
