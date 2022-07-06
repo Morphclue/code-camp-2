@@ -17,6 +17,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
+import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
@@ -47,6 +48,7 @@ interface IItemsViewModel : IToast {
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
+    private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) : ViewModel(), IItemsViewModel {
     override val availableItemsState = MutableLiveData<MutableList<Item>>()
@@ -111,9 +113,21 @@ class ItemsViewModel @Inject constructor(
             return
         }
 
+        val userResponse = userRepository.getUserById(
+            preference.getTag(BuildConfig.USER_ID)
+        )
+
+        if (userResponse.data == null) {
+            toastChannel.send(userResponse.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+
         itemsInShoppingCartState.value?.forEach { cartItem ->
-            // TODO check for enough funding
             if (item.id == cartItem.id && cartItem.amount < item.amount) {
+                if(userResponse.data.balance < currentShoppingCartAmountState.value + item.price){
+                    toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
+                }
                 cartItem.amount += 1
                 currentShoppingCartAmountState.value += item.price
                 return
