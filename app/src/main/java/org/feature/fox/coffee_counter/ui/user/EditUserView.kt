@@ -9,15 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -26,16 +23,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 @Preview(showBackground = true)
@@ -67,7 +63,7 @@ fun EditUserView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         user.value?.name?.let { UserNameRow(it) }
-        MoneyRow()
+        MoneyRow(viewModel)
         user.value?.isAdmin?.let { AdminRow(it) }
         ButtonRow(viewModel, bottomState)
         Box(Modifier.height(50.dp))
@@ -85,26 +81,16 @@ fun UserNameRow(userName: String) {
 }
 
 @Composable
-fun MoneyRow() {
+fun MoneyRow(viewModel: IUserListViewModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val moneyState = remember { mutableStateOf(TextFieldValue()) }
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = moneyState.value,
-            onValueChange = { moneyState.value = it },
-            label = {
-                Text(
-                    text = stringResource(R.string.money_hint)
-                )
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            shape = RoundedCornerShape(8.dp)
+
+        CommonTextField(
+            viewModel.funding,
+            stringResource(R.string.money_hint),
+            KeyboardOptions(keyboardType = KeyboardType.Number
+            )
         )
     }
 }
@@ -145,8 +131,8 @@ fun ButtonRow(viewModel: IUserListViewModel, bottomState: ModalBottomSheetState)
             fraction = 0.4f,
             onClick = {
                 scope.launch {
-                    viewModel.updateUser()
                     bottomState.hide()
+                    viewModel.updateUser()
                 }
             }
         )

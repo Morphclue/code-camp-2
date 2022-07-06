@@ -3,19 +3,27 @@ package org.feature.fox.coffee_counter.ui.user
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
+import org.feature.fox.coffee_counter.util.IToast
+import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
 
-interface IUserListViewModel {
+interface IUserListViewModel : IToast {
     val userList: MutableList<User>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
+    val funding: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<User>
 
     suspend fun updateUser()
@@ -28,7 +36,10 @@ class UserListViewModel @Inject constructor(
     override val userList = mutableListOf<User>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
+    override val funding = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<User>()
+    override val toastChannel = Channel<UIText>()
+    override val toast = toastChannel.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -37,7 +48,13 @@ class UserListViewModel @Inject constructor(
     }
 
     override suspend fun updateUser() {
-        TODO("Not yet implemented")
+        currentUser.value?.let {
+            val id = currentUser.value?.id ?: ""
+            val response = userRepository.addFunding(id, FundingBody(funding.value.text.toDouble()))
+
+            toastChannel.send(response.data?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+        }
     }
 
     private suspend fun loadUsers() {
@@ -69,7 +86,10 @@ class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableListOf<User>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
+    override val funding = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<User>()
+    override val toastChannel = Channel<UIText>()
+    override val toast = toastChannel.receiveAsFlow()
 
     override suspend fun updateUser() {
         TODO("Not yet implemented")

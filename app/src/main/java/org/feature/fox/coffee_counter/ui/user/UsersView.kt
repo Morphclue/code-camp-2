@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +42,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 
 @Preview(showSystemUi = true)
 @Composable
@@ -59,6 +61,8 @@ fun UsersViewPreview() {
 fun UsersView(viewModel: IUserListViewModel) {
     val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    ToastMessage(viewModel, context)
 
     ModalBottomSheetLayout(
         sheetState = bottomState,
