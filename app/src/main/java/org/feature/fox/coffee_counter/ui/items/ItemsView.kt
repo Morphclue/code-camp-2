@@ -1,6 +1,8 @@
+@file:OptIn(ExperimentalMaterialApi::class)
 package org.feature.fox.coffee_counter.ui.items
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,14 +19,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,28 +66,34 @@ fun ItemsViewPreview() {
 fun ItemsView(
     itemViewModel: IItemsViewModel,
 ) {
-    Scaffold(
-        topBar = { } ,
-        floatingActionButton = {
-            if(itemViewModel.isAdmin.value) EditFAB(itemViewModel)
-            if(itemViewModel.adminView.value) AddItemFAB(itemViewModel)
-            if(!itemViewModel.adminView.value) BuyFAB(itemViewModel)
-        },
-        content = {
-            Column {
-                MoneyAppBar(title = stringResource(R.string.item_list_title))
-                SearchBar()
-                ItemList(itemViewModel)
-//                if(!itemViewModel.adminView.value!!) BuyButton(itemViewModel)
-            }
-        }
+    val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-    )
+    ModalBottomSheetLayout(
+        sheetState = bottomState,
+        sheetContent = {
+            EditItemView(itemViewModel, bottomState)
+        }) {
+        Scaffold(
+            topBar = { MoneyAppBar(title = stringResource(R.string.item_list_title)) } ,
+            floatingActionButton = {
+                if(itemViewModel.isAdmin.value) EditFAB(itemViewModel)
+                if(itemViewModel.adminView.value) AddItemFAB(itemViewModel)
+                if(!itemViewModel.adminView.value) BuyFAB(itemViewModel)
+            },
+            content = {
+                Column {
+                    SearchBar()
+                    ItemList(itemViewModel, bottomState)
+//                if(!itemViewModel.adminView.value!!) BuyButton(itemViewModel)
+                }
+            }
+        )
+    }
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ItemList(viewModel: IItemsViewModel) {
+fun ItemList(viewModel: IItemsViewModel, bottomState: ModalBottomSheetState) {
     val coroutineScope = rememberCoroutineScope()
 
     Column {
@@ -94,10 +108,10 @@ fun ItemList(viewModel: IItemsViewModel) {
             coroutineScope.launch {
                 viewModel.getItems()
             }
-            if(viewModel.adminView.value!!) AmountTitle()
+            if(viewModel.adminView.value) AmountTitle()
             viewModel.availableItemsState.value?.forEach { item ->
-                if(viewModel.adminView.value!!){
-                    AdminItemRow(viewModel, item)
+                if(viewModel.adminView.value){
+                    AdminItemRow(viewModel, item, bottomState)
                 }else {
                     ItemRow(viewModel, item)
                 }
@@ -187,12 +201,22 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
 }
 
 @Composable
-fun AdminItemRow(viewModel: IItemsViewModel, item: Item){
+fun AdminItemRow(viewModel: IItemsViewModel, item: Item, bottomState: ModalBottomSheetState){
+    val scope = rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                viewModel.currentItemId.value = TextFieldValue(item.id)
+                viewModel.currentItemName.value = TextFieldValue(item.name)
+                viewModel.currentItemAmount.value = TextFieldValue(item.amount.toString())
+                viewModel.currentItemPrice.value = TextFieldValue(item.price.toString())
+                scope.launch {
+                    bottomState.show()
+                }
+            }
     ) {
         Column {
             Text(item.name, fontWeight = FontWeight.Medium)

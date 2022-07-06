@@ -3,6 +3,7 @@ package org.feature.fox.coffee_counter.ui.items
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,14 +26,19 @@ interface IItemsViewModel : IToast {
     val currentShoppingCartAmountState: MutableState<Double>
     val adminView: MutableState<Boolean>
     val isAdmin: MutableState<Boolean>
+    var originalItemId: MutableState<String>
+    var currentItemId: MutableState<TextFieldValue>
+    var currentItemName: MutableState<TextFieldValue>
+    var currentItemAmount: MutableState<TextFieldValue>
+    var currentItemPrice: MutableState<TextFieldValue>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item)
     suspend fun removeItemFromShoppingCart(item: Item)
     suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
-    suspend fun addItem(item: Item)
-    suspend fun updateItem(itemId: String, item: Item)
+    suspend fun addItem()
+    suspend fun updateItem()
     suspend fun deleteItem(id: String)
 }
 
@@ -47,6 +53,11 @@ class ItemsViewModel @Inject constructor(
     override val toast = toastChannel.receiveAsFlow()
     override val adminView = mutableStateOf(false)
     override val isAdmin = mutableStateOf(true)
+    override var originalItemId = mutableStateOf(String())
+    override var currentItemId = mutableStateOf(TextFieldValue())
+    override var currentItemName = mutableStateOf(TextFieldValue())
+    override var currentItemAmount = mutableStateOf(TextFieldValue())
+    override var currentItemPrice = mutableStateOf(TextFieldValue())
 
     init {
         viewModelScope.launch {
@@ -76,7 +87,7 @@ class ItemsViewModel @Inject constructor(
             )
         }
 
-        if(itemsInShoppingCartState.value.isNullOrEmpty()){
+        if (itemsInShoppingCartState.value.isNullOrEmpty()) {
             itemsInShoppingCartState.value = mutableListOf()
             availableItemsState.value?.forEach { item ->
                 itemsInShoppingCartState.value?.add(
@@ -135,13 +146,15 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
-    override suspend fun addItem(item: Item) {
-        val response = itemRepository.postItem(ItemBody(
-            id = item.id,
-            name = item.name,
-            amount = item.amount,
-            price = item.price
-        ))
+    override suspend fun addItem() {
+        val response = itemRepository.postItem(
+            ItemBody(
+                id = currentItemId.value.text,
+                name = currentItemName.value.text,
+                amount = currentItemId.value.text.toInt(),
+                price = currentItemId.value.text.toDouble(),
+            )
+        )
 
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
@@ -151,14 +164,14 @@ class ItemsViewModel @Inject constructor(
         toastChannel.send(UIText.StringResource(R.string.add_item))
     }
 
-    override suspend fun updateItem(itemId: String, item: Item) {
+    override suspend fun updateItem() {
         val response = itemRepository.updateItem(
-            itemId = itemId,
+            itemId = originalItemId.value,
             itemBody = ItemBody(
-                id = item.id,
-                name = item.name,
-                amount = item.amount,
-                price = item.price,
+                id = currentItemId.value.text,
+                name = currentItemName.value.text,
+                amount = currentItemAmount.value.text.toInt(),
+                price = currentItemPrice.value.text.toDouble(),
             )
         )
 
@@ -190,6 +203,11 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val toast = toastChannel.receiveAsFlow()
     override val adminView = mutableStateOf(false)
     override val isAdmin = mutableStateOf(true)
+    override var originalItemId = mutableStateOf(String())
+    override var currentItemId = mutableStateOf(TextFieldValue())
+    override var currentItemName = mutableStateOf(TextFieldValue())
+    override var currentItemAmount = mutableStateOf(TextFieldValue())
+    override var currentItemPrice = mutableStateOf(TextFieldValue())
 
     init {
         availableItemsState.value = mutableListOf(
@@ -223,11 +241,11 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addItem(item: Item) {
+    override suspend fun addItem() {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateItem(itemId: String, item: Item) {
+    override suspend fun updateItem() {
         TODO("Not yet implemented")
     }
 

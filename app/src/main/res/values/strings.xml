@@ -36,4 +36,5 @@
     <string name="add_item">Successfully added item</string>
     <string name="update_item">Successfully updated item</string>
     <string name="amount">Amount</string>
+    <string name="price_hint">Price (€)</string>
 </resources>
