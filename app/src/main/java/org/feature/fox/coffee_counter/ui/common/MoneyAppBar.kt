@@ -6,21 +6,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.lifecycle.MutableLiveData
 
-class BalanceStateProvider : PreviewParameterProvider<Pair<String, MutableLiveData<Double>>> {
-    override val values: Sequence<Pair<String, MutableLiveData<Double>>> =
-        sequenceOf(Pair("Beverage", MutableLiveData(13.0)))
+class BalanceStateProvider : PreviewParameterProvider<Pair<String, MutableState<Double>>> {
+    override val values: Sequence<Pair<String, MutableState<Double>>> =
+        sequenceOf(Pair("Beverage", mutableStateOf(13.0)))
 }
 
 @Preview
 @Composable
 fun MoneyAppBar(
-    @PreviewParameter(BalanceStateProvider::class) pair: Pair<String, MutableLiveData<Double>>
+    @PreviewParameter(BalanceStateProvider::class) pair: Pair<String, MutableState<Double>>
 ) {
     TopAppBar(title = {
         Row(
