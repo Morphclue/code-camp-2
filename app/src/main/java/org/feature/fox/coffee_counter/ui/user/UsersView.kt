@@ -50,7 +50,7 @@ fun UsersView(viewModel: IUserListViewModel) {
     val context = LocalContext.current
     ToastMessage(viewModel, context)
     FundingDialog(viewModel)
-    EditUserDialog(viewModel)
+    AddUserDialog(viewModel)
 
     Scaffold(
         topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },

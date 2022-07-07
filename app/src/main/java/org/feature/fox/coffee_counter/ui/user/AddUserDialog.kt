@@ -22,7 +22,7 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 
 @Composable
-fun EditUserDialog(
+fun AddUserDialog(
     viewModel: IUserListViewModel,
 ) {
     if (!viewModel.editDialogVisible.value) {
@@ -74,14 +74,14 @@ fun EditUserDialog(
                         )
                     }
                 }
-                EditUserDialogButtons(viewModel)
+                AddUserDialogButtons(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun EditUserDialogButtons(viewModel: IUserListViewModel) {
+fun AddUserDialogButtons(viewModel: IUserListViewModel) {
     val scope = rememberCoroutineScope()
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End) {
