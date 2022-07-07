@@ -36,7 +36,7 @@ interface IUserListViewModel : IToast {
     val isAdminState: MutableState<Boolean>
     val editReEnterPassword: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<UserIdResponse>
-    val balance: MutableLiveData<Double>
+    val balance: MutableState<Double>
 
     suspend fun addFunding()
     suspend fun createUser()
@@ -62,7 +62,7 @@ class UserListViewModel @Inject constructor(
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
-    override var balance = MutableLiveData<Double>()
+    override val balance = mutableStateOf(0.0)
 
     init {
         viewModelScope.launch {
@@ -129,8 +129,6 @@ class UserListViewModel @Inject constructor(
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
-            balance.value =
-                userRepository.observeTotalBalanceOfUser(preference.getTag(BuildConfig.USER_ID)).value
             return
         }
         balance.value = response.data.balance
@@ -168,7 +166,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val editReEnterPassword = mutableStateOf(TextFieldValue())
     override val isAdminState = mutableStateOf(false)
     override var currentUser = MutableLiveData<UserIdResponse>()
-    override val balance = MutableLiveData<Double>()
+    override val balance = mutableStateOf(13.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 

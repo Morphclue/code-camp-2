@@ -39,7 +39,7 @@ interface IItemsViewModel : IToast {
     val isLoaded: MutableState<Boolean>
     val addItemDialogVisible: MutableState<Boolean>
     val editItemDialogVisible: MutableState<Boolean>
-    val balance: MutableLiveData<Double>
+    val balance: MutableState<Double>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item)
@@ -73,7 +73,7 @@ class ItemsViewModel @Inject constructor(
     override val isLoaded = mutableStateOf(false)
     override val addItemDialogVisible = mutableStateOf(false)
     override val editItemDialogVisible = mutableStateOf(false)
-    override var balance = MutableLiveData<Double>()
+    override val balance = mutableStateOf(0.0)
 
 
     init {
@@ -187,6 +187,7 @@ class ItemsViewModel @Inject constructor(
         }
         isLoaded.value = false
         getItems()
+        getTotalBalance()
     }
 
     override suspend fun addItem() {
@@ -263,8 +264,6 @@ class ItemsViewModel @Inject constructor(
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
-            balance.value =
-                userRepository.observeTotalBalanceOfUser(preference.getTag(BuildConfig.USER_ID)).value
             return
         }
         balance.value = response.data.balance
@@ -287,7 +286,7 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val isLoaded = mutableStateOf(false)
     override val addItemDialogVisible = mutableStateOf(false)
     override val editItemDialogVisible = mutableStateOf(false)
-    override val balance = MutableLiveData<Double>()
+    override val balance = mutableStateOf(50.0)
 
     init {
         availableItemsState = mutableStateListOf(
