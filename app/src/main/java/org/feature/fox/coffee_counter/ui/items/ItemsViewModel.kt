@@ -39,6 +39,7 @@ interface IItemsViewModel : IToast {
     val isLoaded: MutableState<Boolean>
     val addItemDialogVisible: MutableState<Boolean>
     val editItemDialogVisible: MutableState<Boolean>
+    val balance: MutableLiveData<Double>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item)
@@ -48,6 +49,7 @@ interface IItemsViewModel : IToast {
     suspend fun addItem()
     suspend fun updateItem()
     suspend fun deleteItem()
+    suspend fun getTotalBalance()
 }
 
 @HiltViewModel
@@ -71,11 +73,13 @@ class ItemsViewModel @Inject constructor(
     override val isLoaded = mutableStateOf(false)
     override val addItemDialogVisible = mutableStateOf(false)
     override val editItemDialogVisible = mutableStateOf(false)
+    override var balance = MutableLiveData<Double>()
 
 
     init {
         viewModelScope.launch {
             getItems()
+            getTotalBalance()
         }
     }
 
@@ -252,6 +256,19 @@ class ItemsViewModel @Inject constructor(
         isLoaded.value = false
         getItems()
     }
+
+    override suspend fun getTotalBalance() {
+        val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            balance.value =
+                userRepository.observeTotalBalanceOfUser(preference.getTag(BuildConfig.USER_ID)).value
+            return
+        }
+        balance.value = response.data.balance
+    }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
@@ -270,6 +287,7 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val isLoaded = mutableStateOf(false)
     override val addItemDialogVisible = mutableStateOf(false)
     override val editItemDialogVisible = mutableStateOf(false)
+    override val balance = MutableLiveData<Double>()
 
     init {
         availableItemsState = mutableStateListOf(
@@ -312,6 +330,10 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun deleteItem() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTotalBalance() {
         TODO("Not yet implemented")
     }
 }

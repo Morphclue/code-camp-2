@@ -12,11 +12,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
+import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
@@ -34,14 +36,17 @@ interface IUserListViewModel : IToast {
     val isAdminState: MutableState<Boolean>
     val editReEnterPassword: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<UserIdResponse>
+    val balance: MutableLiveData<Double>
 
     suspend fun addFunding()
     suspend fun createUser()
+    suspend fun getTotalBalance()
 }
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    private val preference: AppPreference,
 ) : ViewModel(), IUserListViewModel {
     override val userList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
@@ -57,10 +62,12 @@ class UserListViewModel @Inject constructor(
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override var balance = MutableLiveData<Double>()
 
     init {
         viewModelScope.launch {
             loadUsers()
+            getTotalBalance()
         }
     }
 
@@ -116,6 +123,19 @@ class UserListViewModel @Inject constructor(
         toastChannel.send(UIText.StringResource(R.string.created_account))
     }
 
+    override suspend fun getTotalBalance() {
+        val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            balance.value =
+                userRepository.observeTotalBalanceOfUser(preference.getTag(BuildConfig.USER_ID)).value
+            return
+        }
+        balance.value = response.data.balance
+    }
+
     private suspend fun loadUsers() {
         val response = userRepository.getUsers()
         if (response.data == null) {
@@ -148,6 +168,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val editReEnterPassword = mutableStateOf(TextFieldValue())
     override val isAdminState = mutableStateOf(false)
     override var currentUser = MutableLiveData<UserIdResponse>()
+    override val balance = MutableLiveData<Double>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
@@ -156,6 +177,10 @@ class UserListViewModelPreview : IUserListViewModel {
     }
 
     override suspend fun createUser() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTotalBalance() {
         TODO("Not yet implemented")
     }
 }
