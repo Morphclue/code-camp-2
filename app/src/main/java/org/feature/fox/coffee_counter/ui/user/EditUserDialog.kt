@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +37,7 @@ fun EditUserDialog(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "Update ${viewModel.currentUser.value?.name}",
+                    text = stringResource(id = R.string.create_user),
                     style = MaterialTheme.typography.subtitle1
                 )
                 Column(
@@ -60,6 +62,17 @@ fun EditUserDialog(
                         state = viewModel.editReEnterPassword,
                         label = stringResource(id = R.string.re_enter_password_hint),
                     )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(text = stringResource(R.string.admin_label))
+                        Switch(
+                            checked = viewModel.isAdminState.value,
+                            onCheckedChange = { viewModel.isAdminState.value = it }
+                        )
+                    }
                 }
                 EditUserDialogButtons(viewModel)
             }
@@ -79,10 +92,10 @@ fun EditUserDialogButtons(viewModel: IUserListViewModel) {
         }
         TextButton(onClick = {
             scope.launch {
-                viewModel.updateUser()
+                viewModel.createUser()
             }
         }) {
-            Text(text = stringResource(id = R.string.update_profile))
+            Text(text = stringResource(id = R.string.create_user))
         }
     }
 }

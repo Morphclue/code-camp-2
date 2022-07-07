@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -18,7 +19,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +56,26 @@ fun UsersView(viewModel: IUserListViewModel) {
         topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },
     ) {
         Column {
-            SearchBar()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            )
+            {
+                SearchBar(fraction = 0.7f)
+                Button(
+                    shape = CircleShape,
+                    onClick = {
+                        viewModel.editDialogVisible.value = true
+                    })
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Edit",
+                    )
+                }
+            }
             if (viewModel.isLoaded.value) UserList(viewModel) else LoadingBox()
         }
     }
@@ -143,17 +162,6 @@ fun MoneyEditRow(
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = "Add",
-            )
-        }
-        Button(
-            onClick = {
-                viewModel.currentUser.value = user
-                viewModel.editDialogVisible.value = true
-            })
-        {
-            Icon(
-                imageVector = Icons.Filled.Edit,
-                contentDescription = "Edit",
             )
         }
     }

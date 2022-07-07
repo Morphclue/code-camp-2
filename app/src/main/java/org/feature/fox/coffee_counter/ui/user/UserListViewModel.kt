@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
+import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.util.IToast
@@ -30,11 +31,12 @@ interface IUserListViewModel : IToast {
     val editName: MutableState<TextFieldValue>
     val editId: MutableState<TextFieldValue>
     val editPassword: MutableState<TextFieldValue>
+    val isAdminState: MutableState<Boolean>
     val editReEnterPassword: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<UserIdResponse>
 
     suspend fun addFunding()
-    suspend fun updateUser()
+    suspend fun createUser()
 }
 
 @HiltViewModel
@@ -50,6 +52,7 @@ class UserListViewModel @Inject constructor(
     override val editName = mutableStateOf(TextFieldValue())
     override val editId = mutableStateOf(TextFieldValue())
     override val editPassword = mutableStateOf(TextFieldValue())
+    override val isAdminState = mutableStateOf(false)
     override val editReEnterPassword = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
@@ -89,8 +92,28 @@ class UserListViewModel @Inject constructor(
         fundingDialogVisible.value = false
     }
 
-    override suspend fun updateUser() {
-        TODO("Not yet implemented")
+    override suspend fun createUser() {
+        if (editPassword.value.text != editReEnterPassword.value.text) {
+            toastChannel.send(UIText.StringResource(R.string.match_password))
+            return
+        }
+
+        val response = userRepository.adminSignUp(
+            UserBody(
+                editId.value.text,
+                editName.value.text,
+                editPassword.value.text,
+                isAdminState.value
+            )
+        )
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+
+        toastChannel.send(UIText.StringResource(R.string.created_account))
     }
 
     private suspend fun loadUsers() {
@@ -123,6 +146,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val editId = mutableStateOf(TextFieldValue())
     override val editPassword = mutableStateOf(TextFieldValue())
     override val editReEnterPassword = mutableStateOf(TextFieldValue())
+    override val isAdminState = mutableStateOf(false)
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -131,7 +155,7 @@ class UserListViewModelPreview : IUserListViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateUser() {
+    override suspend fun createUser() {
         TODO("Not yet implemented")
     }
 }
