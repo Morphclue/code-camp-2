@@ -56,7 +56,7 @@ fun UsersView(viewModel: IUserListViewModel) {
     val coroutineScope = rememberCoroutineScope()
     ToastMessage(viewModel, context)
     FundingDialog(viewModel)
-    EditUserDialog(viewModel)
+    AddUserDialog(viewModel)
 
     Scaffold(
         topBar = { MoneyAppBar(Pair(stringResource(R.string.user_list_title), viewModel.balance)) },
