@@ -24,8 +24,13 @@ interface IUserListViewModel : IToast {
     val userList: MutableList<UserIdResponse>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
-    val dialogVisible: MutableState<Boolean>
+    val fundingDialogVisible: MutableState<Boolean>
+    val editDialogVisible: MutableState<Boolean>
     val funding: MutableState<TextFieldValue>
+    val editName: MutableState<TextFieldValue>
+    val editId: MutableState<TextFieldValue>
+    val editPassword: MutableState<TextFieldValue>
+    val editReEnterPassword: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<UserIdResponse>
 
     suspend fun addFunding()
@@ -39,8 +44,13 @@ class UserListViewModel @Inject constructor(
     override val userList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
-    override val dialogVisible = mutableStateOf(false)
+    override val fundingDialogVisible = mutableStateOf(false)
+    override val editDialogVisible = mutableStateOf(false)
     override val funding = mutableStateOf(TextFieldValue())
+    override val editName = mutableStateOf(TextFieldValue())
+    override val editId = mutableStateOf(TextFieldValue())
+    override val editPassword = mutableStateOf(TextFieldValue())
+    override val editReEnterPassword = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -76,7 +86,7 @@ class UserListViewModel @Inject constructor(
         }
 
         funding.value = TextFieldValue()
-        dialogVisible.value = false
+        fundingDialogVisible.value = false
     }
 
     override suspend fun updateUser() {
@@ -106,8 +116,13 @@ class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
-    override val dialogVisible = mutableStateOf(true)
+    override val fundingDialogVisible = mutableStateOf(false)
+    override val editDialogVisible = mutableStateOf(true)
     override val funding = mutableStateOf(TextFieldValue())
+    override val editName = mutableStateOf(TextFieldValue())
+    override val editId = mutableStateOf(TextFieldValue())
+    override val editPassword = mutableStateOf(TextFieldValue())
+    override val editReEnterPassword = mutableStateOf(TextFieldValue())
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()

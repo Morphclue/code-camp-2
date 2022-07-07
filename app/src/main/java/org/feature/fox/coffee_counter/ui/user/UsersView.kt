@@ -18,6 +18,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,7 @@ fun UsersView(viewModel: IUserListViewModel) {
     val context = LocalContext.current
     ToastMessage(viewModel, context)
     FundingDialog(viewModel)
+    EditUserDialog(viewModel)
 
     Scaffold(
         topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },
@@ -135,12 +137,23 @@ fun MoneyEditRow(
         Button(
             onClick = {
                 viewModel.currentUser.value = user
-                viewModel.dialogVisible.value = true
+                viewModel.fundingDialogVisible.value = true
             })
         {
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = "Add",
+            )
+        }
+        Button(
+            onClick = {
+                viewModel.currentUser.value = user
+                viewModel.editDialogVisible.value = true
+            })
+        {
+            Icon(
+                imageVector = Icons.Filled.Edit,
+                contentDescription = "Edit",
             )
         }
     }
