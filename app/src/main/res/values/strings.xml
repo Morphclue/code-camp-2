@@ -42,4 +42,5 @@
     <string name="price_negative">The Price should not be negative</string>
     <string name="delete">Delete</string>
     <string name="not_enough_funding">You don\'t have enough funding to add this to your cart</string>
+    <string name="fill_all_fields">Please fill all fields</string>
 </resources>

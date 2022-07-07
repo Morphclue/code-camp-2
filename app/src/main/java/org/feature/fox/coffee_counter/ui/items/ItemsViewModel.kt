@@ -186,6 +186,15 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun addItem() {
+        if (currentItemId.value.text.isEmpty() ||
+            currentItemName.value.text.isEmpty() ||
+            currentItemAmount.value.text.isEmpty() ||
+            currentItemPrice.value.text.isEmpty()
+        ) {
+            toastChannel.send(UIText.StringResource(R.string.fill_all_fields))
+            return
+        }
+
         val response = itemRepository.postItem(
             ItemBody(
                 id = currentItemId.value.text,
