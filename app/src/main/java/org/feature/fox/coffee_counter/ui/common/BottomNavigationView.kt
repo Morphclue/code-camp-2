@@ -28,6 +28,7 @@ import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 import org.feature.fox.coffee_counter.ui.transaction.HistoryView
 import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
+import org.feature.fox.coffee_counter.ui.user.UserListViewModel
 import org.feature.fox.coffee_counter.ui.user.UsersView
 
 @Preview
@@ -65,6 +66,7 @@ fun Navigation(
     navController: NavHostController,
     profileViewModel: ProfileViewModel,
     transactionsViewModel: TransactionViewModel,
+    userListViewModel: UserListViewModel,
 ) {
     NavHost(navController = navController, startDestination = BottomNavItem.Items.route) {
         composable(BottomNavItem.Items.route) {
@@ -77,7 +79,7 @@ fun Navigation(
             ProfileView(profileViewModel)
         }
         composable(BottomNavItem.Users.route) {
-            UsersView()
+            UsersView(userListViewModel)
         }
     }
 }

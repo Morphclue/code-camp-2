@@ -31,5 +31,10 @@
     <string name="server_not_reached">Could not reach server.</string>
     <string name="password_length">Password must contain at least 8 characters</string>
     <string name="empty_name">Name may not be empty</string>
+    <string name="incorrect_money_format">Please use a correct format (e.g. 12.10)</string>
     <string name="no_data">Nothing to show yet</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="amount">Amount</string>
+    <string name="create_user">Create User</string>
 </resources>

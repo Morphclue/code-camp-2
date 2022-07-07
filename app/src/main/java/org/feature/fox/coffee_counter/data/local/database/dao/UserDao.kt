@@ -1,14 +1,17 @@
 package org.feature.fox.coffee_counter.data.local.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 @Dao
 interface UserDao {
-
     @Update
     suspend fun insertUser(user: User)
 
@@ -47,8 +50,4 @@ interface UserDao {
 
     @Query("SELECT * FROM users")
     fun observeAllUsers(): LiveData<List<User>>
-
-
-
-
 }

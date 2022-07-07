@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -58,5 +59,5 @@ interface UserRepositoryInt {
 
     suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>
 
-    suspend fun addFunding(id: String, fundingBody: Double): Resource<String>
+    suspend fun addFunding(id: String, fundingBody: FundingBody): Resource<String>
 }

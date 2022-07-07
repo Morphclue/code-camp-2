@@ -12,11 +12,13 @@ import org.feature.fox.coffee_counter.ui.common.Navigation
 import org.feature.fox.coffee_counter.ui.profile.ProfileViewModel
 import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
+import org.feature.fox.coffee_counter.ui.user.UserListViewModel
 
 @AndroidEntryPoint
 class CoreActivity : ComponentActivity() {
     private val profileViewModel: ProfileViewModel by viewModels()
     private val transactionsViewModel: TransactionViewModel by viewModels()
+    private val userListViewModel: UserListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,7 @@ class CoreActivity : ComponentActivity() {
                         navController = navController,
                         profileViewModel = profileViewModel,
                         transactionsViewModel = transactionsViewModel,
+                        userListViewModel = userListViewModel,
                     )
                 }
             }

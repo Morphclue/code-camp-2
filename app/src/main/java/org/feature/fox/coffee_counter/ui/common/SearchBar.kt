@@ -22,7 +22,8 @@ import org.feature.fox.coffee_counter.R
 
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fraction: Float = 1.0f
 ) {
     val idState = remember { mutableStateOf(TextFieldValue()) }
     TextField(
@@ -43,7 +44,7 @@ fun SearchBar(
             Text(stringResource(R.string.search_hint))
         },
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(fraction)
             .heightIn(min = 56.dp)
             .padding(all = 5.dp),
         shape = RoundedCornerShape(50.dp),
