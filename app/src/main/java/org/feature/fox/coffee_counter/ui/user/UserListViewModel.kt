@@ -29,6 +29,7 @@ interface IUserListViewModel : IToast {
     var currentUser: MutableLiveData<UserIdResponse>
 
     suspend fun addFunding()
+    suspend fun updateUser()
 }
 
 @HiltViewModel
@@ -78,6 +79,10 @@ class UserListViewModel @Inject constructor(
         dialogVisible.value = false
     }
 
+    override suspend fun updateUser() {
+        TODO("Not yet implemented")
+    }
+
     private suspend fun loadUsers() {
         val response = userRepository.getUsers()
         if (response.data == null) {
@@ -108,6 +113,10 @@ class UserListViewModelPreview : IUserListViewModel {
     override val toast = toastChannel.receiveAsFlow()
 
     override suspend fun addFunding() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateUser() {
         TODO("Not yet implemented")
     }
 }
