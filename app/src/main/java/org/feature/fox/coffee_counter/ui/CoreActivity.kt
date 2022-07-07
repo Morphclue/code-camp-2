@@ -18,7 +18,6 @@ import org.feature.fox.coffee_counter.ui.user.UserListViewModel
 @AndroidEntryPoint
 class CoreActivity : ComponentActivity() {
     private val itemsViewModel: ItemsViewModel by viewModels()
-
     private val profileViewModel: ProfileViewModel by viewModels()
     private val transactionsViewModel: TransactionViewModel by viewModels()
     private val userListViewModel: UserListViewModel by viewModels()
