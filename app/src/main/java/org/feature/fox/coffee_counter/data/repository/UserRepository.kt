@@ -6,6 +6,7 @@ import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
+import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -230,7 +231,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun addFunding(id: String, fundingBody: Double): Resource<String> {
+    override suspend fun addFunding(id: String, fundingBody: FundingBody): Resource<String> {
         return try {
             val response = apiService.addFunding(id, fundingBody)
             if (response.isSuccessful) {
