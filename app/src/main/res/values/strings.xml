@@ -35,6 +35,8 @@
     <string name="delete_item">Successfully deleted item</string>
     <string name="add_item">Successfully added item</string>
     <string name="update_item">Successfully updated item</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="amount">Amount</string>
     <string name="price_hint">Price (€)</string>
     <string name="price_negative">The Price should not be negative</string>

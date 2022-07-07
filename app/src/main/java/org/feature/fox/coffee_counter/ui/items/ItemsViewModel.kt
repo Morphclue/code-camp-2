@@ -2,7 +2,9 @@ package org.feature.fox.coffee_counter.ui.items
 
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,7 +26,7 @@ import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
-    val availableItemsState: MutableLiveData<MutableList<Item>>
+    var availableItemsState: SnapshotStateList<Item>
     val itemsInShoppingCartState: MutableLiveData<MutableList<Item>>
     val currentShoppingCartAmountState: MutableState<Double>
     val adminView: MutableState<Boolean>
@@ -34,6 +36,8 @@ interface IItemsViewModel : IToast {
     var currentItemName: MutableState<TextFieldValue>
     var currentItemAmount: MutableState<TextFieldValue>
     var currentItemPrice: MutableState<TextFieldValue>
+    val isLoaded: MutableState<Boolean>
+    val dialogVisible: MutableState<Boolean>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item)
@@ -51,7 +55,7 @@ class ItemsViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) : ViewModel(), IItemsViewModel {
-    override val availableItemsState = MutableLiveData<MutableList<Item>>()
+    override var availableItemsState = mutableStateListOf<Item>()
     override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
     override val toastChannel = Channel<UIText>()
@@ -63,6 +67,9 @@ class ItemsViewModel @Inject constructor(
     override var currentItemName = mutableStateOf(TextFieldValue())
     override var currentItemAmount = mutableStateOf(TextFieldValue())
     override var currentItemPrice = mutableStateOf(TextFieldValue())
+    override val isLoaded = mutableStateOf(false)
+    override val dialogVisible = mutableStateOf(false)
+
 
     init {
         viewModelScope.launch {
@@ -79,10 +86,9 @@ class ItemsViewModel @Inject constructor(
             return
         }
 
-        availableItemsState.value = mutableListOf()
-
+        availableItemsState = mutableStateListOf()
         response.data.forEach { item ->
-            availableItemsState.value?.add(
+            availableItemsState.add(
                 Item(
                     id = item.id,
                     name = item.name,
@@ -94,7 +100,7 @@ class ItemsViewModel @Inject constructor(
 
         if (itemsInShoppingCartState.value.isNullOrEmpty()) {
             itemsInShoppingCartState.value = mutableListOf()
-            availableItemsState.value?.forEach { item ->
+            availableItemsState.forEach { item ->
                 itemsInShoppingCartState.value?.add(
                     Item(
                         id = item.id,
@@ -105,6 +111,7 @@ class ItemsViewModel @Inject constructor(
                 )
             }
         }
+        isLoaded.value = true
     }
 
     override suspend fun addItemToShoppingCart(item: Item) {
@@ -125,7 +132,7 @@ class ItemsViewModel @Inject constructor(
 
         itemsInShoppingCartState.value?.forEach { cartItem ->
             if (item.id == cartItem.id && cartItem.amount < item.amount) {
-                if(userResponse.data.balance < currentShoppingCartAmountState.value + item.price){
+                if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
                     toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
                 }
                 cartItem.amount += 1
@@ -157,8 +164,10 @@ class ItemsViewModel @Inject constructor(
     override suspend fun buyItems() {
         itemsInShoppingCartState.value?.forEach { cartItem ->
             if (cartItem.amount > 0) {
-                val response = itemRepository.purchaseItem(preference.getTag(BuildConfig.USER_ID),
-                    PurchaseBody(cartItem.id, cartItem.amount))
+                val response = itemRepository.purchaseItem(
+                    preference.getTag(BuildConfig.USER_ID),
+                    PurchaseBody(cartItem.id, cartItem.amount)
+                )
 
                 if (response.data == null) {
                     toastChannel.send(response.message?.let { UIText.DynamicString(it) }
@@ -170,7 +179,7 @@ class ItemsViewModel @Inject constructor(
                 cartItem.amount = 0
             }
         }
-
+        isLoaded.value = false
         getItems()
     }
 
@@ -179,8 +188,8 @@ class ItemsViewModel @Inject constructor(
             ItemBody(
                 id = currentItemId.value.text,
                 name = currentItemName.value.text,
-                amount = currentItemId.value.text.toInt(),
-                price = currentItemId.value.text.toDouble(),
+                amount = currentItemAmount.value.text.toInt(),
+                price = currentItemPrice.value.text.toDouble(),
             )
         )
 
@@ -190,6 +199,8 @@ class ItemsViewModel @Inject constructor(
             return
         }
         toastChannel.send(UIText.StringResource(R.string.add_item))
+        isLoaded.value = false
+        getItems()
     }
 
     override suspend fun updateItem() {
@@ -214,6 +225,7 @@ class ItemsViewModel @Inject constructor(
             return
         }
         toastChannel.send(UIText.StringResource(R.string.update_item))
+        isLoaded.value = false
         getItems()
     }
 
@@ -226,12 +238,14 @@ class ItemsViewModel @Inject constructor(
             return
         }
         toastChannel.send(UIText.StringResource(R.string.delete_item))
+        isLoaded.value = false
+        getItems()
     }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
     override val currentShoppingCartAmountState = mutableStateOf(55.0)
-    override val availableItemsState = MutableLiveData<MutableList<Item>>()
+    override var availableItemsState = mutableStateListOf<Item>()
     override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -242,9 +256,11 @@ class ItemsViewModelPreview : IItemsViewModel {
     override var currentItemName = mutableStateOf(TextFieldValue())
     override var currentItemAmount = mutableStateOf(TextFieldValue())
     override var currentItemPrice = mutableStateOf(TextFieldValue())
+    override val isLoaded = mutableStateOf(false)
+    override val dialogVisible = mutableStateOf(false)
 
     init {
-        availableItemsState.value = mutableListOf(
+        availableItemsState = mutableStateListOf(
             Item(id = "a", name = "coffee", amount = 69, price = 5.0),
             Item(id = "b", name = "beer", amount = 42, price = 4.99),
             Item(id = "c", name = "mate", amount = 1337, price = 9.99)
