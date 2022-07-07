@@ -37,7 +37,8 @@ interface IItemsViewModel : IToast {
     var currentItemAmount: MutableState<TextFieldValue>
     var currentItemPrice: MutableState<TextFieldValue>
     val isLoaded: MutableState<Boolean>
-    val dialogVisible: MutableState<Boolean>
+    val addItemDialogVisible: MutableState<Boolean>
+    val editItemDialogVisible: MutableState<Boolean>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item)
@@ -68,7 +69,8 @@ class ItemsViewModel @Inject constructor(
     override var currentItemAmount = mutableStateOf(TextFieldValue())
     override var currentItemPrice = mutableStateOf(TextFieldValue())
     override val isLoaded = mutableStateOf(false)
-    override val dialogVisible = mutableStateOf(false)
+    override val addItemDialogVisible = mutableStateOf(false)
+    override val editItemDialogVisible = mutableStateOf(false)
 
 
     init {
@@ -257,7 +259,8 @@ class ItemsViewModelPreview : IItemsViewModel {
     override var currentItemAmount = mutableStateOf(TextFieldValue())
     override var currentItemPrice = mutableStateOf(TextFieldValue())
     override val isLoaded = mutableStateOf(false)
-    override val dialogVisible = mutableStateOf(false)
+    override val addItemDialogVisible = mutableStateOf(false)
+    override val editItemDialogVisible = mutableStateOf(false)
 
     init {
         availableItemsState = mutableStateListOf(

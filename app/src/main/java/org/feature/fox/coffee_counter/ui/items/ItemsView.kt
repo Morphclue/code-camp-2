@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterialApi::class)
 package org.feature.fox.coffee_counter.ui.items
 
 import android.annotation.SuppressLint
@@ -20,14 +19,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -35,7 +30,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -75,33 +69,27 @@ fun ItemsViewPreview() {
 fun ItemsView(
     itemViewModel: IItemsViewModel,
 ) {
-    val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
     val context = LocalContext.current
     ToastMessage(itemViewModel, context)
     AddItemDialog(itemViewModel)
+    EditItemDialog(itemViewModel)
 
-    ModalBottomSheetLayout(
-        sheetState = bottomState,
-        sheetContent = {
-            EditItemView(itemViewModel, bottomState)
-        }) {
-        Scaffold(
-            topBar = { MoneyAppBar(title = stringResource(R.string.item_list_title)) } ,
-            floatingActionButton = {
-                if(itemViewModel.isAdmin.value) EditFAB(itemViewModel)
-                if(itemViewModel.adminView.value) AddItemFAB(itemViewModel)
-                if(!itemViewModel.adminView.value) BuyFAB(itemViewModel)
-            },
-            content = {
-                Column {
-                    SearchBar()
-                    if (itemViewModel.isLoaded.value) ItemList(itemViewModel, bottomState) else LoadingBox()
+
+    Scaffold(
+        topBar = { MoneyAppBar(title = stringResource(R.string.item_list_title)) },
+        floatingActionButton = {
+            if (itemViewModel.isAdmin.value) EditFAB(itemViewModel)
+            if (itemViewModel.adminView.value) AddItemFAB(itemViewModel)
+            if (!itemViewModel.adminView.value) BuyFAB(itemViewModel)
+        },
+        content = {
+            Column {
+                SearchBar()
+                if (itemViewModel.isLoaded.value) ItemList(itemViewModel) else LoadingBox()
 //                if(!itemViewModel.adminView.value!!) BuyButton(itemViewModel)
-                }
             }
-        )
-    }
+        }
+    )
 }
 
 
@@ -119,7 +107,7 @@ fun LoadingBox() {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ItemList(viewModel: IItemsViewModel, bottomState: ModalBottomSheetState) {
+fun ItemList(viewModel: IItemsViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
     Column {
@@ -134,11 +122,11 @@ fun ItemList(viewModel: IItemsViewModel, bottomState: ModalBottomSheetState) {
             coroutineScope.launch {
                 viewModel.getItems()
             }
-            if(viewModel.adminView.value) AmountTitle()
+            if (viewModel.adminView.value) AmountTitle()
             viewModel.availableItemsState.forEach { item ->
-                if(viewModel.adminView.value){
-                    AdminItemRow(viewModel, item, bottomState)
-                }else {
+                if (viewModel.adminView.value) {
+                    AdminItemRow(viewModel, item)
+                } else {
                     ItemRow(viewModel, item)
                 }
                 Divider(
@@ -228,7 +216,7 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
 }
 
 @Composable
-fun AdminItemRow(viewModel: IItemsViewModel, item: Item, bottomState: ModalBottomSheetState){
+fun AdminItemRow(viewModel: IItemsViewModel, item: Item) {
     val scope = rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -241,7 +229,7 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item, bottomState: ModalBotto
                 viewModel.currentItemAmount.value = TextFieldValue(item.amount.toString())
                 viewModel.currentItemPrice.value = TextFieldValue(item.price.toString())
                 scope.launch {
-                    bottomState.show()
+                    viewModel.editItemDialogVisible.value = true
                 }
             }
     ) {
@@ -262,7 +250,6 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item, bottomState: ModalBotto
                     modifier = Modifier.width(60.dp)
                 )
             }
-            Box(Modifier.height(90.dp))
         }
     }
 }
@@ -271,11 +258,11 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item, bottomState: ModalBotto
 fun AddItemDialog(
     viewModel: IItemsViewModel,
 ) {
-    if (!viewModel.dialogVisible.value) {
+    if (!viewModel.addItemDialogVisible.value) {
         return
     }
     Dialog(
-        onDismissRequest = { viewModel.dialogVisible.value = false },
+        onDismissRequest = { viewModel.addItemDialogVisible.value = false },
     ) {
         Surface(
             shape = MaterialTheme.shapes.medium,
@@ -317,6 +304,7 @@ fun AddItemDialog(
                         //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
+
                 AddItemDialogButtons(viewModel)
             }
         }
@@ -326,19 +314,21 @@ fun AddItemDialog(
 @Composable
 fun AddItemDialogButtons(
     viewModel: IItemsViewModel,
-){
+) {
     val scope = rememberCoroutineScope()
-    Row(modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
         TextButton(onClick = {
-            viewModel.dialogVisible.value = false
+            viewModel.addItemDialogVisible.value = false
         }) {
             Text(text = stringResource(id = R.string.cancel))
         }
         TextButton(onClick = {
             scope.launch {
                 viewModel.addItem()
-                viewModel.dialogVisible.value = false
+                viewModel.addItemDialogVisible.value = false
             }
         }) {
             Text(text = stringResource(id = R.string.ok))
@@ -347,7 +337,97 @@ fun AddItemDialogButtons(
 }
 
 @Composable
-fun AddButton(viewModel: IItemsViewModel, item: Item){
+fun EditItemDialog(
+    viewModel: IItemsViewModel,
+) {
+    if (!viewModel.editItemDialogVisible.value) {
+        return
+    }
+    Dialog(
+        onDismissRequest = { viewModel.editItemDialogVisible.value = false },
+    ) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colors.surface,
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "${viewModel.currentItemName.value.text}/${viewModel.currentItemId.value.text}",
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(weight = 1f, fill = false)
+                        .padding(vertical = 16.dp)
+                ) {
+                    CommonTextField(
+                        state = viewModel.currentItemId,
+                        label = stringResource(R.string.id_hint),
+                        // TODO add after merge:
+                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
+                    CommonTextField(
+                        state = viewModel.currentItemName,
+                        label = stringResource(R.string.name_hint),
+                        // TODO add after merge:
+                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
+                    CommonTextField(
+                        state = viewModel.currentItemPrice,
+                        label = stringResource(R.string.price_hint),
+                        // TODO add after merge:
+                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+                    CommonTextField(
+                        state = viewModel.currentItemAmount,
+                        label = stringResource(R.string.amount),
+                        // TODO add after merge:
+                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
+                }
+
+                EditItemDialogButtons(viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun EditItemDialogButtons(
+    viewModel: IItemsViewModel,
+) {
+    val scope = rememberCoroutineScope()
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        TextButton(onClick = {
+            viewModel.editItemDialogVisible.value = false
+        }) {
+            Text(text = stringResource(id = R.string.cancel))
+        }
+        TextButton(onClick = {
+            scope.launch {
+                viewModel.deleteItem()
+                viewModel.editItemDialogVisible.value = false
+            }
+        }) {
+            Text(text = stringResource(id = R.string.delete))
+        }
+        TextButton(onClick = {
+            scope.launch {
+                viewModel.updateItem()
+                viewModel.editItemDialogVisible.value = false
+            }
+        }) {
+            Text(text = stringResource(id = R.string.ok))
+        }
+    }
+}
+
+@Composable
+fun AddButton(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
     Button(
         onClick = {
@@ -368,7 +448,7 @@ fun AddButton(viewModel: IItemsViewModel, item: Item){
 }
 
 @Composable
-fun AmountTitle(){
+fun AmountTitle() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -389,7 +469,7 @@ fun AmountTitle(){
 }
 
 @Composable
-fun EditFAB(viewModel: IItemsViewModel){
+fun EditFAB(viewModel: IItemsViewModel) {
     FloatingActionButton(
         modifier = Modifier.padding(start = 170.dp, bottom = 50.dp),
         onClick = {
@@ -404,19 +484,19 @@ fun EditFAB(viewModel: IItemsViewModel){
 }
 
 @Composable
-fun AddItemFAB(viewModel: IItemsViewModel){
+fun AddItemFAB(viewModel: IItemsViewModel) {
     ExtendedFloatingActionButton(
         modifier = Modifier.padding(bottom = 50.dp),
         backgroundColor = CrayolaCopper,
         text = {
             Text("Add Item")
         },
-        onClick = {viewModel.dialogVisible.value = true}
+        onClick = { viewModel.addItemDialogVisible.value = true }
     )
 }
 
 @Composable
-fun BuyFAB(viewModel: IItemsViewModel){
+fun BuyFAB(viewModel: IItemsViewModel) {
     val coroutineScope = rememberCoroutineScope()
     ExtendedFloatingActionButton(
         modifier = Modifier.padding(bottom = 50.dp),
