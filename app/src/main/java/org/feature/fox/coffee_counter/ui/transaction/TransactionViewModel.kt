@@ -82,7 +82,6 @@ class TransactionViewModel @Inject constructor(
                 )
             }
         }
-        //getTotalBalance()
     }
 
     override suspend fun getTotalBalance() {
