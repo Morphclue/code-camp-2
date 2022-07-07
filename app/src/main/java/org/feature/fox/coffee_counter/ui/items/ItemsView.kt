@@ -4,6 +4,7 @@ package org.feature.fox.coffee_counter.ui.items
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -147,6 +148,7 @@ fun ItemList(viewModel: IItemsViewModel, bottomState: ModalBottomSheetState) {
                     thickness = 1.dp
                 )
             }
+            Box(Modifier.height(90.dp))
         }
     }
 }
@@ -260,6 +262,7 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item, bottomState: ModalBotto
                     modifier = Modifier.width(60.dp)
                 )
             }
+            Box(Modifier.height(90.dp))
         }
     }
 }
