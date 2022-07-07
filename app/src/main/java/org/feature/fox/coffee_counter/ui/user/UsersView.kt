@@ -10,34 +10,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
-import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
@@ -154,64 +145,3 @@ fun MoneyEditRow(
         }
     }
 }
-
-@Composable
-fun FundingDialog(
-    viewModel: IUserListViewModel,
-) {
-    if (!viewModel.dialogVisible.value) {
-        return
-    }
-    Dialog(
-        onDismissRequest = { viewModel.dialogVisible.value = false },
-    ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colors.surface,
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Add funding for ${viewModel.currentUser.value?.name}",
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(weight = 1f, fill = false)
-                        .padding(vertical = 16.dp)
-                ) {
-                    CommonTextField(
-                        state = viewModel.funding,
-                        label = stringResource(id = R.string.amount),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number)
-                    )
-                }
-                FundingDialogButtons(viewModel)
-            }
-        }
-    }
-}
-
-@Composable
-fun FundingDialogButtons(viewModel: IUserListViewModel) {
-    val scope = rememberCoroutineScope()
-    Row(modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End) {
-        TextButton(onClick = {
-            viewModel.dialogVisible.value = false
-        }) {
-            Text(text = stringResource(id = R.string.cancel))
-        }
-        TextButton(onClick = {
-            scope.launch {
-                viewModel.addFunding()
-            }
-        }) {
-            Text(text = stringResource(id = R.string.ok))
-        }
-    }
-}
-
-
-
