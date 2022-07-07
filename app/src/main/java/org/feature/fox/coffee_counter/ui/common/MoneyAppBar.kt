@@ -12,12 +12,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.lifecycle.MutableLiveData
 
-class BalanceStateProvider : PreviewParameterProvider<Pair<String, Double>> {
-    override val values: Sequence<Pair<String, Double>> = sequenceOf(Pair("Beverage", 13.0))
-
+class BalanceStateProvider : PreviewParameterProvider<Pair<String, MutableLiveData<Double>>> {
+    override val values: Sequence<Pair<String, MutableLiveData<Double>>> =
+        sequenceOf(Pair("Beverage", MutableLiveData(13.0)))
 }
 
-@Preview()
+@Preview
 @Composable
 fun MoneyAppBar(
     @PreviewParameter(BalanceStateProvider::class) pair: Pair<String, MutableLiveData<Double>>
