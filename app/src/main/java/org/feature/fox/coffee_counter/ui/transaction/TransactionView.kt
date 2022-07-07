@@ -87,7 +87,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
                     "Funding",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${transaction.value}€"
+                    "${String.format("%.2f", transaction.value)}€"
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
@@ -95,7 +95,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
                     "Order",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${transaction.value}€"
+                    "${String.format("%.2f", transaction.value)}€"
                 )
             }
             Divider(

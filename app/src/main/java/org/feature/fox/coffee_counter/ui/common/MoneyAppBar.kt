@@ -29,7 +29,7 @@ fun MoneyAppBar(
         ) {
             Text(text = pair.first)
             Spacer(modifier = Modifier.weight(1f))
-            Text(pair.second.value.toString() + "€")
+            Text("${String.format("%.2f", pair.second.value)}€")
         }
     })
 }
