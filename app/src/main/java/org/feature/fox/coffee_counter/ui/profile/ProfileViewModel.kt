@@ -142,8 +142,7 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val retypePasswordState = mutableStateOf(TextFieldValue("123456789"))
     override val isAdminState = mutableStateOf(false)
     override val showMainActivity = MutableLiveData<Boolean>()
-    override val balance: MutableLiveData<Double>
-        get() = TODO("Not yet implemented")
+    override val balance = MutableLiveData<Double>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 

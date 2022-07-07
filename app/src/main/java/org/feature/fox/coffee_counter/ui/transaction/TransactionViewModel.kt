@@ -94,12 +94,8 @@ class TransactionViewModel @Inject constructor(
                 userRepository.observeTotalBalanceOfUser(preference.getTag(BuildConfig.USER_ID)).value
             return
         }
-
         balance.value = response.data.balance
-
-
     }
-
 }
 
 class TransactionViewModelPreview : ITransactionViewModel {
@@ -108,8 +104,7 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val toastMessage = MutableLiveData<String>()
     override val transactions: MutableList<TransactionResponse>
         get() = TODO("Not yet implemented")
-    override val balance: MutableLiveData<Double>
-        get() = TODO("Not yet implemented")
+    override val balance = MutableLiveData<Double>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
