@@ -114,6 +114,7 @@ class UserListViewModel @Inject constructor(
         }
 
         toastChannel.send(UIText.StringResource(R.string.created_account))
+        editDialogVisible.value = false
     }
 
     private suspend fun loadUsers() {
