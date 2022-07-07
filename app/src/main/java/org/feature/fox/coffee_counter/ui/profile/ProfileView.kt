@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -47,6 +48,7 @@ fun ProfileViewPreview() {
     ProfileView(ProfileViewModelPreview())
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ProfileView(
     viewModel: IProfileViewModel,
@@ -54,10 +56,11 @@ fun ProfileView(
     val context = LocalContext.current
     ToastMessage(viewModel, context)
     val additionalScrollDp = 120.dp
+    val coroutineScope = rememberCoroutineScope()
 
     BoxWithConstraints {
         Column {
-            MoneyAppBar(title = stringResource(R.string.profile_title))
+            MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
             Column(
                 modifier = Modifier
                     .padding(4.dp)
@@ -66,10 +69,15 @@ fun ProfileView(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                coroutineScope.launch {
+                    viewModel.getTotalBalance()
+                }
                 ProfileIcon()
                 CommonTextField(viewModel.idState, label = stringResource(id = R.string.id_hint))
-                CommonTextField(viewModel.nameState,
-                    label = stringResource(id = R.string.name_hint))
+                CommonTextField(
+                    viewModel.nameState,
+                    label = stringResource(id = R.string.name_hint)
+                )
                 PasswordTextField(
                     state = viewModel.passwordState,
                     label = stringResource(id = R.string.password_hint)

@@ -26,10 +26,12 @@ interface IProfileViewModel : IToast {
     val retypePasswordState: MutableState<TextFieldValue>
     val isAdminState: MutableState<Boolean>
     val showMainActivity: MutableLiveData<Boolean>
+    val balance: MutableState<Double>
 
     suspend fun loadData()
     suspend fun updateUser()
     suspend fun deleteUser()
+    suspend fun getTotalBalance()
 }
 
 @HiltViewModel
@@ -45,10 +47,12 @@ class ProfileViewModel @Inject constructor(
     override val showMainActivity = MutableLiveData<Boolean>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override val balance = mutableStateOf(0.0)
 
     init {
         viewModelScope.launch {
             loadData()
+            getTotalBalance()
         }
     }
 
@@ -70,7 +74,6 @@ class ProfileViewModel @Inject constructor(
             toastChannel.send(UIText.StringResource(R.string.match_password))
             return
         }
-
         val userBody = UserBody(
             idState.value.text,
             nameState.value.text,
@@ -101,10 +104,20 @@ class ProfileViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
-
         toastChannel.send(UIText.StringResource(R.string.deleted_user))
         removeTags()
         showMainActivity.value = true
+    }
+
+    override suspend fun getTotalBalance() {
+        val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
+
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        balance.value = response.data.balance
     }
 
     private fun removeTags() {
@@ -122,6 +135,7 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val retypePasswordState = mutableStateOf(TextFieldValue("123456789"))
     override val isAdminState = mutableStateOf(false)
     override val showMainActivity = MutableLiveData<Boolean>()
+    override val balance = mutableStateOf(50.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
@@ -134,6 +148,10 @@ class ProfileViewModelPreview : IProfileViewModel {
     }
 
     override suspend fun deleteUser() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTotalBalance() {
         TODO("Not yet implemented")
     }
 }

@@ -2,7 +2,14 @@ package org.feature.fox.coffee_counter.ui.transaction
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -42,7 +49,7 @@ fun HistoryView(
     viewModel: ITransactionViewModel
 ) {
     Column {
-        MoneyAppBar(title = stringResource(R.string.history_title))
+        MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         ShowPeriodField()
         TransactionContainer(viewModel)
     }
@@ -63,6 +70,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
     ) {
         coroutineScope.launch {
             viewModel.refreshTransactions()
+            viewModel.getTotalBalance()
         }
         if (viewModel.transactions.isEmpty()) Text(
             stringResource(id = R.string.no_data),
@@ -79,7 +87,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
                     "Funding",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${transaction.value}€"
+                    "${String.format("%.2f", transaction.value)}€"
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
@@ -87,7 +95,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
                     "Order",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${transaction.value}€"
+                    "${String.format("%.2f", transaction.value)}€"
                 )
             }
             Divider(

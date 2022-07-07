@@ -53,11 +53,11 @@ import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
+import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
-import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Preview(showSystemUi = true)
@@ -69,25 +69,32 @@ fun ItemsViewPreview() {
 
 @Composable
 fun ItemsView(
-    itemViewModel: IItemsViewModel,
+    viewModel: IItemsViewModel,
 ) {
     val context = LocalContext.current
-    ToastMessage(itemViewModel, context)
-    AddItemDialog(itemViewModel)
-    EditItemDialog(itemViewModel)
+    ToastMessage(viewModel, context)
+    AddItemDialog(viewModel)
+    EditItemDialog(viewModel)
 
 
     Scaffold(
-        topBar = { MoneyAppBar(title = stringResource(R.string.item_list_title)) },
+        topBar = {
+            MoneyAppBar(
+                pair = Pair(
+                    stringResource(id = R.string.item_list_title),
+                    viewModel.balance
+                )
+            )
+        },
         floatingActionButton = {
-            if (itemViewModel.isAdmin.value) EditFAB(itemViewModel)
-            if (itemViewModel.adminView.value) AddItemFAB(itemViewModel)
-            if (!itemViewModel.adminView.value) BuyFAB(itemViewModel)
+            if (viewModel.isAdmin.value) EditFAB(viewModel)
+            if (viewModel.adminView.value) AddItemFAB(viewModel)
+            if (!viewModel.adminView.value) BuyFAB(viewModel)
         },
         content = {
             Column {
                 SearchBar()
-                if (itemViewModel.isLoaded.value) ItemList(itemViewModel) else LoadingBox()
+                if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
             }
         }
     )
@@ -121,6 +128,7 @@ fun ItemList(viewModel: IItemsViewModel) {
         ) {
             coroutineScope.launch {
                 viewModel.getItems()
+                viewModel.getTotalBalance()
             }
             if (viewModel.adminView.value) AmountTitle()
             viewModel.availableItemsState.forEach { item ->
