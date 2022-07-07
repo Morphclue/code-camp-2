@@ -1,12 +1,27 @@
 package org.feature.fox.coffee_counter.ui.user
 
-import androidx.compose.foundation.layout.*
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,12 +30,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
+import org.feature.fox.coffee_counter.ui.items.LoadingBox
 
 @Preview(showSystemUi = true)
 @Composable
@@ -32,9 +49,11 @@ fun UsersViewPreview() {
     UsersView(preview)
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun UsersView(viewModel: IUserListViewModel) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     ToastMessage(viewModel, context)
     FundingDialog(viewModel)
     EditUserDialog(viewModel)
@@ -43,6 +62,9 @@ fun UsersView(viewModel: IUserListViewModel) {
         topBar = { MoneyAppBar(Pair(stringResource(R.string.user_list_title), viewModel.balance)) },
     ) {
         Column {
+            coroutineScope.launch {
+                viewModel.getTotalBalance()
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),

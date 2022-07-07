@@ -1,9 +1,18 @@
 package org.feature.fox.coffee_counter.ui.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -27,7 +36,11 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.ui.common.*
+import org.feature.fox.coffee_counter.ui.common.CommonTextField
+import org.feature.fox.coffee_counter.ui.common.CustomButton
+import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.ui.common.PasswordTextField
+import org.feature.fox.coffee_counter.ui.common.ToastMessage
 
 @Preview(showSystemUi = true)
 @Composable
@@ -35,6 +48,7 @@ fun ProfileViewPreview() {
     ProfileView(ProfileViewModelPreview())
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ProfileView(
     viewModel: IProfileViewModel,
@@ -42,6 +56,7 @@ fun ProfileView(
     val context = LocalContext.current
     ToastMessage(viewModel, context)
     val additionalScrollDp = 120.dp
+    val coroutineScope = rememberCoroutineScope()
 
     BoxWithConstraints {
         Column {
@@ -54,10 +69,15 @@ fun ProfileView(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                coroutineScope.launch {
+                    viewModel.getTotalBalance()
+                }
                 ProfileIcon()
                 CommonTextField(viewModel.idState, label = stringResource(id = R.string.id_hint))
-                CommonTextField(viewModel.nameState,
-                    label = stringResource(id = R.string.name_hint))
+                CommonTextField(
+                    viewModel.nameState,
+                    label = stringResource(id = R.string.name_hint)
+                )
                 PasswordTextField(
                     state = viewModel.passwordState,
                     label = stringResource(id = R.string.password_hint)
