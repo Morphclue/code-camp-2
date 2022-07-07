@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.di.services.network
 
 import org.feature.fox.coffee_counter.BuildConfig
+import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
@@ -76,7 +77,7 @@ interface ApiService {
     @POST("${BuildConfig.USERS_ENDPOINT}/{id}/funding")
     suspend fun addFunding(
         @Path("id") id: String,
-        @Body fundingBody: Double,
+        @Body fundingBody: FundingBody,
     ): Response<String>
 
     @POST(BuildConfig.ITEMS_ENDPOINT)
