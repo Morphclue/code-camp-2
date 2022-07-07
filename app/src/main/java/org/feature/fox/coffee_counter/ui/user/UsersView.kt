@@ -1,22 +1,9 @@
 package org.feature.fox.coffee_counter.ui.user
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -53,7 +40,7 @@ fun UsersView(viewModel: IUserListViewModel) {
     EditUserDialog(viewModel)
 
     Scaffold(
-        topBar = { MoneyAppBar(title = stringResource(R.string.user_list_title)) },
+        topBar = { MoneyAppBar(Pair(stringResource(R.string.user_list_title), viewModel.balance)) },
     ) {
         Column {
             Row(
