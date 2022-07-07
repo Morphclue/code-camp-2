@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -86,7 +88,6 @@ fun ItemsView(
             Column {
                 SearchBar()
                 if (itemViewModel.isLoaded.value) ItemList(itemViewModel) else LoadingBox()
-//                if(!itemViewModel.adminView.value!!) BuyButton(itemViewModel)
             }
         }
     )
@@ -116,7 +117,6 @@ fun ItemList(viewModel: IItemsViewModel) {
                 .verticalScroll(rememberScrollState())
                 .padding(5.dp)
                 .fillMaxWidth(),
-//                .weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             coroutineScope.launch {
@@ -173,7 +173,6 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     modifier = Modifier.width(60.dp)
                 )
 
-                // TODO: move in own function
                 Button(
                     onClick = {
                         coroutineScope.launch {
@@ -192,7 +191,6 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     )
                 }
 
-                // TODO: move in own function
                 Button(
                     onClick = {
                         coroutineScope.launch {
@@ -282,26 +280,22 @@ fun AddItemDialog(
                     CommonTextField(
                         state = viewModel.currentItemId,
                         label = stringResource(R.string.id_hint),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                     CommonTextField(
                         state = viewModel.currentItemName,
                         label = stringResource(R.string.name_hint),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                     CommonTextField(
                         state = viewModel.currentItemPrice,
                         label = stringResource(R.string.price_hint),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     CommonTextField(
                         state = viewModel.currentItemAmount,
                         label = stringResource(R.string.amount),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
 
@@ -364,26 +358,22 @@ fun EditItemDialog(
                     CommonTextField(
                         state = viewModel.currentItemId,
                         label = stringResource(R.string.id_hint),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                     CommonTextField(
                         state = viewModel.currentItemName,
                         label = stringResource(R.string.name_hint),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                     CommonTextField(
                         state = viewModel.currentItemPrice,
                         label = stringResource(R.string.price_hint),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                     CommonTextField(
                         state = viewModel.currentItemAmount,
                         label = stringResource(R.string.amount),
-                        // TODO add after merge:
-                        //  keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
                 }
 
@@ -423,27 +413,6 @@ fun EditItemDialogButtons(
         }) {
             Text(text = stringResource(id = R.string.ok))
         }
-    }
-}
-
-@Composable
-fun AddButton(viewModel: IItemsViewModel, item: Item) {
-    val coroutineScope = rememberCoroutineScope()
-    Button(
-        onClick = {
-            coroutineScope.launch {
-                viewModel.addItemToShoppingCart(item)
-            }
-        },
-        modifier = Modifier.size(35.dp),
-        shape = CircleShape,
-        contentPadding = PaddingValues(0.dp),
-    ) {
-        Icon(
-            Icons.Default.Add,
-            contentDescription = "content description",
-            tint = Color.White
-        )
     }
 }
 
