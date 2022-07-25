@@ -312,7 +312,6 @@ fun BuyFAB(viewModel: IItemsViewModel) {
         onClick = {
             coroutineScope.launch {
                 viewModel.confirmBuyItemDialogVisible.value = true
-                viewModel.buyItems()
             }
         }
     )
