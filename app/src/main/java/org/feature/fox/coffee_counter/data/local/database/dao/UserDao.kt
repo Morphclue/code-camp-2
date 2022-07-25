@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
@@ -21,6 +22,9 @@ interface UserDao {
     @Update
     suspend fun insertPurchase(purchase: Purchase)
 
+    @Update
+    suspend fun insertImage(image: Image)
+
     @Delete
     suspend fun deleteUser(user: User)
 
@@ -29,6 +33,9 @@ interface UserDao {
 
     @Delete
     suspend fun deletePurchase(purchase: Purchase)
+
+    @Delete
+    suspend fun deleteImage(image: Image)
 
     @Query("SELECT * FROM users WHERE id=:id")
     suspend fun getUserById(id: String): User
