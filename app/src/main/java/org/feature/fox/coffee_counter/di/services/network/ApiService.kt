@@ -95,4 +95,24 @@ interface ApiService {
     suspend fun deleteItem(
         @Path("id") id: String,
     ): Response<String>
+
+    @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image")
+    suspend fun getImage(
+        @Path("id") id: String
+    ): Response<String>
+
+    @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image/timestamp")
+    suspend fun getImageTimestamp(
+        @Path("id") id: String
+    ): Response<String>
+
+    @POST("${BuildConfig.USERS_ENDPOINT}/{id}/image")
+    suspend fun postImage(
+        @Path("id") id: String
+    ): Response<String>
+
+    @DELETE("${BuildConfig.USERS_ENDPOINT}/{id}/image")
+    suspend fun deleteImage(
+        @Path("id") id: String
+    ): Response<String>
 }
