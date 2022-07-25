@@ -32,6 +32,7 @@ interface IProfileViewModel : IToast {
     suspend fun updateUser()
     suspend fun deleteUser()
     suspend fun getTotalBalance()
+    suspend fun getImage()
     suspend fun updateImage()
 }
 
@@ -53,6 +54,7 @@ class ProfileViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadData()
+            getImage()
             getTotalBalance()
         }
     }
@@ -121,6 +123,11 @@ class ProfileViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    override suspend fun getImage() {
+        val response = userRepository.getImage(preference.getTag(BuildConfig.USER_ID))
+        println(response)
+    }
+
     override suspend fun updateImage() {
 
     }
@@ -157,6 +164,10 @@ class ProfileViewModelPreview : IProfileViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getImage() {
         TODO("Not yet implemented")
     }
 

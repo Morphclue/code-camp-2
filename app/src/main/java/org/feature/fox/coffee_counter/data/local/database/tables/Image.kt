@@ -5,7 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "images",
+    tableName = "image",
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = arrayOf("id"),

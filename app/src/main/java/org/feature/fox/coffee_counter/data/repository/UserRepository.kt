@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
+import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
@@ -34,6 +36,10 @@ class UserRepository @Inject constructor(
         userDao.insertPurchase(purchase)
     }
 
+    override suspend fun insertImage(image: Image) {
+        userDao.insertImage(image)
+    }
+
     override suspend fun deleteUser(user: User) {
         userDao.deleteUser(user)
     }
@@ -46,6 +52,10 @@ class UserRepository @Inject constructor(
         userDao.deletePurchase(purchase)
     }
 
+    override suspend fun deleteImage(image: Image) {
+        userDao.deleteImage(image)
+    }
+
     override suspend fun getUserByIdDb(id: String): User {
         return userDao.getUserById(id)
     }
@@ -56,6 +66,10 @@ class UserRepository @Inject constructor(
 
     override suspend fun getPurchaseListOfUser(id: String): List<Purchase> {
         return userDao.getPurchaseListOfUser(id)
+    }
+
+    override suspend fun getImageByIdFromUser(id: String): Image {
+        return userDao.getImageById(id)
     }
 
     override fun observeTotalBalanceOfUser(id: String): LiveData<Double> {
@@ -186,6 +200,22 @@ class UserRepository @Inject constructor(
     override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String> {
         return try {
             val response = apiService.purchaseItem(id, purchaseBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
+    override suspend fun getImage(id: String): Resource<ImageResponse> {
+        return try {
+            val response = apiService.getImage(id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

@@ -2,12 +2,14 @@ package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
+import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
@@ -21,17 +23,23 @@ interface UserRepositoryInt {
 
     suspend fun insertPurchase(purchase: Purchase)
 
+    suspend fun insertImage(image: Image)
+
     suspend fun deleteUser(user: User)
 
     suspend fun deleteFunding(funding: Funding)
 
     suspend fun deletePurchase(purchase: Purchase)
 
+    suspend fun deleteImage(image: Image)
+
     suspend fun getUserByIdDb(id: String): User
 
     suspend fun getFundingListOfUser(id: String): List<Funding>
 
     suspend fun getPurchaseListOfUser(id: String): List<Purchase>
+
+    suspend fun getImageByIdFromUser(id: String): Image
 
     fun observeTotalBalanceOfUser(id: String): LiveData<Double>
 
@@ -54,6 +62,8 @@ interface UserRepositoryInt {
     suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>
 
     suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
+
+    suspend fun getImage(id: String): Resource<ImageResponse>
 
     suspend fun adminSignUp(userBody: UserBody): Resource<String>
 

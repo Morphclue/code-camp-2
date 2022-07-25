@@ -49,6 +49,10 @@ interface UserDao {
     suspend fun getPurchaseListOfUser(id: String): List<Purchase>
 
     @Transaction
+    @Query("SELECT * FROM image WHERE userId=:id")
+    suspend fun getImageById(id: String): Image
+
+    @Transaction
     @Query("SELECT(SELECT SUM(funding.value) FROM funding WHERE userId=:id) + (SELECT SUM(purchase.totalValue) FROM purchase WHERE userId=:id)")
     fun observeTotalBalanceOfUser(id: String): LiveData<Double>
 
