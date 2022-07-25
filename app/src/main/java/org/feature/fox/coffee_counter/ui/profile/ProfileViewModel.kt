@@ -34,8 +34,6 @@ interface IProfileViewModel : IToast {
     val balance: MutableState<Double>
     val userImage: MutableState<String>
     val bitmap: MutableState<Bitmap?>
-    val uploadBitmap: MutableState<Bitmap?>
-    val uploadImageUri: MutableState<Uri?>
 
     suspend fun loadData()
     suspend fun updateUser()
@@ -61,8 +59,6 @@ class ProfileViewModel @Inject constructor(
     override val balance = mutableStateOf(0.0)
     override val userImage = mutableStateOf("")
     override val bitmap = mutableStateOf<Bitmap?>(null)
-    override val uploadBitmap = mutableStateOf<Bitmap?>(null)
-    override val uploadImageUri = mutableStateOf<Uri?>(null)
 
     init {
         viewModelScope.launch {
@@ -180,8 +176,6 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val toast = toastChannel.receiveAsFlow()
     override val userImage = mutableStateOf("")
     override val bitmap = mutableStateOf<Bitmap?>(null)
-    override val uploadBitmap = mutableStateOf<Bitmap?>(null)
-    override val uploadImageUri = mutableStateOf<Uri?>(null)
 
     override suspend fun loadData() {
         TODO("Not yet implemented")
