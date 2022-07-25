@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.Divider
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -116,12 +116,6 @@ fun UserList(viewModel: IUserListViewModel) {
         ) {
             viewModel.userList.forEach { user ->
                 UserRow(viewModel, user)
-                Divider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    thickness = 1.dp
-                )
             }
             Box(Modifier.height(30.dp))
         }
@@ -133,17 +127,25 @@ fun UserRow(
     viewModel: IUserListViewModel,
     user: UserIdResponse,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(5.dp),
+        elevation = 5.dp
     ) {
-        Text(
-            user.name,
-            fontWeight = FontWeight.Medium
-        )
-        MoneyEditRow(viewModel, user)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        ) {
+            Text(
+                user.name,
+                fontWeight = FontWeight.Medium
+            )
+            MoneyEditRow(viewModel, user)
+        }
     }
 }
 
