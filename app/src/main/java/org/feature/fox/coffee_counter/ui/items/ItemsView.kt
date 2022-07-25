@@ -15,19 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -40,20 +35,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
-import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
@@ -261,212 +251,6 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item) {
     }
 }
 
-@Composable
-fun AddItemDialog(
-    viewModel: IItemsViewModel,
-) {
-    if (!viewModel.addItemDialogVisible.value) {
-        return
-    }
-    Dialog(
-        onDismissRequest = { viewModel.addItemDialogVisible.value = false },
-    ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colors.surface,
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Add Item",
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(weight = 1f, fill = false)
-                        .padding(vertical = 16.dp)
-                ) {
-                    CommonTextField(
-                        state = viewModel.currentItemId,
-                        label = stringResource(R.string.id_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                    )
-                    CommonTextField(
-                        state = viewModel.currentItemName,
-                        label = stringResource(R.string.name_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                    )
-                    CommonTextField(
-                        state = viewModel.currentItemPrice,
-                        label = stringResource(R.string.price_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                    CommonTextField(
-                        state = viewModel.currentItemAmount,
-                        label = stringResource(R.string.amount),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                }
-
-                AddItemDialogButtons(viewModel)
-            }
-        }
-    }
-}
-
-@Composable
-fun AddItemDialogButtons(
-    viewModel: IItemsViewModel,
-) {
-    val scope = rememberCoroutineScope()
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        TextButton(onClick = {
-            viewModel.addItemDialogVisible.value = false
-        }) {
-            Text(text = stringResource(id = R.string.cancel))
-        }
-        TextButton(onClick = {
-            scope.launch {
-                viewModel.addItem()
-                viewModel.addItemDialogVisible.value = false
-            }
-        }) {
-            Text(text = stringResource(id = R.string.ok))
-        }
-    }
-}
-
-@Composable
-fun ConfirmBuyDialog(
-    viewModel: IItemsViewModel,
-){
-    if (!viewModel.confirmBuyItemDialogVisible.value) {
-        return
-    }
-    Dialog(
-        onDismissRequest = { viewModel.confirmBuyItemDialogVisible.value = false },
-    ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colors.surface,
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Shopping cart",
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Text(
-                    text = "Do you want to buy the following items:",
-                )
-                val bullet = "\u2022"
-                Row(){
-                    viewModel.itemsInShoppingCartState.value?.forEach { cartItem ->
-                        if (cartItem.amount > 0) {
-                            Column()
-                            {
-                                Text(text = bullet + "  " + cartItem.name)
-                                Text(text = cartItem.amount.toString())
-                            }
-                        }
-                    }
-                }
-
-                EditItemDialogButtons(viewModel)
-            }
-        }
-    }
-
-}
-
-
-@Composable
-fun EditItemDialog(
-    viewModel: IItemsViewModel,
-) {
-    if (!viewModel.editItemDialogVisible.value) {
-        return
-    }
-    Dialog(
-        onDismissRequest = { viewModel.editItemDialogVisible.value = false },
-    ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colors.surface,
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "${viewModel.currentItemName.value.text}/${viewModel.currentItemId.value.text}",
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(weight = 1f, fill = false)
-                        .padding(vertical = 16.dp)
-                ) {
-                    CommonTextField(
-                        state = viewModel.currentItemId,
-                        label = stringResource(R.string.id_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                    )
-                    CommonTextField(
-                        state = viewModel.currentItemName,
-                        label = stringResource(R.string.name_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                    )
-                    CommonTextField(
-                        state = viewModel.currentItemPrice,
-                        label = stringResource(R.string.price_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                    CommonTextField(
-                        state = viewModel.currentItemAmount,
-                        label = stringResource(R.string.amount),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                }
-
-                EditItemDialogButtons(viewModel)
-            }
-        }
-    }
-}
-
-@Composable
-fun EditItemDialogButtons(
-    viewModel: IItemsViewModel,
-) {
-    val scope = rememberCoroutineScope()
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        TextButton(onClick = {
-            viewModel.editItemDialogVisible.value = false
-        }) {
-            Text(text = stringResource(id = R.string.cancel))
-        }
-        TextButton(onClick = {
-            scope.launch {
-                viewModel.deleteItem()
-                viewModel.editItemDialogVisible.value = false
-            }
-        }) {
-            Text(text = stringResource(id = R.string.delete))
-        }
-        TextButton(onClick = {
-            scope.launch {
-                viewModel.updateItem()
-                viewModel.editItemDialogVisible.value = false
-            }
-        }) {
-            Text(text = stringResource(id = R.string.ok))
-        }
-    }
-}
 
 @Composable
 fun AmountTitle() {
@@ -532,30 +316,4 @@ fun BuyFAB(viewModel: IItemsViewModel) {
             }
         }
     )
-}
-
-
-@Composable
-fun BuyButton(viewModel: IItemsViewModel) {
-    val coroutineScope = rememberCoroutineScope()
-    Button(
-        onClick = {
-            coroutineScope.launch {
-                viewModel.buyItems()
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        shape = RectangleShape,
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = CrayolaCopper,
-            contentColor = Color.White
-        )
-    ) {
-        Text(
-            "Buy (${String.format("%.2f", viewModel.currentShoppingCartAmountState.value)}€)",
-            fontSize = 20.sp,
-        )
-    }
 }
