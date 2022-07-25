@@ -75,6 +75,7 @@ fun ItemsView(
     ToastMessage(viewModel, context)
     AddItemDialog(viewModel)
     EditItemDialog(viewModel)
+    ConfirmBuyDialog(viewModel)
 
 
     Scaffold(
@@ -339,6 +340,49 @@ fun AddItemDialogButtons(
 }
 
 @Composable
+fun ConfirmBuyDialog(
+    viewModel: IItemsViewModel,
+){
+    if (!viewModel.confirmBuyItemDialogVisible.value) {
+        return
+    }
+    Dialog(
+        onDismissRequest = { viewModel.confirmBuyItemDialogVisible.value = false },
+    ) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colors.surface,
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Shopping cart",
+                    style = MaterialTheme.typography.subtitle1
+                )
+                Text(
+                    text = "Do you want to buy the following items:",
+                )
+                val bullet = "\u2022"
+                Row(){
+                    viewModel.itemsInShoppingCartState.value?.forEach { cartItem ->
+                        if (cartItem.amount > 0) {
+                            Column()
+                            {
+                                Text(text = bullet + "  " + cartItem.name)
+                                Text(text = cartItem.amount.toString())
+                            }
+                        }
+                    }
+                }
+
+                EditItemDialogButtons(viewModel)
+            }
+        }
+    }
+
+}
+
+
+@Composable
 fun EditItemDialog(
     viewModel: IItemsViewModel,
 ) {
@@ -483,6 +527,7 @@ fun BuyFAB(viewModel: IItemsViewModel) {
         },
         onClick = {
             coroutineScope.launch {
+                viewModel.confirmBuyItemDialogVisible.value = true
                 viewModel.buyItems()
             }
         }
