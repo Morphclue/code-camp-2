@@ -157,7 +157,7 @@ fun MoneyEditRow(
         horizontalArrangement = Arrangement.End,
     ) {
         Text(
-            "${user.balance}€",
+            "${String.format("%.2f", user.balance)}€",
             fontWeight = FontWeight.Medium,
             color = Color.Gray,
             modifier = Modifier.width(60.dp)
