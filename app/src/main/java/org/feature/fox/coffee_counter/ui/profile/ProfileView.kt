@@ -73,7 +73,7 @@ fun ProfileView(
                 coroutineScope.launch {
                     viewModel.getTotalBalance()
                 }
-                ProfileIcon()
+                ProfileIcon(viewModel)
                 CommonTextField(viewModel.idState, label = stringResource(id = R.string.id_hint))
                 CommonTextField(
                     viewModel.nameState,
@@ -109,8 +109,9 @@ fun AdminCheckbox(viewModel: IProfileViewModel) {
 }
 
 @Composable
-fun ProfileIcon() {
+fun ProfileIcon(viewModel: IProfileViewModel) {
     val painter = rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -128,7 +129,9 @@ fun ProfileIcon() {
                     enabled = true,
                     onClickLabel = "Clickable profile image",
                     onClick = {
-
+                        coroutineScope.launch {
+                            viewModel.updateImage();
+                        }
                     }
                 ),
             contentScale = ContentScale.Crop,

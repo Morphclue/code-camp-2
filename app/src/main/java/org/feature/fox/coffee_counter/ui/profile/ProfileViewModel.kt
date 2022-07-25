@@ -32,6 +32,7 @@ interface IProfileViewModel : IToast {
     suspend fun updateUser()
     suspend fun deleteUser()
     suspend fun getTotalBalance()
+    suspend fun updateImage()
 }
 
 @HiltViewModel
@@ -120,6 +121,10 @@ class ProfileViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    override suspend fun updateImage() {
+
+    }
+
     private fun removeTags() {
         preference.removeTag(BuildConfig.USER_ID)
         preference.removeTag(BuildConfig.USER_PASSWORD)
@@ -152,6 +157,10 @@ class ProfileViewModelPreview : IProfileViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateImage() {
         TODO("Not yet implemented")
     }
 }
