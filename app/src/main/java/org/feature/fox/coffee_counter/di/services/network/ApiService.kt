@@ -6,6 +6,7 @@ import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
+import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
@@ -99,12 +100,12 @@ interface ApiService {
     @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image")
     suspend fun getImage(
         @Path("id") id: String
-    ): Response<String>
+    ): Response<ImageResponse>
 
     @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image/timestamp")
     suspend fun getImageTimestamp(
         @Path("id") id: String
-    ): Response<String>
+    ): Response<Long>
 
     @POST("${BuildConfig.USERS_ENDPOINT}/{id}/image")
     suspend fun postImage(
