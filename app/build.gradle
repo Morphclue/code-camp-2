@@ -16,9 +16,9 @@ android {
         versionName "1.0"
 
         buildConfigField "String", "BASE_URL", '"http://141.51.114.20:8080"'
-        buildConfigField "String", "USERS_ENDPOINT", '"/users"'
-        buildConfigField "String", "ITEMS_ENDPOINT", '"/items"'
-        buildConfigField "String", "LOGIN_ENDPOINT", '"/login"'
+        buildConfigField "String", "USERS_ENDPOINT", '"users"'
+        buildConfigField "String", "ITEMS_ENDPOINT", '"items"'
+        buildConfigField "String", "LOGIN_ENDPOINT", '"login"'
         buildConfigField "String", "DATE_PATTERN", '"dd.MM.yy"'
         buildConfigField "String", "REACH_SERVER_ERROR", '"Could not reach the server."'
         buildConfigField "String", "UNKNOWN_ERROR", '"Unknown error occurred."'
