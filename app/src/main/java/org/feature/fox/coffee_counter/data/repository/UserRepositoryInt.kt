@@ -16,6 +16,7 @@ import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.util.Resource
+import java.io.InputStream
 
 interface UserRepositoryInt {
     suspend fun insertUser(user: User)
@@ -66,7 +67,7 @@ interface UserRepositoryInt {
 
     suspend fun getImage(id: String): Resource<ImageResponse>
 
-    suspend fun uploadImage(id: String, image: MultipartBody.Part): Resource<String>
+    suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String>
 
     suspend fun adminSignUp(userBody: UserBody): Resource<String>
 

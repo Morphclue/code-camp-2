@@ -14,9 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -24,7 +21,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
-import java.io.File
+import java.io.InputStream
 import javax.inject.Inject
 
 interface IProfileViewModel : IToast {
@@ -45,7 +42,7 @@ interface IProfileViewModel : IToast {
     suspend fun deleteUser()
     suspend fun getTotalBalance()
     suspend fun getImage()
-    suspend fun updateImage()
+    suspend fun updateImage(stream: InputStream)
 }
 
 @HiltViewModel
@@ -150,8 +147,17 @@ class ProfileViewModel @Inject constructor(
         bitmap.value = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
-    override suspend fun updateImage() {
-
+    override suspend fun updateImage(stream: InputStream) {
+        val response = userRepository.uploadImage(
+            preference.getTag(BuildConfig.USER_ID),
+            stream
+        )
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        getImage()
     }
 
     private fun removeTags() {
@@ -197,7 +203,7 @@ class ProfileViewModelPreview : IProfileViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateImage() {
+    override suspend fun updateImage(stream: InputStream) {
         TODO("Not yet implemented")
     }
 }

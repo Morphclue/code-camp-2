@@ -3,10 +3,7 @@ package org.feature.fox.coffee_counter.ui.profile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -43,8 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.asRequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.MainActivity
 import org.feature.fox.coffee_counter.R
@@ -53,7 +48,6 @@ import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
-import java.io.File
 
 @Preview(showSystemUi = true)
 @Composable
@@ -132,21 +126,13 @@ fun ProfileIcon(viewModel: IProfileViewModel) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        viewModel.uploadImageUri.value = uri
-    }
-
-    viewModel.uploadImageUri.value?.let {
-        if (Build.VERSION.SDK_INT < 28) {
-            viewModel.uploadBitmap.value = MediaStore.Images
-                .Media.getBitmap(context.contentResolver, it)
-        } else {
-            val source = ImageDecoder
-                .createSource(context.contentResolver, it)
-            viewModel.uploadBitmap.value = ImageDecoder.decodeBitmap(source)
-        }
-
-        coroutineScope.launch {
-            viewModel.updateImage()
+        uri?.let {
+            val stream = context.contentResolver.openInputStream(uri)
+            coroutineScope.launch {
+                if (stream != null) {
+                    viewModel.updateImage(stream)
+                }
+            }
         }
     }
 

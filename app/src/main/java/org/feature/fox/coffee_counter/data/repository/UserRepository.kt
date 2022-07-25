@@ -1,7 +1,9 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
@@ -19,6 +21,7 @@ import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
+import java.io.InputStream
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -230,9 +233,16 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun uploadImage(id: String, image: MultipartBody.Part): Resource<String> {
+    override suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String> {
         return try {
+            val image = MultipartBody.Part.createFormData(
+                "pic", "myPic", RequestBody.create(
+                    "image/*".toMediaTypeOrNull(),
+                    inputStream.readBytes()
+                )
+            )
             val response = apiService.postImage(id, image)
+            println(response.code())
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
