@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -122,8 +123,15 @@ fun ProfileIcon() {
             contentDescription = stringResource(R.string.profile_image_label),
             modifier = Modifier
                 .wrapContentSize()
-                .size(150.dp),
-            contentScale = ContentScale.Crop
+                .size(150.dp)
+                .clickable(
+                    enabled = true,
+                    onClickLabel = "Clickable profile image",
+                    onClick = {
+
+                    }
+                ),
+            contentScale = ContentScale.Crop,
         )
     }
 }
