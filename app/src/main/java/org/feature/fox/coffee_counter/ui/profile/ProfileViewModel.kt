@@ -1,5 +1,8 @@
 package org.feature.fox.coffee_counter.ui.profile
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
@@ -27,6 +30,8 @@ interface IProfileViewModel : IToast {
     val isAdminState: MutableState<Boolean>
     val showMainActivity: MutableLiveData<Boolean>
     val balance: MutableState<Double>
+    val userImage: MutableState<String>
+    val bitmap: MutableState<Bitmap?>
 
     suspend fun loadData()
     suspend fun updateUser()
@@ -50,6 +55,8 @@ class ProfileViewModel @Inject constructor(
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val balance = mutableStateOf(0.0)
+    override val userImage = mutableStateOf("")
+    override val bitmap = mutableStateOf<Bitmap?>(null)
 
     init {
         viewModelScope.launch {
@@ -125,7 +132,13 @@ class ProfileViewModel @Inject constructor(
 
     override suspend fun getImage() {
         val response = userRepository.getImage(preference.getTag(BuildConfig.USER_ID))
-        println(response)
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        val imageBytes = Base64.decode(response.data.encodedImage, Base64.DEFAULT)
+        bitmap.value = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
     override suspend fun updateImage() {
@@ -150,6 +163,8 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val balance = mutableStateOf(50.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override val userImage = mutableStateOf("")
+    override val bitmap = mutableStateOf<Bitmap?>(null)
 
     override suspend fun loadData() {
         TODO("Not yet implemented")

@@ -110,7 +110,11 @@ fun AdminCheckbox(viewModel: IProfileViewModel) {
 
 @Composable
 fun ProfileIcon(viewModel: IProfileViewModel) {
-    val painter = rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
+    val painter = if (viewModel.bitmap.value == null) {
+        rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
+    } else {
+        rememberAsyncImagePainter(viewModel.bitmap.value)
+    }
     val coroutineScope = rememberCoroutineScope()
 
     Column(
