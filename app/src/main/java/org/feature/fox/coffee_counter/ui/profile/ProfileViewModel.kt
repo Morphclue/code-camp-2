@@ -2,6 +2,7 @@ package org.feature.fox.coffee_counter.ui.profile
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Base64
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -20,6 +24,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import java.io.File
 import javax.inject.Inject
 
 interface IProfileViewModel : IToast {
@@ -32,6 +37,8 @@ interface IProfileViewModel : IToast {
     val balance: MutableState<Double>
     val userImage: MutableState<String>
     val bitmap: MutableState<Bitmap?>
+    val uploadBitmap: MutableState<Bitmap?>
+    val uploadImageUri: MutableState<Uri?>
 
     suspend fun loadData()
     suspend fun updateUser()
@@ -57,6 +64,8 @@ class ProfileViewModel @Inject constructor(
     override val balance = mutableStateOf(0.0)
     override val userImage = mutableStateOf("")
     override val bitmap = mutableStateOf<Bitmap?>(null)
+    override val uploadBitmap = mutableStateOf<Bitmap?>(null)
+    override val uploadImageUri = mutableStateOf<Uri?>(null)
 
     init {
         viewModelScope.launch {
@@ -165,6 +174,8 @@ class ProfileViewModelPreview : IProfileViewModel {
     override val toast = toastChannel.receiveAsFlow()
     override val userImage = mutableStateOf("")
     override val bitmap = mutableStateOf<Bitmap?>(null)
+    override val uploadBitmap = mutableStateOf<Bitmap?>(null)
+    override val uploadImageUri = mutableStateOf<Uri?>(null)
 
     override suspend fun loadData() {
         TODO("Not yet implemented")

@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import okhttp3.MultipartBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
@@ -216,6 +217,22 @@ class UserRepository @Inject constructor(
     override suspend fun getImage(id: String): Resource<ImageResponse> {
         return try {
             val response = apiService.getImage(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
+    override suspend fun uploadImage(id: String, image: MultipartBody.Part): Resource<String> {
+        return try {
+            val response = apiService.postImage(id, image)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

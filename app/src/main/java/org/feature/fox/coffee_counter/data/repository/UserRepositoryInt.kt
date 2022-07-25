@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
+import okhttp3.MultipartBody
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -64,6 +65,8 @@ interface UserRepositoryInt {
     suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
 
     suspend fun getImage(id: String): Resource<ImageResponse>
+
+    suspend fun uploadImage(id: String, image: MultipartBody.Part): Resource<String>
 
     suspend fun adminSignUp(userBody: UserBody): Resource<String>
 

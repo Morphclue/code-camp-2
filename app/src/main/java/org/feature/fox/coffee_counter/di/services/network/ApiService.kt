@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.di.services.network
 
+import okhttp3.MultipartBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
@@ -18,6 +19,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 
@@ -109,7 +111,8 @@ interface ApiService {
 
     @POST("${BuildConfig.USERS_ENDPOINT}/{id}/image")
     suspend fun postImage(
-        @Path("id") id: String
+        @Path("id") id: String,
+        @Part image: MultipartBody.Part
     ): Response<String>
 
     @DELETE("${BuildConfig.USERS_ENDPOINT}/{id}/image")
