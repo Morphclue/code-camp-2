@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,22 +22,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import java.text.SimpleDateFormat
 import java.util.*
 
 private val rowTextFontSize: TextUnit = 18.sp
-
-
+val purchaseList = listOf<Purchase>(
+    Purchase(123456789, "HansID", 42.0, "itemID", "Espresso", 2),
+    Purchase(123456790, "HansID", 4.0, "itemID2", "Coffee", 15),
+    Purchase(123456791, "HansID", 123.0, "itemID3", "Tea", 46),
+    Purchase(123456792, "HansID", 21.0, "itemID1", "Espresso", 1)
+)
 @Preview(showSystemUi = true)
 @Composable
 fun HistoryViewPreview(
@@ -51,6 +63,7 @@ fun HistoryView(
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         ShowPeriodField()
+        ShowStatistics(purchaseList as MutableList<Purchase>)
         TransactionContainer(viewModel)
     }
 }
@@ -111,6 +124,55 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
 @Composable
 fun ShowPeriodField() {
     // TODO: implement searchbar
+}
+
+@Composable
+fun ShowStatistics(data: MutableList<Purchase>) {
+    AndroidView(
+        modifier = Modifier
+            .fillMaxSize(0.5f),
+        factory = { context ->
+            val listColors = ArrayList<Int>()
+            listColors.add(Color.Red.toArgb())
+            listColors.add(Color.Green.toArgb())
+            listColors.add(Color.Yellow.toArgb())
+            listColors.add(Color.Blue.toArgb())
+            val pieChart = PieChart(context)
+            val entries = listOf(
+                PieEntry(18.5f, "Green"),
+                PieEntry(26.7F, "Yellow"),
+                PieEntry(24.0f, "Red"),
+                PieEntry(30.8f, "Blue")
+            )
+            val dataset = PieDataSet(entries, "")
+            dataset.colors = listColors
+            //val dataset = PieDataSet(entries, "LABEL").apply { color = Color.Red.toArsgb() }
+            val pieData = PieData(dataset)
+            pieChart.data = pieData
+            pieChart.setUsePercentValues(true)
+            pieChart.description.isEnabled = false
+            pieChart.invalidate()
+
+            pieChart
+        }
+    )
+
+
+/*    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        val purchaseMap: MutableMap<String, Float> = mutableMapOf()
+        data.forEach { item ->
+            if(purchaseMap.containsKey(item.itemName)) purchaseMap[item.itemName]
+                ?.let { purchaseMap.put(item.itemName, it.plus(item.amount.toFloat())) }
+            else purchaseMap[item.itemName] = item.amount.toFloat()
+         }
+
+
+    }*/
+
 }
 
 @Composable
