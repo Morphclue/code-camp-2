@@ -19,7 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
+import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -137,12 +137,6 @@ fun ItemList(viewModel: IItemsViewModel) {
                 } else {
                     ItemRow(viewModel, item)
                 }
-                Divider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    thickness = 1.dp
-                )
             }
             Box(Modifier.height(90.dp))
         }
@@ -158,63 +152,71 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
     coroutineScope.launch {
         buyItems = viewModel.getItemCartAmount(item)
     }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(5.dp),
+        elevation = 5.dp
     ) {
-        Column {
-            Text(item.name, fontWeight = FontWeight.Medium)
-            Text("${String.format("%.2f", item.price)}€", color = Color.Gray)
-        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        ) {
+            Column {
+                Text(item.name, fontWeight = FontWeight.Medium)
+                Text("${String.format("%.2f", item.price)}€", color = Color.Gray)
+            }
 
-        Column {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    "$buyItems/${item.amount}",
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.width(60.dp)
-                )
-
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.addItemToShoppingCart(item)
-                            buyItems = viewModel.getItemCartAmount(item)
-                        }
-                    },
-                    modifier = Modifier.size(35.dp),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = "content description",
-                        tint = Color.White
-                    )
-                }
 
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.removeItemFromShoppingCart(item)
-                            buyItems = viewModel.getItemCartAmount(item)
-                        }
-                    },
-                    modifier = Modifier.size(35.dp),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Icon(
-                        Icons.Default.Remove,
-                        contentDescription = "content description",
-                        tint = Color.White
+                    Text(
+                        "$buyItems/${item.amount}",
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.width(60.dp)
                     )
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                viewModel.addItemToShoppingCart(item)
+                                buyItems = viewModel.getItemCartAmount(item)
+                            }
+                        },
+                        modifier = Modifier.size(35.dp),
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "content description",
+                            tint = Color.White
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                viewModel.removeItemFromShoppingCart(item)
+                                buyItems = viewModel.getItemCartAmount(item)
+                            }
+                        },
+                        modifier = Modifier.size(35.dp),
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Remove,
+                            contentDescription = "content description",
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -224,37 +226,43 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
 @Composable
 fun AdminItemRow(viewModel: IItemsViewModel, item: Item) {
     val scope = rememberCoroutineScope()
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                viewModel.currentItemId.value = TextFieldValue(item.id)
-                viewModel.currentItemName.value = TextFieldValue(item.name)
-                viewModel.currentItemAmount.value = TextFieldValue(item.amount.toString())
-                viewModel.currentItemPrice.value = TextFieldValue(item.price.toString())
-                scope.launch {
-                    viewModel.editItemDialogVisible.value = true
-                }
-            }
+            .padding(5.dp),
+        elevation = 5.dp
     ) {
-        Column {
-            Text(item.name, fontWeight = FontWeight.Medium)
-            Text("${String.format("%.2f", item.price)}€", color = Color.Gray)
-        }
-
-        Column {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    "${item.amount}",
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.width(60.dp)
-                )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+                .clickable {
+                    viewModel.currentItemId.value = TextFieldValue(item.id)
+                    viewModel.currentItemName.value = TextFieldValue(item.name)
+                    viewModel.currentItemAmount.value = TextFieldValue(item.amount.toString())
+                    viewModel.currentItemPrice.value = TextFieldValue(item.price.toString())
+                    scope.launch {
+                        viewModel.editItemDialogVisible.value = true
+                    }
+                }
+        ) {
+            Column {
+                Text(item.name, fontWeight = FontWeight.Medium)
+                Text("${String.format("%.2f", item.price)}€", color = Color.Gray)
+            }
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "${item.amount}",
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.width(60.dp)
+                    )
+                }
             }
         }
     }
@@ -488,7 +496,6 @@ fun BuyFAB(viewModel: IItemsViewModel) {
         }
     )
 }
-
 
 @Composable
 fun BuyButton(viewModel: IItemsViewModel) {
