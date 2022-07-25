@@ -23,6 +23,7 @@ class BearerInterceptor @Inject constructor(
             synchronized(this) {
                 runBlocking {
                     refreshBearer()
+                    response.close()
                     response = chain.proceed(buildRequest(chain))
                 }
             }
