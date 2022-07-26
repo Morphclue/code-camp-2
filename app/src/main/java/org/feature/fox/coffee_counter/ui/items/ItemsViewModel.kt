@@ -1,6 +1,8 @@
 package org.feature.fox.coffee_counter.ui.items
 
 
+import android.util.Base64
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +25,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import org.json.JSONObject
 import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
@@ -50,6 +53,7 @@ interface IItemsViewModel : IToast {
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
+    suspend fun adminFromToken()
 }
 
 @HiltViewModel
@@ -78,6 +82,7 @@ class ItemsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            adminFromToken()
             getItems()
             getTotalBalance()
         }
@@ -268,6 +273,18 @@ class ItemsViewModel @Inject constructor(
         }
         balance.value = response.data.balance
     }
+
+    override suspend fun adminFromToken() {
+        preference.getTag(BuildConfig.BEARER_TOKEN)
+
+        val elements = preference.getTag(BuildConfig.BEARER_TOKEN).split('.')
+        if (elements.size == 3) {
+            val (_, payload, _) = elements
+            isAdmin.value = JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin")
+        } else {
+            error("Invalid token")
+        }
+    }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
@@ -333,6 +350,10 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun adminFromToken() {
         TODO("Not yet implemented")
     }
 }

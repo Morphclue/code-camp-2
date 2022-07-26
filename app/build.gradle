@@ -27,6 +27,7 @@ android {
         buildConfigField "String", "REMEMBER_ME", '"REMEMBER_ME"'
         buildConfigField "String", "EXPIRATION", '"EXPIRATION"'
         buildConfigField "String", "BEARER_TOKEN", '"BEARER_TOKEN"'
+        buildConfigField "boolean", "IS_ADMIN", "false"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

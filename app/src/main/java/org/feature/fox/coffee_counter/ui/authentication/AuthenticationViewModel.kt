@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
+import android.util.Base64
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
@@ -20,6 +21,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import org.json.JSONObject
 import javax.inject.Inject
 
 interface IAuthenticationViewModel : IToast {
@@ -71,6 +73,16 @@ class AuthenticationViewModel @Inject constructor(
         preference.setTag(BuildConfig.USER_PASSWORD, passwordState.value.text.trim())
         preference.setTag(BuildConfig.EXPIRATION, response.data.expiration.toString())
         preference.setTag(BuildConfig.BEARER_TOKEN, response.data.token)
+
+        //TODO wont generate BuildConfig.IS_ADMIN for me
+        // when implemented replace adminFromToken in UserListViewModel and ItemListViewModel
+//        val elements = response.data.token.split('.')
+//        if (elements.size == 3) {
+//            val (_, payload, _) = elements
+//            preference.setTag(BuildConfig.IS_ADMIN, JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin"))
+//        } else {
+//            error("Invalid token")
+//        }
 
         showCoreActivity.value = true
     }
