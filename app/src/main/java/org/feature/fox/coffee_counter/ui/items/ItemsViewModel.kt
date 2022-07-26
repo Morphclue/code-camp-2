@@ -138,56 +138,47 @@ class ItemsViewModel @Inject constructor(
             return false
         }
 
-        itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id) {
-                if(cartItem.amount >= item.amount){
-                    toastChannel.send(UIText.StringResource(R.string.not_available))
-                    return false
-                }
-                if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
-                    toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
-                    return false
-                }
-                cartItem.amount += 1
-                currentShoppingCartAmountState.value += item.price
-                return true
-            }
+        val cartItem: Item = itemsInShoppingCartState.value?.first{it.id == item.id} ?: return false
+
+        if(cartItem.amount >= item.amount){
+            toastChannel.send(UIText.StringResource(R.string.not_available))
+            return false
         }
-        return false
+        if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
+            toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
+            return false
+        }
+
+        cartItem.amount += 1
+        currentShoppingCartAmountState.value += item.price
+        return true
     }
 
     override suspend fun addStringItemToShoppingCart(item: String) {
-        availableItemsState.forEach { avItem ->
-            run {
-                if (avItem.name == item) {
-                    val success = addItemToShoppingCart(avItem)
-                    if (success){
-                        confirmBuyItemDialogVisible.value = true
-                        return
-                    }
-                    return
-                }
-            }
+        val avItem: Item? = itemsInShoppingCartState.value?.first{it.name == item}
+
+        if(avItem == null){
+            toastChannel.send(UIText.StringResource(R.string.not_exist))
+            return
         }
-        toastChannel.send(UIText.StringResource(R.string.not_exist))
+
+        val success = addItemToShoppingCart(avItem)
+        if (success){
+            confirmBuyItemDialogVisible.value = true
+        }
     }
 
     override suspend fun getItemCartAmount(item: Item): Int {
-        itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id) {
-                return cartItem.amount
-            }
-        }
-        return 0
+        val cartItem: Item = itemsInShoppingCartState.value?.first{it.id == item.id} ?: return 0
+        return cartItem.amount
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id && cartItem.amount > 0) {
-                cartItem.amount -= 1
-                currentShoppingCartAmountState.value -= item.price
-                return
-            }
+        val cartItem: Item = itemsInShoppingCartState.value?.first{it.id == item.id} ?: return
+
+        if(cartItem.amount > 0){
+            cartItem.amount -= 1
+            currentShoppingCartAmountState.value -= item.price
         }
     }
 
