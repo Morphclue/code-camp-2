@@ -179,7 +179,7 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     Text(
                         "$buyItems/${item.amount}",
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier.width(60.dp)
+                        modifier = Modifier.width(70.dp)
                     )
 
                     Button(

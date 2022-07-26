@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ import org.feature.fox.coffee_counter.ui.items.LoadingBox
 @Composable
 fun UsersViewPreview() {
     val preview = UserListViewModelPreview()
-    preview.userList.add(UserIdResponse("a", "Julian", 15.0))
+    preview.userList.add(UserIdResponse("a", "Julian", 15555555.0))
     preview.userList.add(UserIdResponse("b", "Kevin", -15.0))
     preview.userList.add(UserIdResponse("c", "Steffen", 42.0))
     UsersView(preview)
@@ -159,10 +160,13 @@ fun MoneyEditRow(
         horizontalArrangement = Arrangement.End,
     ) {
         Text(
-            "${user.balance}€",
+            "${String.format("%.2f", user.balance)}€",
             fontWeight = FontWeight.Medium,
             color = Color.Gray,
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier
+                .width(150.dp)
+                .padding(5.dp),
+            textAlign = TextAlign.End
         )
         Button(
             onClick = {
