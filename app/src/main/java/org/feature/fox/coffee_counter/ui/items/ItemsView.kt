@@ -151,27 +151,28 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                 Text("${String.format("%.2f", item.price)}€", color = Color.Gray)
             }
 
-        Column {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "${viewModel.itemsInShoppingCartState.first { it.id == item.id }.amount}" +
-                            "/${item.amount}",
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.width(70.dp)
-                )
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "${viewModel.itemsInShoppingCartState.first { it.id == item.id }.amount}" +
+                                "/${item.amount}",
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.width(70.dp)
+                    )
 
-                AddToCartButton(viewModel, item)
-                RemoveFromCartButton(viewModel, item)
+                    AddToCartButton(viewModel, item)
+                    RemoveFromCartButton(viewModel, item)
+                }
             }
         }
     }
 }
 
 @Composable
-fun AddToCartButton(viewModel: IItemsViewModel, item: Item){
+fun AddToCartButton(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
     Button(
         onClick = {
@@ -192,7 +193,7 @@ fun AddToCartButton(viewModel: IItemsViewModel, item: Item){
 }
 
 @Composable
-fun RemoveFromCartButton(viewModel: IItemsViewModel, item: Item){
+fun RemoveFromCartButton(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
     Button(
         onClick = {
@@ -313,7 +314,14 @@ fun BuyFAB(viewModel: IItemsViewModel) {
         modifier = Modifier.padding(bottom = 50.dp),
         backgroundColor = CrayolaCopper,
         text = {
-            Text("Buy (${String.format("%.2f", viewModel.currentShoppingCartAmountState.value)}€)")
+            Text(
+                "Buy (${
+                    String.format(
+                        "%.2f",
+                        viewModel.currentShoppingCartAmountState.value
+                    )
+                }€)"
+            )
         },
         onClick = {
             coroutineScope.launch {
