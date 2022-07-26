@@ -47,4 +47,5 @@
     <string name="create_user">Create User</string>
     <string name="buy">Buy</string>
     <string name="not_available">Product not available</string>
+    <string name="not_exist">Product does not exist</string>
 </resources>

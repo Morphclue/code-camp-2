@@ -139,7 +139,11 @@ class ItemsViewModel @Inject constructor(
         }
 
         itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id && cartItem.amount < item.amount) {
+            if (item.id == cartItem.id) {
+                if(cartItem.amount >= item.amount){
+                    toastChannel.send(UIText.StringResource(R.string.not_available))
+                    return false
+                }
                 if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
                     toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
                     return false
@@ -149,8 +153,6 @@ class ItemsViewModel @Inject constructor(
                 return true
             }
         }
-
-        toastChannel.send(UIText.StringResource(R.string.not_available))
         return false
     }
 
@@ -161,11 +163,13 @@ class ItemsViewModel @Inject constructor(
                     val success = addItemToShoppingCart(avItem)
                     if (success){
                         confirmBuyItemDialogVisible.value = true
+                        return
                     }
                     return
                 }
             }
         }
+        toastChannel.send(UIText.StringResource(R.string.not_exist))
     }
 
     override suspend fun getItemCartAmount(item: Item): Int {
