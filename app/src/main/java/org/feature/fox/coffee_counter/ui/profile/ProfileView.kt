@@ -130,12 +130,6 @@ fun ProfileIcon() {
 
 @Composable
 fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
-    val painter = if (viewModel.qrCode.value == null) {
-        rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
-    } else {
-        rememberAsyncImagePainter(viewModel.qrCode.value)
-    }
-
     val coroutineScope = rememberCoroutineScope()
     val showMainActivity = viewModel.showMainActivity.observeAsState()
 
@@ -144,16 +138,6 @@ fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
             viewModel.updateUser()
         }
     })
-    // FIXME incorrect location
-    CustomButton(
-        text = stringResource(R.string.qrcode),
-        fraction = 0.9f,
-        onClick = {
-            coroutineScope.launch {
-                viewModel.shareQRCode()
-            }
-        }
-    )
     CustomButton(text = stringResource(R.string.logout), fraction = 0.9f)
 
     val versionName = BuildConfig.VERSION_NAME
@@ -176,13 +160,4 @@ fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
             color = Color.Red
         )
     }
-
-    Image(
-        painter = painter,
-        contentDescription = stringResource(R.string.qrcode),
-        modifier = Modifier
-            .wrapContentSize()
-            .size(150.dp),
-        contentScale = ContentScale.Crop
-    )
 }

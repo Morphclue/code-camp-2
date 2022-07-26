@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.ui.transaction
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -21,15 +23,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +51,7 @@ fun HistoryViewPreview(
 
 @Composable
 fun HistoryView(
-    viewModel: ITransactionViewModel
+    viewModel: ITransactionViewModel,
 ) {
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
@@ -79,6 +84,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             color = Color.LightGray
         )
 
+        QRCodeButton(viewModel)
 
         viewModel.transactions.forEach { transaction ->
             if (transaction.type == "funding") {
@@ -106,6 +112,35 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             )
         }
     }
+}
+
+@Composable
+fun QRCodeButton(viewModel: ITransactionViewModel) {
+    val painter = if (viewModel.qrCode.value == null) {
+        rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
+    } else {
+        rememberAsyncImagePainter(viewModel.qrCode.value)
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+    CustomButton(
+        text = stringResource(R.string.qrcode),
+        fraction = 0.9f,
+        onClick = {
+            coroutineScope.launch {
+                viewModel.shareQRCode()
+            }
+        }
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = stringResource(R.string.qrcode),
+        modifier = Modifier
+            .wrapContentSize()
+            .size(150.dp),
+        contentScale = ContentScale.Crop
+    )
 }
 
 @Composable
