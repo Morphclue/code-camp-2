@@ -21,6 +21,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -91,6 +92,7 @@ fun ItemsView(
             if (viewModel.adminView.value) AddItemFAB(viewModel)
             if (!viewModel.adminView.value) BuyFAB(viewModel)
         },
+        floatingActionButtonPosition = FabPosition.Center,
         content = {
             Column {
                 SearchBar()
