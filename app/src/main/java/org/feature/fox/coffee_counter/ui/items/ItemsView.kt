@@ -159,7 +159,7 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     "${viewModel.itemsInShoppingCartState.first { it.id == item.id }.amount}" +
                             "/${item.amount}",
                     fontWeight = FontWeight.Medium,
-                    modifier = Modifier.width(60.dp)
+                    modifier = Modifier.width(70.dp)
                 )
 
                 AddToCartButton(viewModel, item)
