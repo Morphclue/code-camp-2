@@ -48,11 +48,6 @@ fun AddItemDialog(
                         .padding(vertical = 16.dp)
                 ) {
                     CommonTextField(
-                        state = viewModel.currentItemId,
-                        label = stringResource(R.string.id_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                    )
-                    CommonTextField(
                         state = viewModel.currentItemName,
                         label = stringResource(R.string.name_hint),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)

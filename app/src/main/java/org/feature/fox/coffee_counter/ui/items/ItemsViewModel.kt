@@ -211,8 +211,7 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun addItem() {
-        if (currentItemId.value.text.isEmpty() ||
-            currentItemName.value.text.isEmpty() ||
+        if (currentItemName.value.text.isEmpty() ||
             currentItemAmount.value.text.isEmpty() ||
             currentItemPrice.value.text.isEmpty()
         ) {
@@ -222,7 +221,6 @@ class ItemsViewModel @Inject constructor(
 
         val response = itemRepository.postItem(
             ItemBody(
-                id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble(),
