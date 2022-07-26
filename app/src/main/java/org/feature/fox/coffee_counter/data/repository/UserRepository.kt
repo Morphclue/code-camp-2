@@ -40,10 +40,6 @@ class UserRepository @Inject constructor(
         userDao.insertPurchase(purchase)
     }
 
-    override suspend fun insertImage(image: Image) {
-        userDao.insertImage(image)
-    }
-
     override suspend fun deleteUser(user: User) {
         userDao.deleteUser(user)
     }
@@ -222,6 +218,13 @@ class UserRepository @Inject constructor(
             val response = apiService.getImage(id)
             if (response.isSuccessful) {
                 response.body()?.let {
+                    userDao.insertImage(
+                        Image(
+                            id,
+                            it.encodedImage,
+                            it.timestamp
+                        )
+                    )
                     return@let Resource.success(it)
                 } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {

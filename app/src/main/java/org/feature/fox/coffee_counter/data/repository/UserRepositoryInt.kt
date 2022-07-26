@@ -24,8 +24,6 @@ interface UserRepositoryInt {
 
     suspend fun insertPurchase(purchase: Purchase)
 
-    suspend fun insertImage(image: Image)
-
     suspend fun deleteUser(user: User)
 
     suspend fun deleteFunding(funding: Funding)
