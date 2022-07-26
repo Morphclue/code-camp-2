@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.compose.material.Scaffold
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import org.feature.fox.coffee_counter.ui.common.BottomNavBar
 import org.feature.fox.coffee_counter.ui.common.Navigation
 import org.feature.fox.coffee_counter.ui.items.ItemsViewModel
@@ -82,7 +83,6 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
     }
 
     override fun onTagDiscovered(tag: Tag) {
-
         val mNdef: Ndef? = Ndef.get(tag)
 
         if (mNdef == null){
@@ -96,11 +96,9 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
         }else{
             try {
                 runOnUiThread {
-                    Toast.makeText(
-                        applicationContext,
-                        readPayload(mNdef),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    runBlocking {
+                        itemsViewModel.addStringItemToShoppingCart(readPayload(mNdef))
+                    }
                 }
 
             } catch (e: FormatException) {

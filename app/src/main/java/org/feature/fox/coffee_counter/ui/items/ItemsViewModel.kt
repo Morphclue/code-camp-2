@@ -43,7 +43,8 @@ interface IItemsViewModel : IToast {
     val balance: MutableState<Double>
 
     suspend fun getItems()
-    suspend fun addItemToShoppingCart(item: Item)
+    suspend fun addItemToShoppingCart(item: Item): Boolean
+    suspend fun addStringItemToShoppingCart(item: String)
     suspend fun removeItemFromShoppingCart(item: Item)
     suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
@@ -121,10 +122,10 @@ class ItemsViewModel @Inject constructor(
         isLoaded.value = true
     }
 
-    override suspend fun addItemToShoppingCart(item: Item) {
+    override suspend fun addItemToShoppingCart(item: Item): Boolean {
 
         if (item.amount <= 0) {
-            return
+            return false
         }
 
         val userResponse = userRepository.getUserById(
@@ -134,17 +135,35 @@ class ItemsViewModel @Inject constructor(
         if (userResponse.data == null) {
             toastChannel.send(userResponse.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
-            return
+            return false
         }
 
         itemsInShoppingCartState.value?.forEach { cartItem ->
             if (item.id == cartItem.id && cartItem.amount < item.amount) {
                 if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
                     toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
+                    return false
                 }
                 cartItem.amount += 1
                 currentShoppingCartAmountState.value += item.price
-                return
+                return true
+            }
+        }
+
+        toastChannel.send(UIText.StringResource(R.string.not_available))
+        return false
+    }
+
+    override suspend fun addStringItemToShoppingCart(item: String) {
+        availableItemsState.forEach { avItem ->
+            run {
+                if (avItem.name == item) {
+                    val success = addItemToShoppingCart(avItem)
+                    if (success){
+                        confirmBuyItemDialogVisible.value = true
+                    }
+                    return
+                }
             }
         }
     }
@@ -306,7 +325,11 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addItemToShoppingCart(item: Item) {
+    override suspend fun addItemToShoppingCart(item: Item): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addStringItemToShoppingCart(item: String) {
         TODO("Not yet implemented")
     }
 
