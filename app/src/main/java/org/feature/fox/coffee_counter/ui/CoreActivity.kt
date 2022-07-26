@@ -26,12 +26,12 @@ import java.io.IOException
 
 
 @AndroidEntryPoint
-class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
+class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
     private val itemsViewModel: ItemsViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
     private val transactionsViewModel: TransactionViewModel by viewModels()
     private val userListViewModel: UserListViewModel by viewModels()
-    private var mNfcAdapter: NfcAdapter? = null
+    private var nfcAdapter: NfcAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,18 +52,18 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
                 }
             }
         }
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
     }
 
     override fun onResume() {
         super.onResume()
-        if (mNfcAdapter != null) {
+        if (nfcAdapter != null) {
             val options = Bundle()
             // Work around for some broken Nfc firmware implementations that poll the card too fast
             options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250)
 
             // Enable ReaderMode for all types of card and disable platform sounds
-            mNfcAdapter!!.enableReaderMode(
+            nfcAdapter?.enableReaderMode(
                 this,
                 this,
                 NfcAdapter.FLAG_READER_NFC_A or
@@ -79,13 +79,13 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
 
     override fun onPause() {
         super.onPause()
-        if (mNfcAdapter != null) mNfcAdapter!!.disableReaderMode(this)
+        if (nfcAdapter != null) nfcAdapter?.disableReaderMode(this)
     }
 
     override fun onTagDiscovered(tag: Tag) {
-        val mNdef: Ndef? = Ndef.get(tag)
+        val nNdef: Ndef? = Ndef.get(tag)
 
-        if (mNdef == null){
+        if (nNdef == null) {
             runOnUiThread {
                 Toast.makeText(
                     applicationContext,
@@ -93,37 +93,21 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        }else{
-            try {
-                runOnUiThread {
-                    runBlocking {
-                        itemsViewModel.addStringItemToShoppingCart(readPayload(mNdef))
-                    }
-                }
-
-            } catch (e: FormatException) {
-                // if the NDEF Message to write is malformed
-            } catch (e: TagLostException) {
-                // Tag went out of range before operations were complete
-            } catch (e: IOException) {
-                // if there is an I/O failure, or the operation is cancelled
-            } finally {
-                // Be nice and try and close the tag to
-                // Disable I/O operations to the tag from this TagTechnology object, and release resources.
-                try {
-                    mNdef.close()
-                } catch (e: IOException) {
-                    // if there is an I/O failure, or the operation is cancelled
+        } else {
+            runOnUiThread {
+                runBlocking {
+                    itemsViewModel.addStringItemToShoppingCart(readPayload(nNdef))
                 }
             }
         }
     }
 
-    private fun readPayload(tag: Ndef): String{
+    private fun readPayload(tag: Ndef): String {
+        val startOfMessage = 3
         val message: NdefMessage = tag.cachedNdefMessage
         val payload = StringBuffer()
         val record = message.records[0]
         record.payload.forEach { byte -> payload.append(byte.toInt().toChar()) }
-        return payload.toString().substring(3)
+        return payload.toString().substring(startOfMessage)
     }
 }

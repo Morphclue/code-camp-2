@@ -39,19 +39,19 @@ fun ConfirmBuyDialog(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "Shopping cart",
+                    text = stringResource(R.string.shopping_cart),
                     style = MaterialTheme.typography.subtitle1
                 )
                 Text(
-                    text = "Do you want to buy the following items:",
+                    text = stringResource(R.string.confirm_buy),
                 )
                 val bullet = "\u2022"
-                Column() {
+                Column {
                     viewModel.itemsInShoppingCartState.forEach { cartItem ->
                         if (cartItem.amount > 0) {
-                            Row() {
+                            Row {
                                 Text(
-                                    text = bullet + "  " + cartItem.name,
+                                    text = "$bullet   ${cartItem.name}",
                                     modifier = Modifier.width(150.dp)
                                 )
                                 Text(text = cartItem.amount.toString())
@@ -66,12 +66,12 @@ fun ConfirmBuyDialog(
                     )
 
                     Text(
-                        text = "Total: ${
+                        text = "${stringResource(R.string.total)} ${
                             String.format(
                                 "%.2f",
                                 viewModel.currentShoppingCartAmountState.value
                             )
-                        }€"
+                        }${stringResource(R.string.currency)}"
                     )
                 }
                 ConfirmBuyDialogButtons(viewModel)

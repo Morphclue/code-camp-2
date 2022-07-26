@@ -38,7 +38,7 @@ fun AddItemDialog(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "Add Item",
+                    text = stringResource(R.string.add_item),
                     style = MaterialTheme.typography.subtitle1
                 )
                 Column(
@@ -49,8 +49,7 @@ fun AddItemDialog(
                 ) {
                     CommonTextField(
                         state = viewModel.currentItemName,
-                        label = stringResource(R.string.name_hint),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                        label = stringResource(R.string.name_hint)
                     )
                     CommonTextField(
                         state = viewModel.currentItemPrice,

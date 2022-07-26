@@ -231,7 +231,7 @@ class ItemsViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return false
         }
-        toastChannel.send(UIText.StringResource(R.string.add_item))
+        toastChannel.send(UIText.StringResource(R.string.add_item_success))
         isLoaded.value = false
         getItems()
         return true
