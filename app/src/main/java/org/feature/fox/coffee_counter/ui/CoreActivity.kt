@@ -1,9 +1,5 @@
 package org.feature.fox.coffee_counter.ui
 
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
-import android.content.Intent
-import android.content.IntentFilter
 import android.nfc.FormatException
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
@@ -11,7 +7,7 @@ import android.nfc.Tag
 import android.nfc.TagLostException
 import android.nfc.tech.Ndef
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -26,6 +22,7 @@ import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
 import org.feature.fox.coffee_counter.ui.user.UserListViewModel
 import java.io.IOException
+
 
 @AndroidEntryPoint
 class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
@@ -54,7 +51,7 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
                 }
             }
         }
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
     }
 
     override fun onResume() {
@@ -84,33 +81,27 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
         if (mNfcAdapter != null) mNfcAdapter!!.disableReaderMode(this)
     }
 
-    private fun enableForegroundDispatch(activity: ComponentActivity, adapter: NfcAdapter?) {
-        val intent = Intent(activity.applicationContext, activity.javaClass)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val pendingIntent =
-            PendingIntent.getActivity(activity.applicationContext, 0, intent, FLAG_IMMUTABLE)
-        val filters = arrayOfNulls<IntentFilter>(1)
-        val techList = arrayOf<Array<String>>()
-        filters[0] = IntentFilter()
-        with(filters[0]) {
-            this?.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
-            this?.addCategory(Intent.CATEGORY_DEFAULT)
-            try {
-                this?.addDataType("text/plain")
-            } catch (ex: IntentFilter.MalformedMimeTypeException) {
-                throw RuntimeException()
-            }
-        }
-        adapter?.enableForegroundDispatch(activity, pendingIntent, filters, techList)
-    }
-
     override fun onTagDiscovered(tag: Tag) {
 
-        var mNdef: Ndef = Ndef.get(tag);
+        val mNdef: Ndef? = Ndef.get(tag)
 
-        if (mNdef!= null) {
+        if (mNdef == null){
+            runOnUiThread {
+                Toast.makeText(
+                    applicationContext,
+                    "something went wrong",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }else{
             try {
-                Log.w("fuck", readPayload(mNdef));
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        readPayload(mNdef),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
             } catch (e: FormatException) {
                 // if the NDEF Message to write is malformed
@@ -122,7 +113,7 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
                 // Be nice and try and close the tag to
                 // Disable I/O operations to the tag from this TagTechnology object, and release resources.
                 try {
-                    mNdef.close();
+                    mNdef.close()
                 } catch (e: IOException) {
                     // if there is an I/O failure, or the operation is cancelled
                 }
@@ -132,10 +123,9 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback{
 
     private fun readPayload(tag: Ndef): String{
         val message: NdefMessage = tag.cachedNdefMessage
-
-        var payload = StringBuffer()
+        val payload = StringBuffer()
         val record = message.records[0]
-        record.payload.forEach { byte -> payload.append(byte.toChar()) }
+        record.payload.forEach { byte -> payload.append(byte.toInt().toChar()) }
         return payload.toString().substring(3)
     }
 }
