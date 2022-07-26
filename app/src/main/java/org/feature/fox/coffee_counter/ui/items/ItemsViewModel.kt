@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
