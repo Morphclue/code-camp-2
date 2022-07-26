@@ -242,7 +242,6 @@ class UserRepository @Inject constructor(
                 )
             )
             val response = apiService.postImage(id, image)
-            println(response.code())
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)
