@@ -9,7 +9,6 @@ import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
-import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
@@ -23,6 +22,8 @@ interface UserRepositoryInt {
     suspend fun insertFunding(funding: Funding)
 
     suspend fun insertPurchase(purchase: Purchase)
+
+    suspend fun insertImage(image: Image)
 
     suspend fun deleteUser(user: User)
 
@@ -38,7 +39,7 @@ interface UserRepositoryInt {
 
     suspend fun getPurchaseListOfUser(id: String): List<Purchase>
 
-    suspend fun getImageByIdFromUser(id: String): Image
+    suspend fun getImageByIdFromUser(id: String): Image?
 
     fun observeTotalBalanceOfUser(id: String): LiveData<Double>
 
@@ -62,7 +63,7 @@ interface UserRepositoryInt {
 
     suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
 
-    suspend fun getImage(id: String): Resource<ImageResponse>
+    suspend fun getImage(id: String): Resource<Image>
 
     suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String>
 

@@ -14,7 +14,6 @@ import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
-import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
@@ -38,6 +37,10 @@ class UserRepository @Inject constructor(
 
     override suspend fun insertPurchase(purchase: Purchase) {
         userDao.insertPurchase(purchase)
+    }
+
+    override suspend fun insertImage(image: Image) {
+        userDao.insertImage(image)
     }
 
     override suspend fun deleteUser(user: User) {
@@ -68,7 +71,7 @@ class UserRepository @Inject constructor(
         return userDao.getPurchaseListOfUser(id)
     }
 
-    override suspend fun getImageByIdFromUser(id: String): Image {
+    override suspend fun getImageByIdFromUser(id: String): Image? {
         return userDao.getImageById(id)
     }
 
@@ -213,19 +216,17 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getImage(id: String): Resource<ImageResponse> {
+    override suspend fun getImage(id: String): Resource<Image> {
         return try {
             val response = apiService.getImage(id)
             if (response.isSuccessful) {
                 response.body()?.let {
-                    userDao.insertImage(
-                        Image(
-                            id,
-                            it.encodedImage,
-                            it.timestamp
-                        )
+                    val image = Image(
+                        id,
+                        it.encodedImage,
+                        it.timestamp
                     )
-                    return@let Resource.success(it)
+                    return@let Resource.success(image)
                 } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
             } else {
                 val errorMessage = response.errorBody()?.string() ?: ""
