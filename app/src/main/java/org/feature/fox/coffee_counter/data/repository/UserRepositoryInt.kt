@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import androidx.lifecycle.LiveData
-import okhttp3.MultipartBody
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -68,6 +67,8 @@ interface UserRepositoryInt {
     suspend fun getImage(id: String): Resource<ImageResponse>
 
     suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String>
+
+    suspend fun getImageTimestamp(id: String): Resource<Long>
 
     suspend fun adminSignUp(userBody: UserBody): Resource<String>
 

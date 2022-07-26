@@ -256,6 +256,22 @@ class UserRepository @Inject constructor(
         }
     }
 
+    override suspend fun getImageTimestamp(id: String): Resource<Long> {
+        return try {
+            val response = apiService.getImageTimestamp(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
     override suspend fun adminSignUp(userBody: UserBody): Resource<String> {
         return try {
             val response = apiService.adminSignUp(userBody)
