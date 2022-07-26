@@ -3,6 +3,7 @@ package org.feature.fox.coffee_counter.data.repository
 import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
+import org.feature.fox.coffee_counter.data.local.database.relations.FundingsOfUser
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -22,52 +23,66 @@ class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
 ) : UserRepositoryInt {
-    override suspend fun insertUser(user: User) {
-        userDao.insertUser(user)
+
+    override suspend fun insertUserDb(user: User) {
+        userDao.insertUserDb(user)
     }
 
-    override suspend fun insertFunding(funding: Funding) {
-        userDao.insertFunding(funding)
+    override suspend fun updateUserDb(user: User) {
+        userDao.updateUserDb(user)
     }
 
-    override suspend fun insertPurchase(purchase: Purchase) {
-        userDao.insertPurchase(purchase)
+    override suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean {
+        return userDao.getAdminStateOfUserByIdDb(userId)
     }
 
-    override suspend fun deleteUser(user: User) {
-        userDao.deleteUser(user)
+    override suspend fun deleteUserDb(user: User) {
+        userDao.deleteUserDb(user)
     }
 
-    override suspend fun deleteFunding(funding: Funding) {
-        userDao.deleteFunding(funding)
+    override suspend fun insertFundingDb(funding: Funding) {
+        userDao.insertFundingDb(funding)
     }
 
-    override suspend fun deletePurchase(purchase: Purchase) {
-        userDao.deletePurchase(purchase)
+    override suspend fun insertPurchaseDb(purchase: Purchase) {
+        userDao.insertPurchaseDb(purchase)
+    }
+
+
+    override suspend fun deleteFundingDb(funding: Funding) {
+        TODO("Implement or delete me")
+        //userDao.deleteFundingDb(funding)
+    }
+
+    override suspend fun deletePurchaseDb(purchase: Purchase) {
+        TODO("Implement or delete me")
+        //userDao.deletePurchaseDb(purchase)
     }
 
     override suspend fun getUserByIdDb(id: String): User {
-        return userDao.getUserById(id)
+        TODO("Implement or delete me")
+        //return userDao.getUserByIdDb(id)
     }
 
-    override suspend fun getFundingListOfUser(id: String): List<Funding> {
-        return userDao.getFundingListOfUser(id)
+    override suspend fun getFundingListOfUserDb(id: String): FundingsOfUser {
+        TODO("Implement or delete me")
+        //return userDao.getFundingListOfUserDb(id)
     }
 
-    override suspend fun getPurchaseListOfUser(id: String): List<Purchase> {
-        return userDao.getPurchaseListOfUser(id)
+    override suspend fun getPurchaseListOfUserDb(id: String): List<Purchase> {
+        TODO("Implement or delete me")
+        //return userDao.getPurchaseListOfUserDb(id)
     }
 
-    override fun observeTotalBalanceOfUser(id: String): LiveData<Double> {
-        return userDao.observeTotalBalanceOfUser(id)
+    override fun observeTotalBalanceOfUserDb(id: String): LiveData<Double> {
+        TODO("Implement or delete me")
+        //return userDao.observeTotalBalanceOfUserDb(id)
     }
 
-    override suspend fun login(id: String, password: String): Boolean {
-        return userDao.login(id, password)
-    }
 
-    override fun observeAllUsers(): LiveData<List<User>> {
-        return userDao.observeAllUsers()
+    override fun observeAllUsersDb(): LiveData<List<User>> {
+        TODO("Implement or delete me")
+        //return userDao.observeAllUsersDb()
     }
 
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
