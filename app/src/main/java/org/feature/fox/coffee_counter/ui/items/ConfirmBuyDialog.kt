@@ -47,7 +47,7 @@ fun ConfirmBuyDialog(
                 )
                 val bullet = "\u2022"
                 Column() {
-                    viewModel.itemsInShoppingCartState.value?.forEach { cartItem ->
+                    viewModel.itemsInShoppingCartState.forEach { cartItem ->
                         if (cartItem.amount > 0) {
                             Row() {
                                 Text(

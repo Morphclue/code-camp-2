@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
     var availableItemsState: SnapshotStateList<Item>
-    val itemsInShoppingCartState: MutableLiveData<MutableList<Item>>
+    val itemsInShoppingCartState: SnapshotStateList<Item>
     val currentShoppingCartAmountState: MutableState<Double>
     val adminView: MutableState<Boolean>
     val isAdmin: MutableState<Boolean>
@@ -61,7 +60,7 @@ class ItemsViewModel @Inject constructor(
     private val preference: AppPreference,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
-    override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
+    override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -106,10 +105,10 @@ class ItemsViewModel @Inject constructor(
             )
         }
 
-        if (itemsInShoppingCartState.value.isNullOrEmpty()) {
-            itemsInShoppingCartState.value = mutableListOf()
+        if (itemsInShoppingCartState.isEmpty()) {
+            itemsInShoppingCartState = mutableStateListOf()
             availableItemsState.forEach { item ->
-                itemsInShoppingCartState.value?.add(
+                itemsInShoppingCartState.add(
                     Item(
                         id = item.id,
                         name = item.name,
@@ -138,7 +137,7 @@ class ItemsViewModel @Inject constructor(
             return false
         }
 
-        val cartItem: Item = itemsInShoppingCartState.value?.first{it.id == item.id} ?: return false
+        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
 
         if(cartItem.amount >= item.amount){
             toastChannel.send(UIText.StringResource(R.string.not_available))
@@ -155,26 +154,27 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun addStringItemToShoppingCart(item: String) {
-        val avItem: Item? = itemsInShoppingCartState.value?.first{it.name == item}
+        try {
+            val avItem: Item = availableItemsState.first{it.name == item}
 
-        if(avItem == null){
+            val success = addItemToShoppingCart(avItem)
+            if (success){
+                confirmBuyItemDialogVisible.value = true
+            }
+
+        }catch(e: NoSuchElementException){
             toastChannel.send(UIText.StringResource(R.string.not_exist))
             return
-        }
-
-        val success = addItemToShoppingCart(avItem)
-        if (success){
-            confirmBuyItemDialogVisible.value = true
         }
     }
 
     override suspend fun getItemCartAmount(item: Item): Int {
-        val cartItem: Item = itemsInShoppingCartState.value?.first{it.id == item.id} ?: return 0
+        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
         return cartItem.amount
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        val cartItem: Item = itemsInShoppingCartState.value?.first{it.id == item.id} ?: return
+        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
 
         if(cartItem.amount > 0){
             cartItem.amount -= 1
@@ -183,7 +183,7 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun buyItems() {
-        itemsInShoppingCartState.value?.forEach { cartItem ->
+        itemsInShoppingCartState.forEach { cartItem ->
             if (cartItem.amount > 0) {
                 val response = itemRepository.purchaseItem(
                     preference.getTag(BuildConfig.USER_ID),
@@ -287,7 +287,7 @@ class ItemsViewModel @Inject constructor(
 class ItemsViewModelPreview : IItemsViewModel {
     override val currentShoppingCartAmountState = mutableStateOf(55.0)
     override var availableItemsState = mutableStateListOf<Item>()
-    override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
+    override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val adminView = mutableStateOf(false)
@@ -309,7 +309,7 @@ class ItemsViewModelPreview : IItemsViewModel {
             Item(id = "b", name = "beer", amount = 42, price = 4.99),
             Item(id = "c", name = "mate", amount = 1337, price = 9.99)
         )
-        itemsInShoppingCartState.value = mutableListOf(
+        itemsInShoppingCartState = mutableStateListOf(
             Item(id = "a", name = "coffee", amount = 2, price = 5.0),
             Item(id = "b", name = "beer", amount = 5, price = 4.99),
         )

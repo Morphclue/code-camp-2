@@ -165,7 +165,6 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     "$buyItems/${item.amount}",
                     fontWeight = FontWeight.Medium,
