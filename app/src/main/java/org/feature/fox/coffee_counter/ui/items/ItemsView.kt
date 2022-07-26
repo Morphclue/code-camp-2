@@ -139,7 +139,6 @@ fun ItemList(viewModel: IItemsViewModel) {
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemRow(viewModel: IItemsViewModel, item: Item) {
-    val coroutineScope = rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -163,41 +162,52 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     modifier = Modifier.width(60.dp)
                 )
 
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.addItemToShoppingCart(item)
-                        }
-                    },
-                    modifier = Modifier.size(35.dp),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = "content description",
-                        tint = Color.White
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.removeItemFromShoppingCart(item)
-                        }
-                    },
-                    modifier = Modifier.size(35.dp),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Icon(
-                        Icons.Default.Remove,
-                        contentDescription = "content description",
-                        tint = Color.White
-                    )
-                }
+                AddToCartButton(viewModel, item)
+                RemoveFromCartButton(viewModel, item)
             }
         }
+    }
+}
+
+@Composable
+fun AddToCartButton(viewModel: IItemsViewModel, item: Item){
+    val coroutineScope = rememberCoroutineScope()
+    Button(
+        onClick = {
+            coroutineScope.launch {
+                viewModel.addItemToShoppingCart(item)
+            }
+        },
+        modifier = Modifier.size(35.dp),
+        shape = CircleShape,
+        contentPadding = PaddingValues(0.dp),
+    ) {
+        Icon(
+            Icons.Default.Add,
+            contentDescription = "content description",
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun RemoveFromCartButton(viewModel: IItemsViewModel, item: Item){
+    val coroutineScope = rememberCoroutineScope()
+    Button(
+        onClick = {
+            coroutineScope.launch {
+                viewModel.removeItemFromShoppingCart(item)
+            }
+        },
+        modifier = Modifier.size(35.dp),
+        shape = CircleShape,
+        contentPadding = PaddingValues(0.dp),
+    ) {
+        Icon(
+            Icons.Default.Remove,
+            contentDescription = "content description",
+            tint = Color.White
+        )
     }
 }
 
