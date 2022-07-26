@@ -50,7 +50,6 @@ interface UserDao {
     @Query("SELECT * FROM purchase WHERE userId=:id")
     suspend fun getPurchaseListOfUser(id: String): List<Purchase>
 
-    @Transaction
     @Query("SELECT * FROM image WHERE userId=:id")
     suspend fun getImageById(id: String): Image
 
