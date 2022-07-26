@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.Divider
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ import org.feature.fox.coffee_counter.ui.items.LoadingBox
 @Composable
 fun UsersViewPreview() {
     val preview = UserListViewModelPreview()
-    preview.userList.add(UserIdResponse("a", "Julian", 15.0))
+    preview.userList.add(UserIdResponse("a", "Julian", 15555555.0))
     preview.userList.add(UserIdResponse("b", "Kevin", -15.0))
     preview.userList.add(UserIdResponse("c", "Steffen", 42.0))
     UsersView(preview)
@@ -116,12 +117,6 @@ fun UserList(viewModel: IUserListViewModel) {
         ) {
             viewModel.userList.forEach { user ->
                 UserRow(viewModel, user)
-                Divider(
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    thickness = 1.dp
-                )
             }
             Box(Modifier.height(30.dp))
         }
@@ -133,17 +128,25 @@ fun UserRow(
     viewModel: IUserListViewModel,
     user: UserIdResponse,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(5.dp),
+        elevation = 5.dp
     ) {
-        Text(
-            user.name,
-            fontWeight = FontWeight.Medium
-        )
-        MoneyEditRow(viewModel, user)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        ) {
+            Text(
+                user.name,
+                fontWeight = FontWeight.Medium
+            )
+            MoneyEditRow(viewModel, user)
+        }
     }
 }
 
@@ -160,7 +163,10 @@ fun MoneyEditRow(
             "${String.format("%.2f", user.balance)}€",
             fontWeight = FontWeight.Medium,
             color = Color.Gray,
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier
+                .width(150.dp)
+                .padding(5.dp),
+            textAlign = TextAlign.End
         )
         Button(
             onClick = {
