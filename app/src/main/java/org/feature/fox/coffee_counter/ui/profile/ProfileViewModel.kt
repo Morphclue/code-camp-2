@@ -2,7 +2,6 @@ package org.feature.fox.coffee_counter.ui.profile
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Base64
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -133,6 +132,20 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun getImage() {
+        val timestampResponse = userRepository.getImageTimestamp(
+            preference.getTag(BuildConfig.USER_ID)
+        )
+        if (timestampResponse.data == null) {
+            toastChannel.send(timestampResponse.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+
+        // FIXME dbimage is null
+        val dbImage = userRepository.getImageByIdFromUser(preference.getTag(BuildConfig.USER_ID))
+        println("dbImage: $dbImage")
+        println("timestampResponse: $timestampResponse")
+
         val response = userRepository.getImage(preference.getTag(BuildConfig.USER_ID))
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
