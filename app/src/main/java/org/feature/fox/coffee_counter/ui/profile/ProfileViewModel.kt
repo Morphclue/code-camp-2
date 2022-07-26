@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
@@ -56,6 +57,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    //TODO: Maybe fetch data from db instead of consuming API
     override suspend fun loadData() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
@@ -93,22 +95,43 @@ class ProfileViewModel @Inject constructor(
         }
 
         preference.setTag(BuildConfig.USER_ID, idState.value.text)
+
+
+        userRepository.updateUserDb(
+            User(
+                userId = preference.getTag(BuildConfig.USER_ID),
+                name = userBody.name,
+                isAdmin = userRepository.getAdminStateOfUserByIdDb(preference.getTag(BuildConfig.USER_ID))
+            )
+        )
+
         toastChannel.send(UIText.StringResource(R.string.updated_user))
     }
 
     override suspend fun deleteUser() {
+        val userToBeDeleted = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
         val response = userRepository.deleteUser(preference.getTag(BuildConfig.USER_ID))
 
-        if (response.data == null) {
+        if (response.data == null || userToBeDeleted.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
         toastChannel.send(UIText.StringResource(R.string.deleted_user))
+
+        userRepository.deleteUserDb(
+            User(
+                userId = userToBeDeleted.data.id,
+                name = userToBeDeleted.data.name,
+                isAdmin = userRepository.getAdminStateOfUserByIdDb(userToBeDeleted.data.id)
+            )
+        )
+
         removeTags()
         showMainActivity.value = true
     }
 
+    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
