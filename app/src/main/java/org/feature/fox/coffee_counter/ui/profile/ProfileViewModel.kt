@@ -141,10 +141,11 @@ class ProfileViewModel @Inject constructor(
             return
         }
 
-        // FIXME dbimage is null
         val dbImage = userRepository.getImageByIdFromUser(preference.getTag(BuildConfig.USER_ID))
-        println("dbImage: $dbImage")
-        println("timestampResponse: $timestampResponse")
+        if (dbImage.timestamp >= timestampResponse.data) {
+            setImage(dbImage.encodedImage)
+            return
+        }
 
         val response = userRepository.getImage(preference.getTag(BuildConfig.USER_ID))
         if (response.data == null) {
@@ -152,7 +153,11 @@ class ProfileViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
-        val imageBytes = Base64.decode(response.data.encodedImage, Base64.DEFAULT)
+        setImage(response.data.encodedImage)
+    }
+
+    private fun setImage(encodedImage: String) {
+        val imageBytes = Base64.decode(encodedImage, Base64.DEFAULT)
         bitmap.value = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
 
