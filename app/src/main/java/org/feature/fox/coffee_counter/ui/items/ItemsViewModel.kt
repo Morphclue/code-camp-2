@@ -149,6 +149,8 @@ class ItemsViewModel @Inject constructor(
         }
 
         cartItem.amount += 1
+        itemsInShoppingCartState.remove(cartItem)
+        itemsInShoppingCartState.add(cartItem)
         currentShoppingCartAmountState.value += item.price
         return true
     }
@@ -178,6 +180,8 @@ class ItemsViewModel @Inject constructor(
 
         if(cartItem.amount > 0){
             cartItem.amount -= 1
+            itemsInShoppingCartState.remove(cartItem)
+            itemsInShoppingCartState.add(cartItem)
             currentShoppingCartAmountState.value -= item.price
         }
     }

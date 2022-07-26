@@ -27,11 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -144,11 +140,6 @@ fun ItemList(viewModel: IItemsViewModel) {
 @Composable
 fun ItemRow(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
-    var buyItems by remember { mutableStateOf(0) }
-
-    coroutineScope.launch {
-        buyItems = viewModel.getItemCartAmount(item)
-    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -166,7 +157,8 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "$buyItems/${item.amount}",
+                    "${viewModel.itemsInShoppingCartState.first { it.id == item.id }.amount}" +
+                            "/${item.amount}",
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.width(60.dp)
                 )
@@ -175,7 +167,6 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     onClick = {
                         coroutineScope.launch {
                             viewModel.addItemToShoppingCart(item)
-                            buyItems = viewModel.getItemCartAmount(item)
                         }
                     },
                     modifier = Modifier.size(35.dp),
@@ -193,7 +184,6 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
                     onClick = {
                         coroutineScope.launch {
                             viewModel.removeItemFromShoppingCart(item)
-                            buyItems = viewModel.getItemCartAmount(item)
                         }
                     },
                     modifier = Modifier.size(35.dp),
