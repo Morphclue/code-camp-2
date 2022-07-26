@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
     var availableItemsState: SnapshotStateList<Item>
-    val itemsInShoppingCartState: MutableLiveData<MutableList<Item>>
+    val itemsInShoppingCartState: SnapshotStateList<Item>
     val currentShoppingCartAmountState: MutableState<Double>
     val adminView: MutableState<Boolean>
     val isAdmin: MutableState<Boolean>
@@ -39,14 +38,16 @@ interface IItemsViewModel : IToast {
     val isLoaded: MutableState<Boolean>
     val addItemDialogVisible: MutableState<Boolean>
     val editItemDialogVisible: MutableState<Boolean>
+    val confirmBuyItemDialogVisible: MutableState<Boolean>
     val balance: MutableState<Double>
 
     suspend fun getItems()
-    suspend fun addItemToShoppingCart(item: Item)
+    suspend fun addItemToShoppingCart(item: Item): Boolean
+    suspend fun addStringItemToShoppingCart(item: String)
     suspend fun removeItemFromShoppingCart(item: Item)
     suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
-    suspend fun addItem()
+    suspend fun addItem(): Boolean
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
@@ -59,7 +60,7 @@ class ItemsViewModel @Inject constructor(
     private val preference: AppPreference,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
-    override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
+    override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -73,8 +74,8 @@ class ItemsViewModel @Inject constructor(
     override val isLoaded = mutableStateOf(false)
     override val addItemDialogVisible = mutableStateOf(false)
     override val editItemDialogVisible = mutableStateOf(false)
+    override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(0.0)
-
 
     init {
         viewModelScope.launch {
@@ -104,10 +105,10 @@ class ItemsViewModel @Inject constructor(
             )
         }
 
-        if (itemsInShoppingCartState.value.isNullOrEmpty()) {
-            itemsInShoppingCartState.value = mutableListOf()
+        if (itemsInShoppingCartState.isEmpty()) {
+            itemsInShoppingCartState = mutableStateListOf()
             availableItemsState.forEach { item ->
-                itemsInShoppingCartState.value?.add(
+                itemsInShoppingCartState.add(
                     Item(
                         id = item.id,
                         name = item.name,
@@ -120,10 +121,10 @@ class ItemsViewModel @Inject constructor(
         isLoaded.value = true
     }
 
-    override suspend fun addItemToShoppingCart(item: Item) {
+    override suspend fun addItemToShoppingCart(item: Item): Boolean {
 
         if (item.amount <= 0) {
-            return
+            return false
         }
 
         val userResponse = userRepository.getUserById(
@@ -133,42 +134,60 @@ class ItemsViewModel @Inject constructor(
         if (userResponse.data == null) {
             toastChannel.send(userResponse.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
-            return
+            return false
         }
 
-        itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id && cartItem.amount < item.amount) {
-                if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
-                    toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
-                }
-                cartItem.amount += 1
-                currentShoppingCartAmountState.value += item.price
-                return
+        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+
+        if(cartItem.amount >= item.amount){
+            toastChannel.send(UIText.StringResource(R.string.not_available))
+            return false
+        }
+        if (userResponse.data.balance < currentShoppingCartAmountState.value + item.price) {
+            toastChannel.send(UIText.StringResource(R.string.not_enough_funding))
+            return false
+        }
+
+        cartItem.amount += 1
+        itemsInShoppingCartState.remove(cartItem)
+        itemsInShoppingCartState.add(cartItem)
+        currentShoppingCartAmountState.value += item.price
+        return true
+    }
+
+    override suspend fun addStringItemToShoppingCart(item: String) {
+        try {
+            val avItem: Item = availableItemsState.first{it.name == item}
+
+            val success = addItemToShoppingCart(avItem)
+            if (success){
+                confirmBuyItemDialogVisible.value = true
             }
+
+        }catch(e: NoSuchElementException){
+            toastChannel.send(UIText.StringResource(R.string.not_exist))
+            return
         }
     }
 
     override suspend fun getItemCartAmount(item: Item): Int {
-        itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id) {
-                return cartItem.amount
-            }
-        }
-        return 0
+        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        return cartItem.amount
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        itemsInShoppingCartState.value?.forEach { cartItem ->
-            if (item.id == cartItem.id && cartItem.amount > 0) {
-                cartItem.amount -= 1
-                currentShoppingCartAmountState.value -= item.price
-                return
-            }
+        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+
+        if(cartItem.amount > 0){
+            cartItem.amount -= 1
+            itemsInShoppingCartState.remove(cartItem)
+            itemsInShoppingCartState.add(cartItem)
+            currentShoppingCartAmountState.value -= item.price
         }
     }
 
     override suspend fun buyItems() {
-        itemsInShoppingCartState.value?.forEach { cartItem ->
+        itemsInShoppingCartState.forEach { cartItem ->
             if (cartItem.amount > 0) {
                 val response = itemRepository.purchaseItem(
                     preference.getTag(BuildConfig.USER_ID),
@@ -190,19 +209,17 @@ class ItemsViewModel @Inject constructor(
         getTotalBalance()
     }
 
-    override suspend fun addItem() {
-        if (currentItemId.value.text.isEmpty() ||
-            currentItemName.value.text.isEmpty() ||
+    override suspend fun addItem(): Boolean {
+        if (currentItemName.value.text.isEmpty() ||
             currentItemAmount.value.text.isEmpty() ||
             currentItemPrice.value.text.isEmpty()
         ) {
             toastChannel.send(UIText.StringResource(R.string.fill_all_fields))
-            return
+            return false
         }
 
         val response = itemRepository.postItem(
             ItemBody(
-                id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble(),
@@ -212,11 +229,12 @@ class ItemsViewModel @Inject constructor(
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
-            return
+            return false
         }
-        toastChannel.send(UIText.StringResource(R.string.add_item))
+        toastChannel.send(UIText.StringResource(R.string.add_item_success))
         isLoaded.value = false
         getItems()
+        return true
     }
 
     override suspend fun updateItem() {
@@ -273,7 +291,7 @@ class ItemsViewModel @Inject constructor(
 class ItemsViewModelPreview : IItemsViewModel {
     override val currentShoppingCartAmountState = mutableStateOf(55.0)
     override var availableItemsState = mutableStateListOf<Item>()
-    override val itemsInShoppingCartState = MutableLiveData<MutableList<Item>>()
+    override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val adminView = mutableStateOf(false)
@@ -286,6 +304,7 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val isLoaded = mutableStateOf(false)
     override val addItemDialogVisible = mutableStateOf(false)
     override val editItemDialogVisible = mutableStateOf(false)
+    override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(50.0)
 
     init {
@@ -294,7 +313,7 @@ class ItemsViewModelPreview : IItemsViewModel {
             Item(id = "b", name = "beer", amount = 42, price = 4.99),
             Item(id = "c", name = "mate", amount = 1337, price = 9.99)
         )
-        itemsInShoppingCartState.value = mutableListOf(
+        itemsInShoppingCartState = mutableStateListOf(
             Item(id = "a", name = "coffee", amount = 2, price = 5.0),
             Item(id = "b", name = "beer", amount = 5, price = 4.99),
         )
@@ -304,7 +323,11 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addItemToShoppingCart(item: Item) {
+    override suspend fun addItemToShoppingCart(item: Item): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addStringItemToShoppingCart(item: String) {
         TODO("Not yet implemented")
     }
 
@@ -320,7 +343,7 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addItem() {
+    override suspend fun addItem(): Boolean {
         TODO("Not yet implemented")
     }
 
