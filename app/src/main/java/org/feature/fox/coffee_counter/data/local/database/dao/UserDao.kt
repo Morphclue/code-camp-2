@@ -3,6 +3,8 @@ package org.feature.fox.coffee_counter.data.local.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -22,7 +24,7 @@ interface UserDao {
     @Update
     suspend fun insertPurchase(purchase: Purchase)
 
-    @Update
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImage(image: Image)
 
     @Delete
