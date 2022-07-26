@@ -48,7 +48,7 @@ interface IItemsViewModel : IToast {
     suspend fun removeItemFromShoppingCart(item: Item)
     suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
-    suspend fun addItem()
+    suspend fun addItem(): Boolean
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
@@ -210,13 +210,13 @@ class ItemsViewModel @Inject constructor(
         getTotalBalance()
     }
 
-    override suspend fun addItem() {
+    override suspend fun addItem(): Boolean {
         if (currentItemName.value.text.isEmpty() ||
             currentItemAmount.value.text.isEmpty() ||
             currentItemPrice.value.text.isEmpty()
         ) {
             toastChannel.send(UIText.StringResource(R.string.fill_all_fields))
-            return
+            return false
         }
 
         val response = itemRepository.postItem(
@@ -230,11 +230,12 @@ class ItemsViewModel @Inject constructor(
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
-            return
+            return false
         }
         toastChannel.send(UIText.StringResource(R.string.add_item))
         isLoaded.value = false
         getItems()
+        return true
     }
 
     override suspend fun updateItem() {
@@ -343,7 +344,7 @@ class ItemsViewModelPreview : IItemsViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addItem() {
+    override suspend fun addItem(): Boolean {
         TODO("Not yet implemented")
     }
 

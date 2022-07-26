@@ -86,8 +86,10 @@ fun AddItemDialogButtons(
         }
         TextButton(onClick = {
             scope.launch {
-                viewModel.addItem()
-                viewModel.addItemDialogVisible.value = false
+                val success = viewModel.addItem()
+                if (success) {
+                    viewModel.addItemDialogVisible.value = false
+                }
             }
         }) {
             Text(text = stringResource(id = R.string.ok))
