@@ -15,11 +15,16 @@ interface ItemRepositoryInt {
 
     suspend fun updateItemDb(item: Item)
 
+    // TODO Use or delete me
     suspend fun getItemByIdDb(itemId: String): Item
 
-    fun observeAllItems(): LiveData<List<Item>>
+    // TODO Use or delete me
+    fun observeAllItemsDb(): LiveData<List<Item>>
 
-    fun observeTotalPrice(): LiveData<Double>
+    // TODO Use or delete me
+    fun observeTotalPriceDb(): LiveData<Double>
+
+    // API Calls
 
     suspend fun postItem(itemBody: ItemBody): Resource<String>
 
