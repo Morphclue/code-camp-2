@@ -2,15 +2,7 @@ package org.feature.fox.coffee_counter.ui.transaction
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -30,10 +22,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.data.*
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
@@ -63,7 +54,8 @@ fun HistoryView(
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         ShowPeriodField()
-        ShowStatistics(purchaseList as MutableList<Purchase>)
+        PieChartBoughtItems(purchaseList as MutableList<Purchase>)
+        BarChartExpenses(purchaseList as MutableList<Purchase>)
         TransactionContainer(viewModel)
     }
 }
@@ -121,52 +113,78 @@ fun ShowPeriodField() {
 }
 
 @Composable
-fun ShowStatistics(data: MutableList<Purchase>) {
-    AndroidView(
-        modifier = Modifier
-            .fillMaxSize(0.5f),
-        factory = { context ->
-            val listColors = ArrayList<Int>()
-            listColors.add(Color.Red.toArgb())
-            listColors.add(Color.Green.toArgb())
-            listColors.add(Color.Yellow.toArgb())
-            listColors.add(Color.Blue.toArgb())
-            val pieChart = PieChart(context)
-            val entries = listOf(
-                PieEntry(18.5f, "Green"),
-                PieEntry(26.7F, "Yellow"),
-                PieEntry(24.0f, "Red"),
-                PieEntry(30.8f, "Blue")
-            )
-            val dataset = PieDataSet(entries, "")
-            dataset.colors = listColors
-            //val dataset = PieDataSet(entries, "LABEL").apply { color = Color.Red.toArsgb() }
-            val pieData = PieData(dataset)
-            pieChart.data = pieData
-            pieChart.setUsePercentValues(true)
-            pieChart.description.isEnabled = false
-            pieChart.invalidate()
+fun PieChartBoughtItems(data: MutableList<Purchase>){
 
-            pieChart
-        }
-    )
+    Column(
+        modifier = Modifier.height(150.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        AndroidView(
+            modifier = Modifier
+                .fillMaxSize(),
+            factory = { context ->
+                val listColors = ArrayList<Int>()
+                listColors.add(Color.Red.toArgb())
+                listColors.add(Color.Green.toArgb())
+                listColors.add(Color.Yellow.toArgb())
+                listColors.add(Color.Blue.toArgb())
+                val pieChart = PieChart(context)
+                val entries = listOf(
+                    PieEntry(18.5f, "Green"),
+                    PieEntry(26.7F, "Yellow"),
+                    PieEntry(24.0f, "Red"),
+                    PieEntry(30.8f, "Blue")
+                )
+                val dataset = PieDataSet(entries, "")
+                dataset.colors = listColors
+                //val dataset = PieDataSet(entries, "LABEL").apply { color = Color.Red.toArsgb() }
+                val pieData = PieData(dataset)
+                pieChart.data = pieData
+                pieChart.setUsePercentValues(true)
+                pieChart.description.isEnabled = false
+                pieChart.invalidate()
 
+                pieChart
+            }
+        )
+    }
+}
 
-/*    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+@Composable
+fun BarChartExpenses(data: MutableList<Purchase>) {
+    Column(
+        modifier = Modifier.height(150.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val purchaseMap: MutableMap<String, Float> = mutableMapOf()
-        data.forEach { item ->
-            if(purchaseMap.containsKey(item.itemName)) purchaseMap[item.itemName]
-                ?.let { purchaseMap.put(item.itemName, it.plus(item.amount.toFloat())) }
-            else purchaseMap[item.itemName] = item.amount.toFloat()
-         }
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                val listColors = ArrayList<Int>()
+                listColors.add(Color.Red.toArgb())
+                listColors.add(Color.Green.toArgb())
+                listColors.add(Color.Yellow.toArgb())
+                listColors.add(Color.Blue.toArgb())
+                val barChart = BarChart(context)
 
+                val entries = listOf(
+                    BarEntry(0f, 20.0f),
+                    BarEntry(1f, 10.0f),
+                    BarEntry(3f, 5.0f),
+                    BarEntry(4f, 50.0f),
+                )
 
-    }*/
+                val barDataSet = BarDataSet(entries, "BLA").apply { colors = listColors }
 
+                val barData = BarData(barDataSet)
+                barChart.data = barData
+                barChart.invalidate()
+
+                barChart
+            }
+        )
+    }
 }
 
 @Composable
