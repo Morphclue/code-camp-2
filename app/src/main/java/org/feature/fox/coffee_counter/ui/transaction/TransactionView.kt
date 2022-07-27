@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,7 +46,7 @@ fun HistoryViewPreview(
 
 @Composable
 fun HistoryView(
-    viewModel: ITransactionViewModel
+    viewModel: ITransactionViewModel,
 ) {
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
@@ -98,12 +98,6 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
                     "${String.format("%.2f", transaction.value)}€"
                 )
             }
-            Divider(
-                color = Color.Gray,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                thickness = 1.dp
-            )
         }
     }
 }
@@ -115,15 +109,24 @@ fun ShowPeriodField() {
 
 @Composable
 fun TransactionRow(color: Color, type: String, date: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp),
+        elevation = 5.dp
     ) {
-        TransactionCircle(color)
-        TransactionType(type)
-        TransactionDate(date)
-        TransactionValue(color, value)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            TransactionCircle(color)
+            TransactionType(type)
+            TransactionDate(date)
+            TransactionValue(color, value)
+        }
     }
 }
 

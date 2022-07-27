@@ -67,7 +67,7 @@ fun ProfileView(
 
     BoxWithConstraints {
         Column {
-            MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
+            MoneyAppBar(Pair(stringResource(R.string.profile_title), viewModel.balance))
             Column(
                 modifier = Modifier
                     .padding(4.dp)
