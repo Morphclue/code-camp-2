@@ -15,14 +15,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
-import timber.log.Timber
 import javax.inject.Inject
 
 interface ITransactionViewModel : IToast {
@@ -102,7 +100,14 @@ class TransactionViewModel @Inject constructor(
     }
 
     override suspend fun sendMoney(qrCodeText: String) {
-        val response = userRepository.sendMoney(qrCodeText, SendMoneyBody(15.0, qrCodeText))
+        sendAmount.value = TextFieldValue(sendAmount.value.text.replace(",", "."))
+        if (sendAmount.value.text.count { '.' == it } > 1) {
+            toastChannel.send(UIText.StringResource(R.string.incorrect_money_format))
+            return
+        }
+        val sendMoneyAmount = sendAmount.value.text.toDouble()
+        val response =
+            userRepository.sendMoney(qrCodeText, SendMoneyBody(sendMoneyAmount, qrCodeText))
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
