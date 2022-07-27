@@ -126,8 +126,7 @@ class TransactionViewModelPreview : ITransactionViewModel {
 
     override val showMainActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
-    override val transactions: MutableList<TransactionResponse>
-        get() = TODO("Not yet implemented")
+    override val transactions = mutableListOf<TransactionResponse>()
     override val balance = mutableStateOf(13.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
