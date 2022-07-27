@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
@@ -85,18 +87,33 @@ class UserListViewModel @Inject constructor(
 
         currentUser.value?.let { userIdResponse ->
             val response = userRepository.addFunding(userIdResponse.id, FundingBody(fundingAmount))
+            val transactions = userRepository.getTransactions(userIdResponse.id)
+            if (response.data == null || transactions.data == null) {
+                toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                    ?: UIText.StringResource(R.string.unknown_error))
+                return
+            }
 
-            toastChannel.send(response.data?.let { UIText.DynamicString(it) }
-                ?: UIText.StringResource(R.string.unknown_error))
+
+
+            userRepository.insertFundingDb(
+                Funding(
+                    timestamp = transactions.data.last().timestamp,
+                    userId = userIdResponse.id,
+                    value = transactions.data.last().value
+                )
+            )
 
             val index = userList.indexOf(currentUser.value)
             userList.remove(currentUser.value)
             currentUser.value
-            userList.add(index, UserIdResponse(
-                userIdResponse.id,
-                userIdResponse.name,
-                userIdResponse.balance + fundingAmount
-            ))
+            userList.add(
+                index, UserIdResponse(
+                    userIdResponse.id,
+                    userIdResponse.name,
+                    userIdResponse.balance + fundingAmount
+                )
+            )
         }
 
         funding.value = TextFieldValue()
@@ -124,10 +141,20 @@ class UserListViewModel @Inject constructor(
             return
         }
 
+        // Assuming that this method only creates new Users and does not update them
+        userRepository.insertUserDb(
+            User(
+                userId = editId.value.text,
+                name = editName.value.text,
+                isAdmin = isAdminState.value
+            )
+        )
+
         toastChannel.send(UIText.StringResource(R.string.created_account))
         editDialogVisible.value = false
     }
 
+    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 

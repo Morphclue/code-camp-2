@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.data.repository
 
-import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -15,29 +14,20 @@ import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.util.Resource
 
 interface UserRepositoryInt {
-    suspend fun insertUser(user: User)
 
-    suspend fun insertFunding(funding: Funding)
+    suspend fun insertUserDb(user: User)
 
-    suspend fun insertPurchase(purchase: Purchase)
+    suspend fun updateUserDb(user: User)
 
-    suspend fun deleteUser(user: User)
+    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
-    suspend fun deleteFunding(funding: Funding)
+    suspend fun insertFundingDb(funding: Funding)
 
-    suspend fun deletePurchase(purchase: Purchase)
+    suspend fun insertPurchaseDb(purchase: Purchase)
 
-    suspend fun getUserByIdDb(id: String): User
+    suspend fun deleteUserDb(user: User)
 
-    suspend fun getFundingListOfUser(id: String): List<Funding>
-
-    suspend fun getPurchaseListOfUser(id: String): List<Purchase>
-
-    fun observeTotalBalanceOfUser(id: String): LiveData<Double>
-
-    suspend fun login(id: String, password: String): Boolean
-
-    fun observeAllUsers(): LiveData<List<User>>
+    // API Calls
 
     suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>
 

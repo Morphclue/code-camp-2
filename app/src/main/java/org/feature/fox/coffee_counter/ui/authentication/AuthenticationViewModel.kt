@@ -7,13 +7,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import at.favre.lib.crypto.bcrypt.BCrypt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
@@ -84,6 +85,53 @@ class AuthenticationViewModel @Inject constructor(
 //            error("Invalid token")
 //        }
 
+        // Fetch User Data to get name of user
+        val user = userRepository.getUserById(idState.value.text.trim())
+
+        if (user.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        // Insert User into db in case the user registered on another device
+        //TODO Fix admin state
+        userRepository.insertUserDb(
+            User(
+                userId = user.data.id,
+                name = user.data.name,
+                false,
+            )
+        )
+
+        // Fetch Transactions of User and insert/update DB
+
+        val transactions = userRepository.getTransactions(preference.getTag(BuildConfig.USER_ID))
+        if (transactions.data == null) {
+            toastChannel.send(transactions.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        transactions.data.forEach { transactionResponse ->
+            when (transactionResponse.type) {
+                "purchase" -> userRepository.insertPurchaseDb(
+                    Purchase(
+                        timestamp = transactionResponse.timestamp,
+                        userId = preference.getTag(BuildConfig.USER_ID),
+                        totalValue = transactionResponse.value,
+                        itemId = transactionResponse.itemId!!,
+                        itemName = transactionResponse.itemName!!,
+                        amount = transactionResponse.amount!!,
+                    )
+                )
+                "funding" -> userRepository.insertFundingDb(
+                    Funding(
+                        timestamp = transactionResponse.timestamp,
+                        userId = preference.getTag(BuildConfig.USER_ID),
+                        value = transactionResponse.value,
+                    )
+                )
+            }
+        }
         showCoreActivity.value = true
     }
 
@@ -117,13 +165,12 @@ class AuthenticationViewModel @Inject constructor(
         }
 
         idState.value = TextFieldValue(response.data)
-        userRepository.insertUser(
+
+        userRepository.insertUserDb(
             User(
-                id = idState.value.text.trim(),
+                userId = idState.value.text.trim(),
                 name = nameState.value.text.trim(),
                 false,
-                password = BCrypt.withDefaults()
-                    .hashToString(12, passwordState.value.text.trim().toCharArray()),
             )
         )
         switchToLogin()
