@@ -38,4 +38,8 @@ interface UserDao {
     @Query("SELECT * FROM purchase WHERE userId = :userId")
     suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase>
 
+    @Transaction
+    @Query("SELECT * FROM funding WHERE userId = :userId")
+    suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
+
 }

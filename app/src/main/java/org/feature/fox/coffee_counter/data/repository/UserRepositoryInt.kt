@@ -29,6 +29,7 @@ interface UserRepositoryInt {
 
     suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase>
 
+    suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
     // API Calls
 
     suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>
