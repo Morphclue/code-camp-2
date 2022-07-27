@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.ui.user
 
-import android.util.Base64
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
@@ -24,7 +23,6 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
-import org.json.JSONObject
 import javax.inject.Inject
 
 interface IUserListViewModel : IToast {
@@ -45,7 +43,6 @@ interface IUserListViewModel : IToast {
     suspend fun addFunding()
     suspend fun createUser()
     suspend fun getTotalBalance()
-    suspend fun adminFromToken()
 }
 
 @HiltViewModel
@@ -71,7 +68,7 @@ class UserListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            adminFromToken()
+            isAdminState.value = preference.getTag(BuildConfig.IS_ADMIN, true)
             loadUsers()
             getTotalBalance()
         }
@@ -166,18 +163,6 @@ class UserListViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
-    override suspend fun adminFromToken() {
-        preference.getTag(BuildConfig.BEARER_TOKEN)
-
-        val elements = preference.getTag(BuildConfig.BEARER_TOKEN).split('.')
-        if (elements.size == 3) {
-            val (_, payload, _) = elements
-            isAdminState.value = JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin")
-        } else {
-            error("Invalid token")
-        }
-    }
-
     private suspend fun loadUsers() {
         val response = userRepository.getUsers()
         if (response.data == null) {
@@ -234,10 +219,6 @@ class UserListViewModelPreview : IUserListViewModel {
     }
 
     override suspend fun getTotalBalance() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun adminFromToken() {
         TODO("Not yet implemented")
     }
 }

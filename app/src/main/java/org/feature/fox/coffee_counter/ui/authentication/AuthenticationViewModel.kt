@@ -75,15 +75,13 @@ class AuthenticationViewModel @Inject constructor(
         preference.setTag(BuildConfig.EXPIRATION, response.data.expiration.toString())
         preference.setTag(BuildConfig.BEARER_TOKEN, response.data.token)
 
-        //TODO wont generate BuildConfig.IS_ADMIN for me
-        // when implemented replace adminFromToken in UserListViewModel and ItemListViewModel
-//        val elements = response.data.token.split('.')
-//        if (elements.size == 3) {
-//            val (_, payload, _) = elements
-//            preference.setTag(BuildConfig.IS_ADMIN, JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin"))
-//        } else {
-//            error("Invalid token")
-//        }
+        val elements = response.data.token.split('.')
+        if (elements.size == 3) {
+            val (_, payload, _) = elements
+            preference.setTag(BuildConfig.IS_ADMIN, JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin"))
+        } else {
+            error("Invalid token")
+        }
 
         // Fetch User Data to get name of user
         val user = userRepository.getUserById(idState.value.text.trim())
@@ -94,12 +92,11 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
         // Insert User into db in case the user registered on another device
-        //TODO Fix admin state
         userRepository.insertUserDb(
             User(
                 userId = user.data.id,
                 name = user.data.name,
-                false,
+                isAdmin = preference.getTag(BuildConfig.IS_ADMIN, true),
             )
         )
 
