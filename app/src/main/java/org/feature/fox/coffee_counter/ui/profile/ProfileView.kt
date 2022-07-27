@@ -3,7 +3,12 @@ package org.feature.fox.coffee_counter.ui.profile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -24,6 +30,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -72,7 +79,7 @@ fun ProfileView(
                 coroutineScope.launch {
                     viewModel.getTotalBalance()
                 }
-                ProfileIcon()
+                ProfileIcon(viewModel)
                 CommonTextField(viewModel.idState, label = stringResource(id = R.string.id_hint))
                 CommonTextField(
                     viewModel.nameState,
@@ -108,8 +115,26 @@ fun AdminCheckbox(viewModel: IProfileViewModel) {
 }
 
 @Composable
-fun ProfileIcon() {
-    val painter = rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
+fun ProfileIcon(viewModel: IProfileViewModel) {
+    val context = LocalContext.current
+    val painter = if (viewModel.bitmap.value == null) {
+        rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
+    } else {
+        rememberAsyncImagePainter(viewModel.bitmap.value)
+    }
+    val coroutineScope = rememberCoroutineScope()
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val stream = context.contentResolver.openInputStream(uri)
+            coroutineScope.launch {
+                if (stream != null) {
+                    viewModel.updateImage(stream)
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -122,8 +147,17 @@ fun ProfileIcon() {
             contentDescription = stringResource(R.string.profile_image_label),
             modifier = Modifier
                 .wrapContentSize()
-                .size(150.dp),
-            contentScale = ContentScale.Crop
+                .size(150.dp)
+                .clickable(
+                    enabled = true,
+                    onClickLabel = "Clickable profile image",
+                    onClick = {
+                        launcher.launch("image/*")
+                    }
+                )
+                .clip(CircleShape)
+                .border(2.dp, Color.Black, CircleShape),
+            contentScale = ContentScale.Crop,
         )
     }
 }

@@ -1,8 +1,12 @@
 package org.feature.fox.coffee_counter.data.repository
 
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
@@ -15,6 +19,7 @@ import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.di.services.network.ApiService
 import org.feature.fox.coffee_counter.util.Resource
+import java.io.InputStream
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -24,6 +29,10 @@ class UserRepository @Inject constructor(
 
     override suspend fun insertUserDb(user: User) {
         userDao.insertUserDb(user)
+    }
+
+    override suspend fun insertImageDb(image: Image) {
+        userDao.insertImageDb(image)
     }
 
     override suspend fun updateUserDb(user: User) {
@@ -38,12 +47,20 @@ class UserRepository @Inject constructor(
         userDao.deleteUserDb(user)
     }
 
+    override suspend fun deleteImageDb(image: Image) {
+        userDao.deleteImageDb(image)
+    }
+
     override suspend fun insertFundingDb(funding: Funding) {
         userDao.insertFundingDb(funding)
     }
 
     override suspend fun insertPurchaseDb(purchase: Purchase) {
         userDao.insertPurchaseDb(purchase)
+    }
+
+    override suspend fun getImageByIdDb(id: String): Image? {
+        return userDao.getImageByIdDb(id)
     }
 
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
@@ -162,6 +179,65 @@ class UserRepository @Inject constructor(
     override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String> {
         return try {
             val response = apiService.purchaseItem(id, purchaseBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
+    override suspend fun getImage(id: String): Resource<Image> {
+        return try {
+            val response = apiService.getImage(id)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    val image = Image(
+                        id,
+                        it.encodedImage,
+                        it.timestamp
+                    )
+                    return@let Resource.success(image)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
+    override suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String> {
+        return try {
+            val image = MultipartBody.Part.createFormData(
+                "pic", "myPic", RequestBody.create(
+                    "image/*".toMediaTypeOrNull(),
+                    inputStream.readBytes()
+                )
+            )
+            val response = apiService.postImage(id, image)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
+    override suspend fun getImageTimestamp(id: String): Resource<Long> {
+        return try {
+            val response = apiService.getImageTimestamp(id)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

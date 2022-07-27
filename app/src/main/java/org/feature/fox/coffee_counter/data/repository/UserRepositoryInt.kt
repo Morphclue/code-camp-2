@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
@@ -12,20 +13,26 @@ import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.util.Resource
+import java.io.InputStream
 
 interface UserRepositoryInt {
-
     suspend fun insertUserDb(user: User)
-
-    suspend fun updateUserDb(user: User)
-
-    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
     suspend fun insertFundingDb(funding: Funding)
 
     suspend fun insertPurchaseDb(purchase: Purchase)
 
+    suspend fun insertImageDb(image: Image)
+
+    suspend fun updateUserDb(user: User)
+
+    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
+
+    suspend fun getImageByIdDb(id: String): Image?
+
     suspend fun deleteUserDb(user: User)
+
+    suspend fun deleteImageDb(image: Image)
 
     // API Calls
 
@@ -44,6 +51,12 @@ interface UserRepositoryInt {
     suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>
 
     suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
+
+    suspend fun getImage(id: String): Resource<Image>
+
+    suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String>
+
+    suspend fun getImageTimestamp(id: String): Resource<Long>
 
     suspend fun adminSignUp(userBody: UserBody): Resource<String>
 

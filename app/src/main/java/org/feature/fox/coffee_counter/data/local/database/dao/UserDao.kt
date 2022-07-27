@@ -8,14 +8,23 @@ import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 @Dao
 interface UserDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserDb(user: User)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertFundingDb(funding: Funding)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertPurchaseDb(purchase: Purchase)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertImageDb(image: Image)
 
     @Update
     suspend fun updateUserDb(user: User)
@@ -24,13 +33,12 @@ interface UserDao {
     @Query("SELECT isAdmin FROM users WHERE userId = :userId")
     suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
+    @Query("SELECT * FROM image WHERE userId=:id")
+    suspend fun getImageByIdDb(id: String): Image?
+
     @Delete
     suspend fun deleteUserDb(user: User)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertFundingDb(funding: Funding)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertPurchaseDb(purchase: Purchase)
-
+    @Delete
+    suspend fun deleteImageDb(image: Image)
 }
