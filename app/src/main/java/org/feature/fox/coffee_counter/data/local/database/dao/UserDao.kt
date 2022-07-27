@@ -17,16 +17,6 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserDb(user: User)
 
-    @Update
-    suspend fun updateUserDb(user: User)
-
-    @RewriteQueriesToDropUnusedColumns
-    @Query("SELECT isAdmin FROM users WHERE userId = :userId")
-    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
-
-    @Delete
-    suspend fun deleteUserDb(user: User)
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertFundingDb(funding: Funding)
 
@@ -36,9 +26,19 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImage(image: Image)
 
-    @Delete
-    suspend fun deleteImage(image: Image)
+    @Update
+    suspend fun updateUserDb(user: User)
+
+    @RewriteQueriesToDropUnusedColumns
+    @Query("SELECT isAdmin FROM users WHERE userId = :userId")
+    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
     @Query("SELECT * FROM image WHERE userId=:id")
     suspend fun getImageById(id: String): Image?
+
+    @Delete
+    suspend fun deleteUserDb(user: User)
+
+    @Delete
+    suspend fun deleteImage(image: Image)
 }
