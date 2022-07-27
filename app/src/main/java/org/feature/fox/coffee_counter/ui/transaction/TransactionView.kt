@@ -116,12 +116,6 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
 
 @Composable
 fun QRCodeButton(viewModel: ITransactionViewModel) {
-    val painter = if (viewModel.qrCode.value == null) {
-        rememberAsyncImagePainter(R.drawable.ic_baseline_person_24)
-    } else {
-        rememberAsyncImagePainter(viewModel.qrCode.value)
-    }
-
     val coroutineScope = rememberCoroutineScope()
     CustomButton(
         text = stringResource(R.string.qrcode),
@@ -132,6 +126,11 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
             }
         }
     )
+
+    if (viewModel.qrCode.value == null) {
+        return
+    }
+    val painter = rememberAsyncImagePainter(viewModel.qrCode.value)
 
     Image(
         painter = painter,
