@@ -52,7 +52,6 @@ fun HistoryView(
     QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
-        ShowPeriodField()
         TransactionContainer(viewModel)
     }
 }
@@ -113,11 +112,6 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
             viewModel.qrCodeDialogVisible.value = true
         }
     )
-}
-
-@Composable
-fun ShowPeriodField() {
-    // TODO: implement searchbar
 }
 
 @Composable
