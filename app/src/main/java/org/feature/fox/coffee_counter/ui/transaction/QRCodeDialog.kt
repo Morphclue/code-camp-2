@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.transaction
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,9 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
+import timber.log.Timber
 
 @Preview
 @Composable
@@ -130,6 +134,17 @@ fun QRCodeReceiveDialog(viewModel: ITransactionViewModel) {
 
 @Composable
 fun QRCodeDialogButtons(viewModel: ITransactionViewModel) {
+    val scanLauncher = rememberLauncherForActivityResult(
+        contract = ScanContract(),
+        onResult = { result ->
+            Timber.tag("QRCodeDialog").i("Scan result: %s", result.contents)
+        }
+    )
+    val scanOptions = ScanOptions()
+    scanOptions.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+    scanOptions.setPrompt(stringResource(R.string.scan_qrcode))
+    scanOptions.setCameraId(0)
+
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End) {
         TextButton(onClick = {
@@ -141,7 +156,9 @@ fun QRCodeDialogButtons(viewModel: ITransactionViewModel) {
         }
         if (viewModel.qrCodeSendState.value) {
             TextButton(onClick = {
-                // TODO: implement send logic
+                scanLauncher.launch(
+                    scanOptions
+                )
             }) {
                 Text(text = stringResource(id = R.string.send))
             }
