@@ -16,23 +16,23 @@ import org.feature.fox.coffee_counter.util.Resource
 import java.io.InputStream
 
 interface UserRepositoryInt {
-    suspend fun insertImage(image: Image)
-
-    suspend fun deleteImage(image: Image)
-
-    suspend fun getImageByIdFromUser(id: String): Image?
-
     suspend fun insertUserDb(user: User)
-
-    suspend fun updateUserDb(user: User)
-
-    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
     suspend fun insertFundingDb(funding: Funding)
 
     suspend fun insertPurchaseDb(purchase: Purchase)
 
+    suspend fun insertImageDb(image: Image)
+
+    suspend fun updateUserDb(user: User)
+
+    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
+
+    suspend fun getImageByIdDb(id: String): Image?
+
     suspend fun deleteUserDb(user: User)
+
+    suspend fun deleteImageDb(image: Image)
 
     // API Calls
 

@@ -31,8 +31,8 @@ class UserRepository @Inject constructor(
         userDao.insertUserDb(user)
     }
 
-    override suspend fun insertImage(image: Image) {
-        userDao.insertImage(image)
+    override suspend fun insertImageDb(image: Image) {
+        userDao.insertImageDb(image)
     }
 
     override suspend fun updateUserDb(user: User) {
@@ -47,8 +47,8 @@ class UserRepository @Inject constructor(
         userDao.deleteUserDb(user)
     }
 
-    override suspend fun deleteImage(image: Image) {
-        userDao.deleteImage(image)
+    override suspend fun deleteImageDb(image: Image) {
+        userDao.deleteImageDb(image)
     }
 
     override suspend fun insertFundingDb(funding: Funding) {
@@ -59,8 +59,8 @@ class UserRepository @Inject constructor(
         userDao.insertPurchaseDb(purchase)
     }
 
-    override suspend fun getImageByIdFromUser(id: String): Image? {
-        return userDao.getImageById(id)
+    override suspend fun getImageByIdDb(id: String): Image? {
+        return userDao.getImageByIdDb(id)
     }
 
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {

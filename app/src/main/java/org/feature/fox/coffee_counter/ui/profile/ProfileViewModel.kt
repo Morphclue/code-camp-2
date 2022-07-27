@@ -164,7 +164,7 @@ class ProfileViewModel @Inject constructor(
             return
         }
 
-        val dbImage = userRepository.getImageByIdFromUser(preference.getTag(BuildConfig.USER_ID))
+        val dbImage = userRepository.getImageByIdDb(preference.getTag(BuildConfig.USER_ID))
         if (dbImage != null) {
             if (dbImage.timestamp >= timestampResponse.data) {
                 setImage(dbImage.encodedImage)
@@ -179,7 +179,7 @@ class ProfileViewModel @Inject constructor(
             return
         }
         // FIXME: foreign key missing
-        userRepository.insertImage(response.data)
+        userRepository.insertImageDb(response.data)
         setImage(response.data.encodedImage)
     }
 

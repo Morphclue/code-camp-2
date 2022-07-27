@@ -24,7 +24,7 @@ interface UserDao {
     suspend fun insertPurchaseDb(purchase: Purchase)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertImage(image: Image)
+    suspend fun insertImageDb(image: Image)
 
     @Update
     suspend fun updateUserDb(user: User)
@@ -34,11 +34,11 @@ interface UserDao {
     suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
     @Query("SELECT * FROM image WHERE userId=:id")
-    suspend fun getImageById(id: String): Image?
+    suspend fun getImageByIdDb(id: String): Image?
 
     @Delete
     suspend fun deleteUserDb(user: User)
 
     @Delete
-    suspend fun deleteImage(image: Image)
+    suspend fun deleteImageDb(image: Image)
 }
