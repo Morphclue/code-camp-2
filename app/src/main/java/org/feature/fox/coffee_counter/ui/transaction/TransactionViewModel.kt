@@ -27,11 +27,13 @@ interface ITransactionViewModel : IToast {
     val transactions: MutableList<TransactionResponse>
     val balance: MutableState<Double>
     val qrCodeDialogVisible: MutableState<Boolean>
+    val qrCodeSendState: MutableState<Boolean>
+    val qrCodeReceiveState: MutableState<Boolean>
     val qrCode: MutableState<Bitmap?>
 
     suspend fun refreshTransactions()
     suspend fun getTotalBalance()
-    suspend fun shareQRCode()
+    suspend fun generateQRCode()
 }
 
 @HiltViewModel
@@ -46,12 +48,15 @@ class TransactionViewModel @Inject constructor(
     override var transactions = mutableListOf<TransactionResponse>()
     override var balance = mutableStateOf(0.0)
     override val qrCodeDialogVisible = mutableStateOf(false)
+    override val qrCodeSendState = mutableStateOf(false)
+    override val qrCodeReceiveState = mutableStateOf(false)
     override val qrCode = mutableStateOf<Bitmap?>(null)
 
     init {
         viewModelScope.launch {
             refreshTransactions()
             getTotalBalance()
+            generateQRCode()
         }
     }
 
@@ -67,13 +72,14 @@ class TransactionViewModel @Inject constructor(
     }
 
     // reference: https://stackoverflow.com/questions/28232116/android-using-zxing-generate-qr-code
-    override suspend fun shareQRCode() {
+    override suspend fun generateQRCode() {
         val writer = QRCodeWriter()
+        val qrCodeSize = 300
         val bitMatrix = writer.encode(
             "https://github.com/morphclue",
             BarcodeFormat.QR_CODE,
-            200,
-            200
+            qrCodeSize,
+            qrCodeSize
         )
 
         val pixels = IntArray(bitMatrix.width * bitMatrix.height)
@@ -110,6 +116,8 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val qrCodeDialogVisible = mutableStateOf(true)
+    override val qrCodeSendState = mutableStateOf(false)
+    override val qrCodeReceiveState = mutableStateOf(true)
     override val qrCode = mutableStateOf<Bitmap?>(null)
 
     override suspend fun refreshTransactions() {}
@@ -118,7 +126,7 @@ class TransactionViewModelPreview : ITransactionViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun shareQRCode() {
+    override suspend fun generateQRCode() {
         TODO("Not yet implemented")
     }
 }

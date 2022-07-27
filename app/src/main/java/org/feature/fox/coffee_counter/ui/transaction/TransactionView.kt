@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.ui.transaction
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -23,14 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
@@ -110,29 +106,12 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
 
 @Composable
 fun QRCodeButton(viewModel: ITransactionViewModel) {
-    val coroutineScope = rememberCoroutineScope()
     CustomButton(
         text = stringResource(R.string.qrcode),
         fraction = 0.9f,
         onClick = {
-            coroutineScope.launch {
-                viewModel.shareQRCode()
-            }
+            viewModel.qrCodeDialogVisible.value = true
         }
-    )
-
-    if (viewModel.qrCode.value == null) {
-        return
-    }
-    val painter = rememberAsyncImagePainter(viewModel.qrCode.value)
-
-    Image(
-        painter = painter,
-        contentDescription = stringResource(R.string.qrcode),
-        modifier = Modifier
-            .wrapContentSize()
-            .size(150.dp),
-        contentScale = ContentScale.Crop
     )
 }
 
