@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
-import timber.log.Timber
 
 @Preview
 @Composable
@@ -161,9 +160,9 @@ fun QRCodeDialogButtons(viewModel: ITransactionViewModel) {
         }
         if (viewModel.qrCodeSendState.value) {
             TextButton(onClick = {
-                scanLauncher.launch(
-                    scanOptions
-                )
+                if (viewModel.sendAmount.value.text.isNotEmpty()) {
+                    scanLauncher.launch(scanOptions)
+                }
             }) {
                 Text(text = stringResource(id = R.string.send))
             }
