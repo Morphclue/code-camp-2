@@ -24,7 +24,6 @@ import org.feature.fox.coffee_counter.util.UIText
 import java.io.InputStream
 import javax.inject.Inject
 
-
 interface IProfileViewModel : IToast {
     val nameState: MutableState<TextFieldValue>
     val idState: MutableState<TextFieldValue>
