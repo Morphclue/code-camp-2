@@ -3,6 +3,7 @@ package org.feature.fox.coffee_counter.ui.transaction
 import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +31,7 @@ interface ITransactionViewModel : IToast {
     val qrCodeSendState: MutableState<Boolean>
     val qrCodeReceiveState: MutableState<Boolean>
     val qrCode: MutableState<Bitmap?>
+    val sendAmount: MutableState<TextFieldValue>
 
     suspend fun refreshTransactions()
     suspend fun getTotalBalance()
@@ -51,6 +53,7 @@ class TransactionViewModel @Inject constructor(
     override val qrCodeSendState = mutableStateOf(false)
     override val qrCodeReceiveState = mutableStateOf(false)
     override val qrCode = mutableStateOf<Bitmap?>(null)
+    override val sendAmount = mutableStateOf(TextFieldValue())
 
     init {
         viewModelScope.launch {
@@ -108,7 +111,6 @@ class TransactionViewModel @Inject constructor(
 }
 
 class TransactionViewModelPreview : ITransactionViewModel {
-
     override val showMainActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
     override val transactions = mutableListOf<TransactionResponse>()
@@ -116,9 +118,10 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val qrCodeDialogVisible = mutableStateOf(true)
-    override val qrCodeSendState = mutableStateOf(false)
-    override val qrCodeReceiveState = mutableStateOf(true)
+    override val qrCodeSendState = mutableStateOf(true)
+    override val qrCodeReceiveState = mutableStateOf(false)
     override val qrCode = mutableStateOf<Bitmap?>(null)
+    override val sendAmount = mutableStateOf(TextFieldValue())
 
     override suspend fun refreshTransactions() {}
 

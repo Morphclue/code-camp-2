@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 
 @Preview
@@ -79,13 +80,33 @@ fun QRCodeMainDialog(viewModel: ITransactionViewModel) {
                 onClick = { viewModel.qrCodeReceiveState.value = true }
             )
         }
-        QRCodeDialogCancelButton(viewModel)
+        QRCodeDialogButtons(viewModel)
     }
 }
 
 @Composable
 fun QRCodeSendDialog(viewModel: ITransactionViewModel) {
-    TODO("Not yet implemented")
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxHeight()
+    ) {
+        Text(
+            text = stringResource(id = R.string.send_money),
+            style = MaterialTheme.typography.subtitle1
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+        ) {
+            CommonTextField(
+                state = viewModel.sendAmount,
+                label = stringResource(id = R.string.amount),
+            )
+        }
+        QRCodeDialogButtons(viewModel)
+    }
 }
 
 @Composable
@@ -114,12 +135,12 @@ fun QRCodeReceiveDialog(viewModel: ITransactionViewModel) {
                     .wrapContentSize(),
             )
         }
-        QRCodeDialogCancelButton(viewModel)
+        QRCodeDialogButtons(viewModel)
     }
 }
 
 @Composable
-fun QRCodeDialogCancelButton(viewModel: ITransactionViewModel) {
+fun QRCodeDialogButtons(viewModel: ITransactionViewModel) {
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End) {
         TextButton(onClick = {
@@ -128,6 +149,13 @@ fun QRCodeDialogCancelButton(viewModel: ITransactionViewModel) {
             viewModel.qrCodeReceiveState.value = false
         }) {
             Text(text = stringResource(id = R.string.cancel))
+        }
+        if (viewModel.qrCodeSendState.value) {
+            TextButton(onClick = {
+                // TODO: implement send logic
+            }) {
+                Text(text = stringResource(id = R.string.send))
+            }
         }
     }
 }
