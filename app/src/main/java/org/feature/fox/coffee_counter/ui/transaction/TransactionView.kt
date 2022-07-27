@@ -35,6 +35,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -46,6 +48,7 @@ import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.util.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -175,7 +178,6 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
                 pieChart.holeRadius = 20f
                 pieChart.transparentCircleRadius = 25f
                 // Legend Styling
-
                 pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
                 pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
                 pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
@@ -198,6 +200,7 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
     }
 }
 
+//TODO format timestamps
 @Composable
 fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
     Column(
@@ -213,15 +216,18 @@ fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
                 data.forEach { pair ->
                     entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
                 }
+                val formatter = DateTimeFormatter()
                 val dataset = LineDataSet(entries, "")
-                //dataset.colors = listColors
-                //dataset.sliceSpace = 3f
-                //dataset.valueTextSize = 7f
-
+                dataset.axisDependency = YAxis.AxisDependency.LEFT
                 val lineData = LineData(dataset)
                 lineChart.data = lineData
-                //val lineData
-                //lineChart.data = barData
+                lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+                lineChart.xAxis.setDrawGridLines(false)
+                lineChart.xAxis.granularity = 2f
+                //lineChart.xAxis.valueFormatter = LargeValueFormatter()
+                lineChart.xAxis.valueFormatter = formatter
+                lineChart.axisLeft.setDrawGridLines(false)
+                lineChart.axisRight.isEnabled = false
                 lineChart.invalidate()
 
                 lineChart
