@@ -26,6 +26,7 @@ interface ITransactionViewModel : IToast {
     val toastMessage: MutableLiveData<String>
     val transactions: MutableList<TransactionResponse>
     val balance: MutableState<Double>
+    val qrCodeDialogVisible: MutableState<Boolean>
     val qrCode: MutableState<Bitmap?>
 
     suspend fun refreshTransactions()
@@ -44,6 +45,7 @@ class TransactionViewModel @Inject constructor(
     override val toast = toastChannel.receiveAsFlow()
     override var transactions = mutableListOf<TransactionResponse>()
     override var balance = mutableStateOf(0.0)
+    override val qrCodeDialogVisible = mutableStateOf(false)
     override val qrCode = mutableStateOf<Bitmap?>(null)
 
     init {
@@ -107,6 +109,7 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val balance = mutableStateOf(13.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override val qrCodeDialogVisible = mutableStateOf(true)
     override val qrCode = mutableStateOf<Bitmap?>(null)
 
     override suspend fun refreshTransactions() {}

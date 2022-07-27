@@ -53,6 +53,7 @@ fun HistoryViewPreview(
 fun HistoryView(
     viewModel: ITransactionViewModel,
 ) {
+    QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         ShowPeriodField()
