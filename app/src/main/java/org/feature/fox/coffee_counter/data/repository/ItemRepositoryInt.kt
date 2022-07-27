@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.data.repository
 
-import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
@@ -14,15 +13,6 @@ interface ItemRepositoryInt {
     suspend fun deleteItemDb(item: Item)
 
     suspend fun updateItemDb(item: Item)
-
-    // TODO Use or delete me
-    suspend fun getItemByIdDb(itemId: String): Item
-
-    // TODO Use or delete me
-    fun observeAllItemsDb(): LiveData<List<Item>>
-
-    // TODO Use or delete me
-    fun observeTotalPriceDb(): LiveData<Double>
 
     // API Calls
 

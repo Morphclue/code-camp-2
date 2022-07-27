@@ -1,7 +1,5 @@
 package org.feature.fox.coffee_counter.data.repository
 
-import androidx.lifecycle.LiveData
-import org.feature.fox.coffee_counter.data.local.database.relations.FundingsOfUser
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -28,27 +26,6 @@ interface UserRepositoryInt {
     suspend fun insertPurchaseDb(purchase: Purchase)
 
     suspend fun deleteUserDb(user: User)
-
-    //TODO Delete or use me
-    suspend fun deleteFundingDb(funding: Funding)
-
-    //TODO Delete or use me
-    suspend fun deletePurchaseDb(purchase: Purchase)
-
-    //TODO Delete or use me
-    suspend fun getUserByIdDb(id: String): User
-
-    //TODO Delete or use me
-    suspend fun getFundingListOfUserDb(id: String): FundingsOfUser
-
-    //TODO Delete or use me
-    suspend fun getPurchaseListOfUserDb(id: String): List<Purchase>
-
-    //TODO Delete or use me
-    fun observeTotalBalanceOfUserDb(id: String): LiveData<Double>
-
-    //TODO Delete or use me
-    fun observeAllUsersDb(): LiveData<List<User>>
 
     // API Calls
 

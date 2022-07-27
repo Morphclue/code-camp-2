@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.data.repository
 
-import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.ItemDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
@@ -26,21 +25,6 @@ class ItemRepository @Inject constructor(
 
     override suspend fun updateItemDb(item: Item) {
         itemDao.updateItemDb(item)
-    }
-
-    override suspend fun getItemByIdDb(itemId: String): Item {
-        TODO("Implement or delete me")
-        //return itemDao.getItemById(itemId)
-    }
-
-    override fun observeAllItemsDb(): LiveData<List<Item>> {
-        TODO("Implement or delete me")
-        // return itemDao.observeAllItems()
-    }
-
-    override fun observeTotalPriceDb(): LiveData<Double> {
-        TODO("Implement or delete me")
-        // return itemDao.observeTotalPrice()
     }
 
     // API Calls

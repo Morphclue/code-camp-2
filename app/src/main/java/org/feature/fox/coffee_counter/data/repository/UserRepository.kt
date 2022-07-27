@@ -1,9 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
-import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
-import org.feature.fox.coffee_counter.data.local.database.relations.FundingsOfUser
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
@@ -46,43 +44,6 @@ class UserRepository @Inject constructor(
 
     override suspend fun insertPurchaseDb(purchase: Purchase) {
         userDao.insertPurchaseDb(purchase)
-    }
-
-
-    override suspend fun deleteFundingDb(funding: Funding) {
-        TODO("Implement or delete me")
-        //userDao.deleteFundingDb(funding)
-    }
-
-    override suspend fun deletePurchaseDb(purchase: Purchase) {
-        TODO("Implement or delete me")
-        //userDao.deletePurchaseDb(purchase)
-    }
-
-    override suspend fun getUserByIdDb(id: String): User {
-        TODO("Implement or delete me")
-        //return userDao.getUserByIdDb(id)
-    }
-
-    override suspend fun getFundingListOfUserDb(id: String): FundingsOfUser {
-        TODO("Implement or delete me")
-        //return userDao.getFundingListOfUserDb(id)
-    }
-
-    override suspend fun getPurchaseListOfUserDb(id: String): List<Purchase> {
-        TODO("Implement or delete me")
-        //return userDao.getPurchaseListOfUserDb(id)
-    }
-
-    override fun observeTotalBalanceOfUserDb(id: String): LiveData<Double> {
-        TODO("Implement or delete me")
-        //return userDao.observeTotalBalanceOfUserDb(id)
-    }
-
-
-    override fun observeAllUsersDb(): LiveData<List<User>> {
-        TODO("Implement or delete me")
-        //return userDao.observeAllUsersDb()
     }
 
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
