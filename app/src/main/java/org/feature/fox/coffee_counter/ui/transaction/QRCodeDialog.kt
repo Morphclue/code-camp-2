@@ -13,6 +13,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +23,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
@@ -134,10 +136,13 @@ fun QRCodeReceiveDialog(viewModel: ITransactionViewModel) {
 
 @Composable
 fun QRCodeDialogButtons(viewModel: ITransactionViewModel) {
+    val coroutineScope = rememberCoroutineScope()
     val scanLauncher = rememberLauncherForActivityResult(
         contract = ScanContract(),
         onResult = { result ->
-            Timber.tag("QRCodeDialog").i("Scan result: %s", result.contents)
+            coroutineScope.launch {
+                viewModel.sendMoney(result.contents)
+            }
         }
     )
     val scanOptions = ScanOptions()

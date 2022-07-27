@@ -20,6 +20,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import timber.log.Timber
 import javax.inject.Inject
 
 interface ITransactionViewModel : IToast {
@@ -36,6 +37,7 @@ interface ITransactionViewModel : IToast {
     suspend fun refreshTransactions()
     suspend fun getTotalBalance()
     suspend fun generateQRCode()
+    suspend fun sendMoney(contents: String)
 }
 
 @HiltViewModel
@@ -97,6 +99,11 @@ class TransactionViewModel @Inject constructor(
         qrCode.value = bitmap
     }
 
+    override suspend fun sendMoney(qrCodeText: String) {
+        // TODO: check if id exists
+        Timber.tag("QRCodeDialog").i("Scan result: %s", qrCodeText)
+    }
+
     //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
@@ -130,6 +137,10 @@ class TransactionViewModelPreview : ITransactionViewModel {
     }
 
     override suspend fun generateQRCode() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendMoney(contents: String) {
         TODO("Not yet implemented")
     }
 }
