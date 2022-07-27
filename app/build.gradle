@@ -88,6 +88,7 @@ dependencies {
     def timber_version = "5.0.1"
     def coil_version = "2.1.0"
     def lifecycle_version = "2.5.0-rc02"
+    def mpandroidchart_version = "v3.1.0"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -143,7 +144,7 @@ dependencies {
     implementation "io.coil-kt:coil-compose:$coil_version"
 
     //MPAndroidChart
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation "com.github.PhilJay:MPAndroidChart:$mpandroidchart_version"
 
 
     // Local Unit Tests
