@@ -84,19 +84,17 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
         viewModel.transactions.forEach { transaction ->
             if (transaction.type == "funding") {
                 TransactionRow(
-                    Color.Green,
                     "Funding",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${String.format("%.2f", transaction.value)}€"
+                    transaction.value
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
-                    Color.DarkGray,
                     "Order",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${String.format("%.2f", transaction.value)}€"
+                    transaction.value
                 )
             }
         }
@@ -115,7 +113,9 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 }
 
 @Composable
-fun TransactionRow(color: Color, type: String, date: String, value: String) {
+fun TransactionRow(type: String, date: String, value: Double) {
+    val color = if (value > 0) Color.Green else Color.DarkGray
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,7 +132,7 @@ fun TransactionRow(color: Color, type: String, date: String, value: String) {
             TransactionCircle(color)
             TransactionType(type)
             TransactionDate(date)
-            TransactionValue(color, value)
+            TransactionValue(color, "${String.format("%.2f", value)}€")
         }
     }
 }
