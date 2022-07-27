@@ -5,6 +5,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -67,6 +68,9 @@ class UserRepository @Inject constructor(
         return userDao.getPurchaseListOfUserDb(userId)
     }
 
+    override suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>{
+        return userDao.getAchievementListOfUserDb(userId)
+    }
 
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
         return try {

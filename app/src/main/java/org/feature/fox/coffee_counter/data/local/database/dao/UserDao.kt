@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import androidx.room.Update
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -46,4 +47,8 @@ interface UserDao {
     @Transaction
     @Query("SELECT * FROM purchase WHERE userId=:userId")
     suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
+
+    @Transaction
+    @Query("SELECT * FROM achievement WHERE userId=:userId")
+    suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
 }

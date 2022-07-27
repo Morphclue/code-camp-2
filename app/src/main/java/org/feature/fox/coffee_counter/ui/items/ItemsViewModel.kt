@@ -52,6 +52,7 @@ interface IItemsViewModel : IToast {
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
+    suspend fun checkAchievements()
 }
 
 @HiltViewModel
@@ -358,6 +359,10 @@ class ItemsViewModel @Inject constructor(
         }
         balance.value = response.data.balance
     }
+
+    override suspend fun checkAchievements() {
+        TODO("Not yet implemented")
+    }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
@@ -428,6 +433,10 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun checkAchievements() {
         TODO("Not yet implemented")
     }
 }

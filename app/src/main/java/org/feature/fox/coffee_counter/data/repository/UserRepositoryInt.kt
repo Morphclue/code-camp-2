@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.data.repository
 
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -65,4 +66,6 @@ interface UserRepositoryInt {
     suspend fun addFunding(id: String, fundingBody: FundingBody): Resource<String>
 
     suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
+
+    suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
 }
