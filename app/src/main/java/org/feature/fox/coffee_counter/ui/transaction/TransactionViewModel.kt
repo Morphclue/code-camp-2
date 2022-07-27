@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
@@ -26,10 +27,13 @@ interface ITransactionViewModel : IToast {
     val transactions: MutableList<TransactionResponse>
     val balance: MutableState<Double>
     val purchases: MutableList<Purchase>
+    val balanceList: MutableList<Pair<Long, Double>>
 
     suspend fun refreshTransactions()
     suspend fun getTotalBalance()
     suspend fun getPurchasesOfUser()
+    suspend fun getFundingOfUser()
+    suspend fun getBalanceOfUser()
 }
 
 @HiltViewModel
@@ -45,12 +49,15 @@ class TransactionViewModel @Inject constructor(
     override var transactions = mutableListOf<TransactionResponse>()
     override var balance = mutableStateOf(0.0)
     override var purchases = mutableListOf<Purchase>()
+    override var balanceList = mutableListOf<Pair<Long, Double>>()
 
     init {
         viewModelScope.launch {
             refreshTransactions()
             getTotalBalance()
             getPurchasesOfUser()
+            getFundingOfUser()
+            getBalanceOfUser()
         }
     }
 
@@ -65,7 +72,6 @@ class TransactionViewModel @Inject constructor(
         transactions = response.data as MutableList<TransactionResponse>
     }
 
-    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
@@ -83,6 +89,52 @@ class TransactionViewModel @Inject constructor(
         purchases =
             userRepository.getPurchasesOfUserByIdDb(preference.getTag(BuildConfig.USER_ID)) as MutableList<Purchase>
     }
+
+
+    override suspend fun getFundingOfUser() {
+
+        // Fetch Transactions from API
+        val response = userRepository.getTransactions(preference.getTag(BuildConfig.USER_ID))
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+
+        // Filter for Fundings and add them
+        var fundingList = mutableListOf<Funding>()
+        response.data.toMutableList().forEach { transactionResponse ->
+            if (transactionResponse.type == "funding")
+                fundingList.add(
+                    Funding(
+                        transactionResponse.timestamp,
+                        preference.getTag(BuildConfig.USER_ID),
+                        transactionResponse.value
+                    )
+                )
+        }
+
+        //Update DB
+        if (userRepository.getFundingOfUserByIdDb(preference.getTag(BuildConfig.USER_ID)).size != fundingList.size) {
+            fundingList.forEach { funding ->
+                userRepository.insertFundingDb(funding)
+            }
+        }
+    }
+
+    override suspend fun getBalanceOfUser() {
+        balanceList.clear()
+        // Assuming that they are already sorted by timestamp
+        balanceList.add(Pair(transactions[0].timestamp, 0.0))
+        for (i in 1 until transactions.size) {
+            balanceList.add(
+                Pair(
+                    transactions[i].timestamp,
+                    balanceList[i - 1].second + transactions[i - 1].value
+                )
+            )
+        }
+    }
 }
 
 class TransactionViewModelPreview : ITransactionViewModel {
@@ -94,17 +146,18 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val purchases: MutableList<Purchase>
         get() = TODO("Not yet implemented")
     override val balance = mutableStateOf(13.0)
+    override val balanceList: MutableList<Pair<Long, Double>>
+        get() = TODO("Not yet implemented")
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
     override suspend fun refreshTransactions() {}
 
-    override suspend fun getTotalBalance() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getTotalBalance() {}
 
-    override suspend fun getPurchasesOfUser() {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getPurchasesOfUser() {}
+
+    override suspend fun getFundingOfUser() {}
+    override suspend fun getBalanceOfUser() {}
 
 }
