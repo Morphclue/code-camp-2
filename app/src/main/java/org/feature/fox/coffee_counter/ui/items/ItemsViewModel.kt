@@ -81,6 +81,7 @@ class ItemsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            isAdmin.value = preference.getTag(BuildConfig.IS_ADMIN, true)
             getItems()
             getTotalBalance()
         }

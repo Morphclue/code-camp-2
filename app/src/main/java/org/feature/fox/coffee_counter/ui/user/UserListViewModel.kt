@@ -68,6 +68,7 @@ class UserListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            isAdminState.value = preference.getTag(BuildConfig.IS_ADMIN, true)
             loadUsers()
             getTotalBalance()
         }
@@ -168,14 +169,25 @@ class UserListViewModel @Inject constructor(
             return
         }
 
-        response.data.forEach { user ->
-            val idResponse = userRepository.getUserById(user.id)
+        if(isAdminState.value) {
+            response.data.forEach { user ->
+                val idResponse = userRepository.getUserById(user.id)
 
-            if (idResponse.data == null) {
-                return@forEach
+                if (idResponse.data == null) {
+                    return@forEach
+                }
+
+                userList.add(idResponse.data)
+            }
+        }else{
+            response.data.forEach { user ->
+                userList.add(UserIdResponse(
+                    id = user.id,
+                    name = user.name,
+                    balance = 0.0,
+                ))
             }
 
-            userList.add(idResponse.data)
         }
         isLoaded.value = true
     }
