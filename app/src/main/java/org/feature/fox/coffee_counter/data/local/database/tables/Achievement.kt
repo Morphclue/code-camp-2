@@ -13,6 +13,4 @@ data class Achievement(
     val timestamp: Long,
 
     val description: String,
-
-    val received: Boolean,
 )

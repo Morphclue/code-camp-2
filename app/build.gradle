@@ -28,6 +28,7 @@ android {
         buildConfigField "String", "EXPIRATION", '"EXPIRATION"'
         buildConfigField "String", "BEARER_TOKEN", '"BEARER_TOKEN"'
         buildConfigField "String", "IS_ADMIN", '"IS_ADMIN"'
+        buildConfigField "String", "NOTIFICATION_CHANNEL_ID", '"notification_channel"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -77,7 +78,7 @@ android {
 }
 
 dependencies {
-    def hilt_version = "2.42"
+    def hilt_version = "2.38.1"
     def room_version = "2.4.2"
     def retrofit_version = "2.9.0"
     def moshi_version = "1.13.0"

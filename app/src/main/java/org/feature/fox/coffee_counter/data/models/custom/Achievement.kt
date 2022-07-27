@@ -13,7 +13,4 @@ data class Achievement(
 
     @Json(name = "description")
     val description: String,
-
-    @Json(name = "received")
-    val received: Boolean,
 )

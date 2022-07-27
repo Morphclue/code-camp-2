@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
@@ -21,6 +22,7 @@ import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
+import org.feature.fox.coffee_counter.ui.common.showAchievementNotification
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
@@ -152,9 +154,9 @@ class ItemsViewModel @Inject constructor(
             return false
         }
 
-        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
 
-        if(cartItem.amount >= item.amount){
+        if (cartItem.amount >= item.amount) {
             toastChannel.send(UIText.StringResource(R.string.not_available))
             return false
         }
@@ -172,28 +174,28 @@ class ItemsViewModel @Inject constructor(
 
     override suspend fun addStringItemToShoppingCart(item: String) {
         try {
-            val avItem: Item = availableItemsState.first{it.name == item}
+            val avItem: Item = availableItemsState.first { it.name == item }
 
             val success = addItemToShoppingCart(avItem)
-            if (success){
+            if (success) {
                 confirmBuyItemDialogVisible.value = true
             }
 
-        }catch(e: NoSuchElementException){
+        } catch (e: NoSuchElementException) {
             toastChannel.send(UIText.StringResource(R.string.not_exist))
             return
         }
     }
 
     override suspend fun getItemCartAmount(item: Item): Int {
-        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
         return cartItem.amount
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
 
-        if(cartItem.amount > 0){
+        if (cartItem.amount > 0) {
             cartItem.amount -= 1
             itemsInShoppingCartState.remove(cartItem)
             itemsInShoppingCartState.add(cartItem)
@@ -238,10 +240,9 @@ class ItemsViewModel @Inject constructor(
 
                 currentShoppingCartAmountState.value -= cartItem.price * cartItem.amount
                 cartItem.amount = 0
-
-                userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID))
             }
         }
+        checkAchievements()
         isLoaded.value = false
         getItems()
         getTotalBalance()
@@ -361,7 +362,29 @@ class ItemsViewModel @Inject constructor(
     }
 
     override suspend fun checkAchievements() {
-        TODO("Not yet implemented")
+        val purchases: List<Purchase> =
+            userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID))
+        val achievements: List<Achievement> =
+            userRepository.getAchievementListOfUserDb(preference.getTag(BuildConfig.USER_ID))
+
+        //Coffee Junkie
+        if (!achievements.any { it.name == "Coffee Junkie" }) {
+            var totalCoffee = 0
+            //TODO fix Coffee name/prevent spacebar at start/end on creating/editing
+            purchases.filter { it.itemName == "Coffee " }.forEach { purchase ->
+                totalCoffee += purchase.amount
+            }
+            if (totalCoffee >= 100) {
+                //TODO add Achievement to db
+                val cJunkieAchievement = Achievement(
+                    name = "Coffee Junkie",
+                    userId = preference.getTag(BuildConfig.USER_ID),
+                    timestamp = System.currentTimeMillis() / 1000,
+                    description = "You are a Coffee Junkie, you drank over 100 Coffee",
+                )
+                showAchievementNotification(cJunkieAchievement)
+            }
+        }
     }
 }
 
