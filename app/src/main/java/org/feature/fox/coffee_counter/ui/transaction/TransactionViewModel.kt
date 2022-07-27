@@ -105,10 +105,6 @@ class TransactionViewModel @Inject constructor(
             toastChannel.send(UIText.StringResource(R.string.incorrect_money_format))
             return
         }
-        if (sendAmount.value.text.isEmpty()) {
-            toastChannel.send(UIText.StringResource(R.string.empty_money_amount))
-            return
-        }
         val sendMoneyAmount = sendAmount.value.text.toDouble()
         val response = userRepository.sendMoney(
             preference.getTag(BuildConfig.USER_ID),
