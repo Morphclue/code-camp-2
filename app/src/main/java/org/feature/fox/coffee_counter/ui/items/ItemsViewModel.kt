@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
@@ -77,6 +78,7 @@ class ItemsViewModel @Inject constructor(
     override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(0.0)
 
+
     init {
         viewModelScope.launch {
             getItems()
@@ -95,6 +97,17 @@ class ItemsViewModel @Inject constructor(
 
         availableItemsState = mutableStateListOf()
         response.data.forEach { item ->
+
+            // insert/update Items into db
+
+            itemRepository.insertItemDb(
+                Item(
+                    id = item.id,
+                    name = item.name,
+                    amount = item.amount,
+                    price = item.price
+                )
+            )
             availableItemsState.add(
                 Item(
                     id = item.id,
@@ -200,6 +213,27 @@ class ItemsViewModel @Inject constructor(
                     return
                 }
 
+                // Fetch Transactions from API and get last transaction (the purchase above) to get right timestamp
+
+                val transactionResponse =
+                    userRepository.getTransactions(preference.getTag(BuildConfig.USER_ID))
+                if (transactionResponse.data == null) {
+                    toastChannel.send(transactionResponse.message?.let { UIText.DynamicString(it) }
+                        ?: UIText.StringResource(R.string.unknown_error))
+                    return
+                }
+
+                userRepository.insertPurchaseDb(
+                    Purchase(
+                        timestamp = transactionResponse.data.last().timestamp,
+                        userId = preference.getTag(BuildConfig.USER_ID),
+                        totalValue = transactionResponse.data.last().value,
+                        itemName = transactionResponse.data.last().itemName!!,
+                        itemId = transactionResponse.data.last().itemId!!,
+                        amount = transactionResponse.data.last().amount!!,
+                    )
+                )
+
                 currentShoppingCartAmountState.value -= cartItem.price * cartItem.amount
                 cartItem.amount = 0
             }
@@ -220,6 +254,7 @@ class ItemsViewModel @Inject constructor(
 
         val response = itemRepository.postItem(
             ItemBody(
+                id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble(),
@@ -231,6 +266,15 @@ class ItemsViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return false
         }
+        // add new added item to DB
+        itemRepository.insertItemDb(
+            Item(
+                id = currentItemId.value.text,
+                name = currentItemName.value.text,
+                amount = currentItemAmount.value.text.toInt(),
+                price = currentItemPrice.value.text.toDouble()
+            )
+        )
         toastChannel.send(UIText.StringResource(R.string.add_item_success))
         isLoaded.value = false
         getItems()
@@ -258,24 +302,49 @@ class ItemsViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
+
+        // Update Item in DB
+        itemRepository.updateItemDb(
+            Item(
+                id = currentItemId.value.text,
+                name = currentItemName.value.text,
+                price = currentItemPrice.value.text.toDouble(),
+                amount = currentItemPrice.value.text.toInt(),
+            )
+        )
+
         toastChannel.send(UIText.StringResource(R.string.update_item))
         isLoaded.value = false
         getItems()
     }
 
     override suspend fun deleteItem() {
+        val itemToBeDeleted = itemRepository.getItemById(originalItemId.value)
         val response = itemRepository.deleteItemById(originalItemId.value)
 
-        if (response.data == null) {
+        if (response.data == null || itemToBeDeleted.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
+
+        // Delete Item From DB
+        itemRepository.deleteItemDb(
+            Item(
+                id = itemToBeDeleted.data.id,
+                name = itemToBeDeleted.data.name,
+                amount = itemToBeDeleted.data.amount,
+                price = itemToBeDeleted.data.price
+
+            )
+        )
+
         toastChannel.send(UIText.StringResource(R.string.delete_item))
         isLoaded.value = false
         getItems()
     }
 
+    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
