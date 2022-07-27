@@ -3,15 +3,12 @@ package org.feature.fox.coffee_counter.data.local.database.tables
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "users")
-data class User(
+@Entity(tableName = "image")
+data class Image(
     @PrimaryKey
     val userId: String,
 
-    var name: String,
+    var encodedImage: String,
 
-    var isAdmin: Boolean,
-
-    )
-
-
+    var timestamp: Long,
+)

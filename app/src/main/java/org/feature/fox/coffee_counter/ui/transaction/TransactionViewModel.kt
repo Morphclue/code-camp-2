@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.Funding
-import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
@@ -64,28 +62,6 @@ class TransactionViewModel @Inject constructor(
             return
         }
         transactions = response.data as MutableList<TransactionResponse>
-        transactions.forEach { transactionResponse ->
-
-            when (transactionResponse.type) {
-                "funding" -> userRepository.insertFunding(
-                    Funding(
-                        transactionResponse.timestamp,
-                        preference.getTag(BuildConfig.USER_ID),
-                        transactionResponse.value
-                    )
-                )
-                "purchase" -> userRepository.insertPurchase(
-                    Purchase(
-                        transactionResponse.timestamp,
-                        preference.getTag(BuildConfig.USER_ID),
-                        transactionResponse.value,
-                        transactionResponse.itemId!!,
-                        transactionResponse.itemName!!,
-                        transactionResponse.amount!!
-                    )
-                )
-            }
-        }
     }
 
     // reference: https://stackoverflow.com/questions/28232116/android-using-zxing-generate-qr-code
@@ -110,6 +86,7 @@ class TransactionViewModel @Inject constructor(
         qrCode.value = bitmap
     }
 
+    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 

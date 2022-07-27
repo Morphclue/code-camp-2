@@ -34,7 +34,8 @@
     <string name="incorrect_money_format">Please use a correct format (e.g. 12.10)</string>
     <string name="no_data">Nothing to show yet</string>
     <string name="delete_item">Successfully deleted item</string>
-    <string name="add_item">Successfully added item</string>
+    <string name="add_item_success">Successfully added item</string>
+    <string name="add_item">Add Item</string>
     <string name="update_item">Successfully updated item</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -45,5 +46,12 @@
     <string name="not_enough_funding">You don\'t have enough funding to add this to your cart</string>
     <string name="fill_all_fields">Please fill all fields</string>
     <string name="create_user">Create User</string>
+    <string name="buy">Buy</string>
+    <string name="not_available">Product not available</string>
+    <string name="not_exist">Product does not exist</string>
+    <string name="shopping_cart">Shopping Cart</string>
+    <string name="confirm_buy">Do you want to buy the following items:</string>
+    <string name="total">Total:</string>
+    <string name="currency">€</string>
     <string name="qrcode">Share money via QR-Code</string>
 </resources>

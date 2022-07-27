@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.data.repository
 
-import androidx.lifecycle.LiveData
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.ItemDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
@@ -15,29 +14,20 @@ class ItemRepository @Inject constructor(
     private val itemDao: ItemDao,
     private val apiService: ApiService,
 ) : ItemRepositoryInt {
+
     override suspend fun insertItemDb(item: Item) {
-        itemDao.insertItem(item)
+        itemDao.insertItemDb(item)
     }
 
     override suspend fun deleteItemDb(item: Item) {
-        itemDao.deleteItem(item)
+        itemDao.deleteItemDb(item)
     }
 
     override suspend fun updateItemDb(item: Item) {
-        itemDao.updateItem(item)
+        itemDao.updateItemDb(item)
     }
 
-    override suspend fun getItemByIdDb(itemId: String): Item {
-        return itemDao.getItemById(itemId)
-    }
-
-    override fun observeAllItems(): LiveData<List<Item>> {
-        return itemDao.observeAllItems()
-    }
-
-    override fun observeTotalPrice(): LiveData<Double> {
-        return itemDao.observeTotalPrice()
-    }
+    // API Calls
 
     override suspend fun postItem(itemBody: ItemBody): Resource<String> {
         return try {
@@ -120,11 +110,11 @@ class ItemRepository @Inject constructor(
     }
 
     override suspend fun purchaseItem(
-        itemId: String,
+        userId: String,
         purchaseBody: PurchaseBody,
     ): Resource<String> {
         return try {
-            val response = apiService.purchaseItem(itemId, purchaseBody)
+            val response = apiService.purchaseItem(userId, purchaseBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

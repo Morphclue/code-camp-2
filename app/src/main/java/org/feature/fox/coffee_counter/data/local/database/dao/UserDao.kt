@@ -1,53 +1,44 @@
 package org.feature.fox.coffee_counter.data.local.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 @Dao
 interface UserDao {
-    @Update
-    suspend fun insertUser(user: User)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserDb(user: User)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertFundingDb(funding: Funding)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertPurchaseDb(purchase: Purchase)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertImageDb(image: Image)
 
     @Update
-    suspend fun insertFunding(funding: Funding)
+    suspend fun updateUserDb(user: User)
 
-    @Update
-    suspend fun insertPurchase(purchase: Purchase)
+    @RewriteQueriesToDropUnusedColumns
+    @Query("SELECT isAdmin FROM users WHERE userId = :userId")
+    suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
-    @Delete
-    suspend fun deleteUser(user: User)
-
-    @Delete
-    suspend fun deleteFunding(funding: Funding)
+    @Query("SELECT * FROM image WHERE userId=:id")
+    suspend fun getImageByIdDb(id: String): Image?
 
     @Delete
-    suspend fun deletePurchase(purchase: Purchase)
+    suspend fun deleteUserDb(user: User)
 
-    @Query("SELECT * FROM users WHERE id=:id")
-    suspend fun getUserById(id: String): User
-
-    @Transaction
-    @Query("SELECT * FROM funding WHERE userId=:id")
-    suspend fun getFundingListOfUser(id: String): List<Funding>
-
-    @Transaction
-    @Query("SELECT * FROM purchase WHERE userId=:id")
-    suspend fun getPurchaseListOfUser(id: String): List<Purchase>
-
-    @Transaction
-    @Query("SELECT(SELECT SUM(funding.value) FROM funding WHERE userId=:id) + (SELECT SUM(purchase.totalValue) FROM purchase WHERE userId=:id)")
-    fun observeTotalBalanceOfUser(id: String): LiveData<Double>
-
-    @Query("SELECT CASE WHEN EXISTS (SELECT * FROM users WHERE id=:id AND password=:password) THEN CAST(1 AS BOOLEAN) ELSE CAST(0 AS BOOLEAN) END")
-    suspend fun login(id: String, password: String): Boolean
-
-    @Query("SELECT * FROM users")
-    fun observeAllUsers(): LiveData<List<User>>
+    @Delete
+    suspend fun deleteImageDb(image: Image)
 }
