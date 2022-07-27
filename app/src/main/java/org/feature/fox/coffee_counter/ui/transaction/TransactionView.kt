@@ -1,8 +1,18 @@
 package org.feature.fox.coffee_counter.ui.transaction
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -22,9 +32,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
@@ -47,15 +63,16 @@ fun HistoryViewPreview(
     HistoryView(viewModel = TransactionViewModelPreview())
 }
 
+// TODO update orders (Issue)
 @Composable
 fun HistoryView(
     viewModel: ITransactionViewModel,
 ) {
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
+        PieChartBoughtItems(data = viewModel.purchases)
+        LineChartBalance(data = viewModel.balanceList)
         ShowPeriodField()
-        PieChartBoughtItems(purchaseList as MutableList<Purchase>)
-        BarChartExpenses(purchaseList as MutableList<Purchase>)
         TransactionContainer(viewModel)
     }
 }
@@ -112,47 +129,77 @@ fun ShowPeriodField() {
     // TODO: implement searchbar
 }
 
+// TODO: Maybe add detailed PieChart for total value of each category
 @Composable
 fun PieChartBoughtItems(data: MutableList<Purchase>){
-
+    println("Size of purchases: ${data.size}")
     Column(
         modifier = Modifier.height(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         AndroidView(
             modifier = Modifier
                 .fillMaxSize(),
             factory = { context ->
+                Log.e("PURCHASE", "Size inside piechart: ${data.size}")
                 val listColors = ArrayList<Int>()
-                listColors.add(Color.Red.toArgb())
-                listColors.add(Color.Green.toArgb())
-                listColors.add(Color.Yellow.toArgb())
-                listColors.add(Color.Blue.toArgb())
+                listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
+                listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
+                listColors.add(Color(241, 196, 15, 255).toArgb()) //Yellow
+                listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
+                val entries = mutableListOf<PieEntry>()
+                var chartMap = mutableMapOf<String, Pair<String, Int>>()
+                data.forEach { purchase ->
+                    if (chartMap.containsKey(purchase.itemId)) {
+                        val mapValue = chartMap[purchase.itemId]
+                        chartMap[purchase.itemId] =
+                            Pair(purchase.itemName, mapValue!!.second?.plus(purchase.amount))
+                    } else {
+                        chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
+                    }
+                }
+                chartMap.forEach {
+                    entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
+                }
                 val pieChart = PieChart(context)
-                val entries = listOf(
-                    PieEntry(18.5f, "Green"),
-                    PieEntry(26.7F, "Yellow"),
-                    PieEntry(24.0f, "Red"),
-                    PieEntry(30.8f, "Blue")
-                )
                 val dataset = PieDataSet(entries, "")
                 dataset.colors = listColors
-                //val dataset = PieDataSet(entries, "LABEL").apply { color = Color.Red.toArsgb() }
+                dataset.sliceSpace = 3f
+                dataset.valueTextSize = 7f
+
                 val pieData = PieData(dataset)
                 pieChart.data = pieData
-                pieChart.setUsePercentValues(true)
-                pieChart.description.isEnabled = false
+                pieChart.setUsePercentValues(false)
+                // Cirlce Styling
+                pieChart.holeRadius = 20f
+                pieChart.transparentCircleRadius = 25f
+                // Legend Styling
+
+                pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
+                pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+                pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+
+                pieChart.setDrawEntryLabels(false)
+
+                pieChart.description.text = "Consumed Items"
+                pieChart.description.textSize = 10f
+                pieChart.description.yOffset = 110f
+                pieChart.description.xOffset = -60f
+                pieChart.setNoDataText("No Purchases found")
                 pieChart.invalidate()
 
                 pieChart
+            },
+            update = { view ->
+                view.invalidate()
             }
         )
     }
 }
 
 @Composable
-fun BarChartExpenses(data: MutableList<Purchase>) {
+fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
     Column(
         modifier = Modifier.height(150.dp),
         verticalArrangement = Arrangement.Center,
@@ -161,27 +208,23 @@ fun BarChartExpenses(data: MutableList<Purchase>) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
-                val listColors = ArrayList<Int>()
-                listColors.add(Color.Red.toArgb())
-                listColors.add(Color.Green.toArgb())
-                listColors.add(Color.Yellow.toArgb())
-                listColors.add(Color.Blue.toArgb())
-                val barChart = BarChart(context)
+                val lineChart = LineChart(context)
+                val entries = mutableListOf<Entry>()
+                data.forEach { pair ->
+                    entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
+                }
+                val dataset = LineDataSet(entries, "")
+                //dataset.colors = listColors
+                //dataset.sliceSpace = 3f
+                //dataset.valueTextSize = 7f
 
-                val entries = listOf(
-                    BarEntry(0f, 20.0f),
-                    BarEntry(1f, 10.0f),
-                    BarEntry(3f, 5.0f),
-                    BarEntry(4f, 50.0f),
-                )
+                val lineData = LineData(dataset)
+                lineChart.data = lineData
+                //val lineData
+                //lineChart.data = barData
+                lineChart.invalidate()
 
-                val barDataSet = BarDataSet(entries, "BLA").apply { colors = listColors }
-
-                val barData = BarData(barDataSet)
-                barChart.data = barData
-                barChart.invalidate()
-
-                barChart
+                lineChart
             }
         )
     }
