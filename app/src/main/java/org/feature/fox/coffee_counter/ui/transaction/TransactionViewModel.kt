@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
@@ -81,7 +83,7 @@ class TransactionViewModel @Inject constructor(
         val writer = QRCodeWriter()
         val qrCodeSize = 300
         val bitMatrix = writer.encode(
-            "https://github.com/morphclue",
+            preference.getTag(BuildConfig.USER_ID),
             BarcodeFormat.QR_CODE,
             qrCodeSize,
             qrCodeSize
@@ -100,8 +102,13 @@ class TransactionViewModel @Inject constructor(
     }
 
     override suspend fun sendMoney(qrCodeText: String) {
-        // TODO: check if id exists
-        Timber.tag("QRCodeDialog").i("Scan result: %s", qrCodeText)
+        val response = userRepository.sendMoney(qrCodeText, SendMoneyBody(15.0, qrCodeText))
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        toastChannel.send(UIText.StringResource(R.string.money_sent_success))
     }
 
     //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change

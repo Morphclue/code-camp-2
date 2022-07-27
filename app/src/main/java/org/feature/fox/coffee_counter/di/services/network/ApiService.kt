@@ -6,6 +6,7 @@ import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
+import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
@@ -102,23 +103,29 @@ interface ApiService {
 
     @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image")
     suspend fun getImage(
-        @Path("id") id: String
+        @Path("id") id: String,
     ): Response<ImageResponse>
+
+    @POST("${BuildConfig.USERS_ENDPOINT}/{id}/sendMoney")
+    suspend fun sendMoney(
+        @Path("id") id: String,
+        @Body sendMoneyBody: SendMoneyBody,
+    ): Response<String>
 
     @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image/timestamp")
     suspend fun getImageTimestamp(
-        @Path("id") id: String
+        @Path("id") id: String,
     ): Response<Long>
 
     @Multipart
     @POST("${BuildConfig.USERS_ENDPOINT}/{id}/image")
     suspend fun postImage(
         @Path("id") id: String,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part,
     ): Response<String>
 
     @DELETE("${BuildConfig.USERS_ENDPOINT}/{id}/image")
     suspend fun deleteImage(
-        @Path("id") id: String
+        @Path("id") id: String,
     ): Response<String>
 }

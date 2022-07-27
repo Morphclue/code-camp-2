@@ -58,4 +58,5 @@
     <string name="receive_money">Receive money via QR-Code</string>
     <string name="send">Send</string>
     <string name="scan_qrcode">Scan the QR-Code of your friend</string>
+    <string name="money_sent_success">Send money successfully</string>
 </resources>
