@@ -37,7 +37,7 @@ interface ITransactionViewModel : IToast {
     suspend fun refreshTransactions()
     suspend fun getTotalBalance()
     suspend fun generateQRCode()
-    suspend fun sendMoney(contents: String)
+    suspend fun sendMoney(qrCodeText: String)
 }
 
 @HiltViewModel
@@ -140,7 +140,7 @@ class TransactionViewModelPreview : ITransactionViewModel {
         TODO("Not yet implemented")
     }
 
-    override suspend fun sendMoney(contents: String) {
+    override suspend fun sendMoney(qrCodeText: String) {
         TODO("Not yet implemented")
     }
 }
