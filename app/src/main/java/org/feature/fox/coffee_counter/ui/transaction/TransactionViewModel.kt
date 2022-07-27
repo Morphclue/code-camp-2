@@ -105,15 +105,24 @@ class TransactionViewModel @Inject constructor(
             toastChannel.send(UIText.StringResource(R.string.incorrect_money_format))
             return
         }
+        if (sendAmount.value.text.isEmpty()) {
+            toastChannel.send(UIText.StringResource(R.string.empty_money_amount))
+            return
+        }
         val sendMoneyAmount = sendAmount.value.text.toDouble()
-        val response =
-            userRepository.sendMoney(qrCodeText, SendMoneyBody(sendMoneyAmount, qrCodeText))
+        val response = userRepository.sendMoney(
+            preference.getTag(BuildConfig.USER_ID),
+            SendMoneyBody(sendMoneyAmount, qrCodeText)
+        )
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
         toastChannel.send(UIText.StringResource(R.string.money_sent_success))
+        qrCodeDialogVisible.value = false
+        qrCodeSendState.value = false
+        qrCodeReceiveState.value = false
     }
 
     //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
