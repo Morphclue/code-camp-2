@@ -16,9 +16,9 @@ android {
         versionName "1.0"
 
         buildConfigField "String", "BASE_URL", '"http://141.51.114.20:8080"'
-        buildConfigField "String", "USERS_ENDPOINT", '"/users"'
-        buildConfigField "String", "ITEMS_ENDPOINT", '"/items"'
-        buildConfigField "String", "LOGIN_ENDPOINT", '"/login"'
+        buildConfigField "String", "USERS_ENDPOINT", '"users"'
+        buildConfigField "String", "ITEMS_ENDPOINT", '"items"'
+        buildConfigField "String", "LOGIN_ENDPOINT", '"login"'
         buildConfigField "String", "DATE_PATTERN", '"dd.MM.yy"'
         buildConfigField "String", "REACH_SERVER_ERROR", '"Could not reach the server."'
         buildConfigField "String", "UNKNOWN_ERROR", '"Unknown error occurred."'
@@ -88,7 +88,6 @@ dependencies {
     def timber_version = "5.0.1"
     def coil_version = "2.1.0"
     def lifecycle_version = "2.5.0-rc02"
-    def bcrypt_version = "0.9.0"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -104,9 +103,6 @@ dependencies {
 
     // Navbar
     implementation "androidx.navigation:navigation-compose:2.5.0"
-
-    // BCrypt
-    implementation group: 'at.favre.lib', name: 'bcrypt', version: "$bcrypt_version"
 
     // hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
