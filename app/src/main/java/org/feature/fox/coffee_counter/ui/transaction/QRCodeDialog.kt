@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -43,16 +42,21 @@ fun QRCodeDialog(viewModel: ITransactionViewModel) {
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colors.surface,
         ) {
-            if (viewModel.qrCodeReceiveState.value) {
-                QRCodeReceiveDialog(viewModel)
-            }
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                if (viewModel.qrCodeReceiveState.value) {
+                    QRCodeReceiveDialog(viewModel)
+                }
 
-            if (viewModel.qrCodeSendState.value) {
-                QRCodeSendDialog(viewModel)
-            }
+                if (viewModel.qrCodeSendState.value) {
+                    QRCodeSendDialog(viewModel)
+                }
 
-            if (!viewModel.qrCodeSendState.value && !viewModel.qrCodeReceiveState.value) {
-                QRCodeMainDialog(viewModel)
+                if (!viewModel.qrCodeSendState.value && !viewModel.qrCodeReceiveState.value) {
+                    QRCodeMainDialog(viewModel)
+                }
             }
         }
     }
@@ -60,83 +64,68 @@ fun QRCodeDialog(viewModel: ITransactionViewModel) {
 
 @Composable
 fun QRCodeMainDialog(viewModel: ITransactionViewModel) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = stringResource(id = R.string.qrcode),
-            style = MaterialTheme.typography.subtitle1
+    Text(
+        text = stringResource(id = R.string.qrcode),
+        style = MaterialTheme.typography.subtitle1
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
+        CustomButton(
+            text = stringResource(R.string.send_money),
+            onClick = { viewModel.qrCodeSendState.value = true }
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight = 1f, fill = false)
-                .padding(vertical = 16.dp)
-        ) {
-            CustomButton(
-                text = stringResource(R.string.send_money),
-                onClick = { viewModel.qrCodeSendState.value = true }
-            )
-            CustomButton(
-                text = stringResource(R.string.receive_money),
-                onClick = { viewModel.qrCodeReceiveState.value = true }
-            )
-        }
-        QRCodeDialogButtons(viewModel)
+        CustomButton(
+            text = stringResource(R.string.receive_money),
+            onClick = { viewModel.qrCodeReceiveState.value = true }
+        )
     }
+    QRCodeDialogButtons(viewModel)
 }
 
 @Composable
 fun QRCodeSendDialog(viewModel: ITransactionViewModel) {
+    Text(
+        text = stringResource(id = R.string.send_money),
+        style = MaterialTheme.typography.subtitle1
+    )
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
     ) {
-        Text(
-            text = stringResource(id = R.string.send_money),
-            style = MaterialTheme.typography.subtitle1
+        CommonTextField(
+            state = viewModel.sendAmount,
+            label = stringResource(id = R.string.amount),
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-        ) {
-            CommonTextField(
-                state = viewModel.sendAmount,
-                label = stringResource(id = R.string.amount),
-            )
-        }
-        QRCodeDialogButtons(viewModel)
     }
+    QRCodeDialogButtons(viewModel)
 }
 
 @Composable
 fun QRCodeReceiveDialog(viewModel: ITransactionViewModel) {
+    Text(
+        text = stringResource(id = R.string.receive_money),
+        style = MaterialTheme.typography.subtitle1
+    )
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(id = R.string.receive_money),
-            style = MaterialTheme.typography.subtitle1
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val painter = rememberAsyncImagePainter(viewModel.qrCode.value)
+        val painter = rememberAsyncImagePainter(viewModel.qrCode.value)
 
-            Image(
-                painter = painter,
-                contentDescription = stringResource(R.string.qrcode),
-                modifier = Modifier
-                    .wrapContentSize(),
-            )
-        }
-        QRCodeDialogButtons(viewModel)
+        Image(
+            painter = painter,
+            contentDescription = stringResource(R.string.qrcode),
+            modifier = Modifier
+                .wrapContentSize(),
+        )
     }
+    QRCodeDialogButtons(viewModel)
 }
 
 @Composable
