@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
@@ -24,9 +25,11 @@ interface ITransactionViewModel : IToast {
     val toastMessage: MutableLiveData<String>
     val transactions: MutableList<TransactionResponse>
     val balance: MutableState<Double>
+    val purchases: MutableList<Purchase>
 
     suspend fun refreshTransactions()
     suspend fun getTotalBalance()
+    suspend fun getPurchasesOfUser()
 }
 
 @HiltViewModel
@@ -41,11 +44,13 @@ class TransactionViewModel @Inject constructor(
     override val toast = toastChannel.receiveAsFlow()
     override var transactions = mutableListOf<TransactionResponse>()
     override var balance = mutableStateOf(0.0)
+    override var purchases = mutableListOf<Purchase>()
 
     init {
         viewModelScope.launch {
             refreshTransactions()
             getTotalBalance()
+            getPurchasesOfUser()
         }
     }
 
@@ -71,6 +76,13 @@ class TransactionViewModel @Inject constructor(
         }
         balance.value = response.data.balance
     }
+
+    override suspend fun getPurchasesOfUser() {
+        // Get Purchases from DB since new purchases only occur if the user buys items.
+        // This is done inside ItemsView and updated at DB
+        purchases =
+            userRepository.getPurchasesOfUserByIdDb(preference.getTag(BuildConfig.USER_ID)) as MutableList<Purchase>
+    }
 }
 
 class TransactionViewModelPreview : ITransactionViewModel {
@@ -79,6 +91,8 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val toastMessage = MutableLiveData<String>()
     override val transactions: MutableList<TransactionResponse>
         get() = TODO("Not yet implemented")
+    override val purchases: MutableList<Purchase>
+        get() = TODO("Not yet implemented")
     override val balance = mutableStateOf(13.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -86,6 +100,10 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override suspend fun refreshTransactions() {}
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPurchasesOfUser() {
         TODO("Not yet implemented")
     }
 
