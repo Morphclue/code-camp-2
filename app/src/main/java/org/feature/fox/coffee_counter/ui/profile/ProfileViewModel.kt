@@ -178,7 +178,6 @@ class ProfileViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
-        // FIXME: foreign key missing
         userRepository.insertImageDb(response.data)
         setImage(response.data.encodedImage)
     }
