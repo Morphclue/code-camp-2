@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Transaction
 import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
@@ -41,4 +42,8 @@ interface UserDao {
 
     @Delete
     suspend fun deleteImageDb(image: Image)
+
+    @Transaction
+    @Query("SELECT * FROM purchase WHERE userId=:userId")
+    suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
 }

@@ -63,6 +63,11 @@ class UserRepository @Inject constructor(
         return userDao.getImageByIdDb(id)
     }
 
+    override suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>{
+        return userDao.getPurchaseListOfUserDb(userId)
+    }
+
+
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
         return try {
             val response = apiService.postLogin(loginBody)

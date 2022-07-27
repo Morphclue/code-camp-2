@@ -63,4 +63,6 @@ interface UserRepositoryInt {
     suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>
 
     suspend fun addFunding(id: String, fundingBody: FundingBody): Resource<String>
+
+    suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
 }

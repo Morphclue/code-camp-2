@@ -237,6 +237,8 @@ class ItemsViewModel @Inject constructor(
 
                 currentShoppingCartAmountState.value -= cartItem.price * cartItem.amount
                 cartItem.amount = 0
+
+                userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID))
             }
         }
         isLoaded.value = false
