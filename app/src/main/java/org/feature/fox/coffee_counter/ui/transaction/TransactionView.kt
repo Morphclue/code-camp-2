@@ -77,14 +77,13 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             viewModel.refreshTransactions()
             viewModel.getTotalBalance()
         }
+        QRCodeButton(viewModel)
         if (viewModel.transactions.isEmpty()) Text(
             stringResource(id = R.string.no_data),
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
             color = Color.LightGray
         )
-
-        QRCodeButton(viewModel)
 
         viewModel.transactions.forEach { transaction ->
             if (transaction.type == "funding") {
@@ -197,7 +196,7 @@ fun TransactionDate(date: String) {
 @Composable
 fun TransactionValue(color: Color, value: String) {
     Text(
-        modifier = Modifier.width(80.dp),
+        modifier = Modifier.width(100.dp),
         text = value,
         fontSize = rowTextFontSize,
         color = color,
