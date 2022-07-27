@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Transaction
 import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -32,5 +33,9 @@ interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPurchaseDb(purchase: Purchase)
+
+    @Transaction
+    @Query("SELECT * FROM purchase WHERE userId = :userId")
+    suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase>
 
 }

@@ -27,6 +27,8 @@ interface UserRepositoryInt {
 
     suspend fun deleteUserDb(user: User)
 
+    suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase>
+
     // API Calls
 
     suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>

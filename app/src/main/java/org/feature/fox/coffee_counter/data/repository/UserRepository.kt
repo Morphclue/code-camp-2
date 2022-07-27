@@ -46,6 +46,10 @@ class UserRepository @Inject constructor(
         userDao.insertPurchaseDb(purchase)
     }
 
+    override suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase> {
+        return userDao.getPurchasesOfUserByIdDb(userId)
+    }
+
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
         return try {
             val response = apiService.postLogin(loginBody)
