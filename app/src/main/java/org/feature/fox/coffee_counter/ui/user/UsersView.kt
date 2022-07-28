@@ -223,7 +223,7 @@ fun MoneyEditRow(
         fontWeight = FontWeight.Medium,
         color = Color.Gray,
         modifier = Modifier
-            .width(150.dp)
+            .width(110.dp)
             .padding(5.dp),
         textAlign = TextAlign.End
     )
