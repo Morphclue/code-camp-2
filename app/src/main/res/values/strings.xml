@@ -61,4 +61,5 @@
     <string name="scan_qrcode">Scan the QR-Code of your friend</string>
     <string name="money_sent_success">Send money successfully</string>
     <string name="empty_money_amount">Amount should not be empty</string>
+    <string name="achievement_overview">Achievement Overview</string>
 </resources>
