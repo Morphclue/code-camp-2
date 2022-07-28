@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.ui.transaction
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -71,7 +70,7 @@ fun HistoryView(
     QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
-        PieChartBoughtItems(data = viewModel.purchases)
+        PieChartBoughtItems(daten = viewModel.purchases)
         LineChartBalance(data = viewModel.balanceList)
         TransactionContainer(viewModel)
     }
@@ -135,8 +134,8 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 
 // TODO: Maybe add detailed PieChart for total value of each category
 @Composable
-fun PieChartBoughtItems(data: MutableList<Purchase>){
-    println("Size of purchases: ${data.size}")
+fun PieChartBoughtItems(daten: MutableList<Purchase>){
+    println("Size of purchases: ${daten.size}")
     Column(
         modifier = Modifier
             .height(150.dp),
@@ -147,6 +146,9 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
             modifier = Modifier
                 .fillMaxSize(),
             factory = { context ->
+                PieChart(context)
+            },
+            update = { pieChart ->
                 val listColors = ArrayList<Int>()
                 listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
                 listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
@@ -154,7 +156,7 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
                 listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
                 val entries = mutableListOf<PieEntry>()
                 val chartMap = mutableMapOf<String, Pair<String, Int>>()
-                data.forEach { purchase ->
+                daten.forEach { purchase ->
                     if (chartMap.containsKey(purchase.itemId)) {
                         val mapValue = chartMap[purchase.itemId]
                         if (mapValue != null) {
@@ -168,13 +170,12 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
                 chartMap.forEach {
                     entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
                 }
-                val pieChart = PieChart(context)
+
                 if(entries.size != 0) {
                     val dataset = PieDataSet(entries, "")
                     dataset.colors = listColors
                     dataset.sliceSpace = 3f
                     dataset.valueTextSize = 7f
-
                     val pieData = PieData(dataset)
                     pieChart.data = pieData
                 }
@@ -186,20 +187,18 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
                 pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
                 pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
                 pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-
                 pieChart.setDrawEntryLabels(false)
-
+                pieChart.notifyDataSetChanged()
                 //pieChart.description.text = "Consumed Items"
                 //pieChart.description.textSize = 10f
                 //pieChart.description.yOffset = 110f
                 //pieChart.description.xOffset = -60f
                 pieChart.setNoDataText("No Purchases found")
+                /*pieChart.apply{
+                    data = pieData
+                    invalidate()
+                }*/
                 pieChart.invalidate()
-
-                pieChart
-            },
-            update = { view ->
-                view.invalidate()
             }
         )
     }
@@ -239,8 +238,8 @@ fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
                 lineChart.axisLeft.setDrawGridLines(false)
                 lineChart.axisRight.isEnabled = false
                 lineChart.setNoDataText("No funding/orders yet")
+                lineChart.description.text = "Balance over Time"
                 lineChart.invalidate()
-
                 lineChart
             }
         )

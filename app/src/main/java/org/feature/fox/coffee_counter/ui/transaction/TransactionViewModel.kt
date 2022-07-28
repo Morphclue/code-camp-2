@@ -74,7 +74,7 @@ class TransactionViewModel @Inject constructor(
             getTotalBalance()
             getPurchasesOfUser()
             getFundingOfUser()
-            getBalanceOfUser()
+            //getBalanceOfUser()
             generateQRCode()
         }
     }
@@ -166,7 +166,7 @@ class TransactionViewModel @Inject constructor(
         }
 
         // Filter for Fundings and add them
-        var fundingList = mutableListOf<Funding>()
+        val fundingList = mutableListOf<Funding>()
         response.data.toMutableList().forEach { transactionResponse ->
             if (transactionResponse.type == "funding")
                 fundingList.add(
