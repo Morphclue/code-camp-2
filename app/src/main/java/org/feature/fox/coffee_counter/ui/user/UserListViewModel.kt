@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
@@ -27,10 +28,12 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import java.util.*
 import javax.inject.Inject
 
 interface IUserListViewModel : IToast {
     val userList: MutableList<UserIdResponse>
+    val filteredUserList: MutableList<UserIdResponse>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
     val fundingDialogVisible: MutableState<Boolean>
@@ -61,6 +64,7 @@ class UserListViewModel @Inject constructor(
     private val preference: AppPreference,
 ) : ViewModel(), IUserListViewModel {
     override val userList = mutableStateListOf<UserIdResponse>()
+    override val filteredUserList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
     override val fundingDialogVisible = mutableStateOf(false)
@@ -194,7 +198,16 @@ class UserListViewModel @Inject constructor(
     }
 
     override fun search() {
-        TODO("Not yet implemented")
+        filteredUserList.clear()
+        val searchResults = userList.filter {
+            FuzzySearch.partialRatio(it.name.lowercase(Locale.ROOT),
+                searchField.value.text.lowercase(Locale.ROOT)) > 80
+        }
+        if (searchResults.isNotEmpty()) {
+            filteredUserList.addAll(searchResults)
+            return
+        }
+        filteredUserList.addAll(userList)
     }
 
     private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
@@ -232,6 +245,7 @@ class UserListViewModel @Inject constructor(
         }
 
         isLoaded.value = true
+        filteredUserList.addAll(userList)
     }
 
     private suspend fun loadProfilePicture(id: String, imageTimestamp: Long?) {
@@ -266,6 +280,7 @@ class UserListViewModel @Inject constructor(
 
 class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableListOf<UserIdResponse>()
+    override val filteredUserList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
     override val fundingDialogVisible = mutableStateOf(false)

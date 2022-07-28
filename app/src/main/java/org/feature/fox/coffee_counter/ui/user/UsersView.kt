@@ -87,9 +87,9 @@ fun UsersView(viewModel: IUserListViewModel) {
                 SearchBar(
                     fraction = 0.8f,
                     state = viewModel.searchField,
-                    onClick = {
+                    onValueChanged = {
                         viewModel.search()
-                    }
+                    },
                 )
                 Button(
                     shape = CircleShape,
@@ -132,7 +132,7 @@ fun UserList(viewModel: IUserListViewModel) {
                 .height((IntrinsicSize.Min)),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            viewModel.userList.forEach { user ->
+            viewModel.filteredUserList.forEach { user ->
                 UserRow(viewModel, user)
             }
             Box(Modifier.height(50.dp))

@@ -1,6 +1,5 @@
 package org.feature.fox.coffee_counter.ui.common
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -26,16 +25,18 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     fraction: Float = 1.0f,
     state: MutableState<TextFieldValue>,
-    onClick: () -> Unit = {},
+    onValueChanged: () -> Unit = {},
 ) {
     TextField(
         value = state.value,
-        onValueChange = { state.value = it },
+        onValueChange = {
+            state.value = it
+            onValueChanged()
+        },
         trailingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search",
-                modifier = Modifier.clickable(onClick = onClick),
             )
         },
         colors = TextFieldDefaults.textFieldColors(
