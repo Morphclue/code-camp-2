@@ -205,8 +205,6 @@ class UserListViewModel @Inject constructor(
             userRepository.getUsers()
         }
 
-        println("loadUsers: ${response.data}")
-
         if (response.data == null) {
             return
         }
