@@ -131,7 +131,7 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
     )
 }
 
-// TODO: Maybe add detailed PieChart for total value of each category
+// TODO: Only display 4 categories and sum up all others
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
@@ -188,6 +188,7 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                         chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
                     }
                 }
+
                 chartMap.forEach {
                     entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
                 }
