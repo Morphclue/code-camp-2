@@ -14,4 +14,7 @@ data class UserResponse(
 
     @Json(name = "balance")
     val balance: Double? = null,
+
+    @Json(name = "imageTimestamp")
+    val imageTimestamp: Long? = null,
 )
