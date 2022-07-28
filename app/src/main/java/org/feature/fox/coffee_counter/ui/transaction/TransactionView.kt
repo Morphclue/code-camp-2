@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,9 +50,9 @@ fun HistoryViewPreview(
 fun HistoryView(
     viewModel: ITransactionViewModel,
 ) {
+    QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
-        ShowPeriodField()
         TransactionContainer(viewModel)
     }
 }
@@ -72,6 +74,7 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             viewModel.refreshTransactions()
             viewModel.getTotalBalance()
         }
+        QRCodeButton(viewModel)
         if (viewModel.transactions.isEmpty()) Text(
             stringResource(id = R.string.no_data),
             fontSize = 20.sp,
@@ -79,36 +82,42 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             color = Color.LightGray
         )
 
-
         viewModel.transactions.forEach { transaction ->
             if (transaction.type == "funding") {
                 TransactionRow(
-                    Color.Green,
                     "Funding",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${String.format("%.2f", transaction.value)}€"
+                    transaction.value
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
-                    Color.DarkGray,
                     "Order",
                     SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
                         .format(Date(transaction.timestamp)),
-                    "${String.format("%.2f", transaction.value)}€"
+                    transaction.value
                 )
             }
         }
+        Box(Modifier.height(50.dp))
     }
 }
 
 @Composable
-fun ShowPeriodField() {
-    // TODO: implement searchbar
+fun QRCodeButton(viewModel: ITransactionViewModel) {
+    CustomButton(
+        text = stringResource(R.string.qrcode),
+        fraction = 0.9f,
+        onClick = {
+            viewModel.qrCodeDialogVisible.value = true
+        }
+    )
 }
 
 @Composable
-fun TransactionRow(color: Color, type: String, date: String, value: String) {
+fun TransactionRow(type: String, date: String, value: Double) {
+    val color = if (value > 0) Color.Green else Color.DarkGray
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,7 +134,7 @@ fun TransactionRow(color: Color, type: String, date: String, value: String) {
             TransactionCircle(color)
             TransactionType(type)
             TransactionDate(date)
-            TransactionValue(color, value)
+            TransactionValue(color, "${String.format("%.2f", value)}€")
         }
     }
 }
@@ -163,7 +172,7 @@ fun TransactionDate(date: String) {
 @Composable
 fun TransactionValue(color: Color, value: String) {
     Text(
-        modifier = Modifier.width(80.dp),
+        modifier = Modifier.width(100.dp),
         text = value,
         fontSize = rowTextFontSize,
         color = color,

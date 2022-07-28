@@ -13,6 +13,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
+import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
@@ -192,6 +193,22 @@ class UserRepository @Inject constructor(
     override suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String> {
         return try {
             val response = apiService.purchaseItem(id, purchaseBody)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
+    override suspend fun sendMoney(id: String, sendMoneyBody: SendMoneyBody): Resource<String> {
+        return try {
+            val response = apiService.sendMoney(id, sendMoneyBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

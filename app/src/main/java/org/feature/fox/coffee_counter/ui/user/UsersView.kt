@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +21,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -58,6 +60,7 @@ fun UsersView(viewModel: IUserListViewModel) {
     ToastMessage(viewModel, context)
     FundingDialog(viewModel)
     AddUserDialog(viewModel)
+    SendMoneyDialog(viewModel)
 
     Scaffold(
         topBar = { MoneyAppBar(Pair(stringResource(R.string.user_list_title), viewModel.balance)) },
@@ -133,7 +136,7 @@ fun UserRow(
             .fillMaxWidth()
             .height(60.dp)
             .padding(5.dp),
-        elevation = 5.dp
+        elevation = 5.dp,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -146,8 +149,31 @@ fun UserRow(
                 user.name,
                 fontWeight = FontWeight.Medium
             )
-            if(viewModel.isAdminState.value) MoneyEditRow(viewModel, user)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+            ) {
+                if (viewModel.isAdminState.value) MoneyEditRow(viewModel, user)
+                ShareMoneyButton(viewModel, user)
+            }
         }
+    }
+}
+
+@Composable
+fun ShareMoneyButton(viewModel: IUserListViewModel, user: UserIdResponse) {
+    Button(
+        modifier = Modifier
+            .size(45.dp),
+        onClick = {
+            viewModel.currentUser.value = user
+            viewModel.sendMoneyDialogVisible.value = true
+        },
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Share,
+            contentDescription = "Share",
+        )
     }
 }
 
@@ -156,29 +182,26 @@ fun MoneyEditRow(
     viewModel: IUserListViewModel,
     user: UserIdResponse,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
-    ) {
-        Text(
-            "${String.format("%.2f", user.balance)}€",
-            fontWeight = FontWeight.Medium,
-            color = Color.Gray,
-            modifier = Modifier
-                .width(150.dp)
-                .padding(5.dp),
-            textAlign = TextAlign.End
+    Text(
+        "${String.format("%.2f", user.balance)}€",
+        fontWeight = FontWeight.Medium,
+        color = Color.Gray,
+        modifier = Modifier
+            .width(150.dp)
+            .padding(5.dp),
+        textAlign = TextAlign.End
+    )
+    Button(
+        modifier = Modifier
+            .size(45.dp),
+        onClick = {
+            viewModel.currentUser.value = user
+            viewModel.fundingDialogVisible.value = true
+        })
+    {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Add",
         )
-        Button(
-            onClick = {
-                viewModel.currentUser.value = user
-                viewModel.fundingDialogVisible.value = true
-            })
-        {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add",
-            )
-        }
     }
 }

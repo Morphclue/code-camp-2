@@ -53,4 +53,12 @@
     <string name="confirm_buy">Do you want to buy the following items:</string>
     <string name="total">Total:</string>
     <string name="currency">€</string>
+    <string name="qrcode">Share money via QR-Code</string>
+    <string name="send_money">Send money via QR-Code</string>
+    <string name="share_money">Share money with your friend</string>
+    <string name="receive_money">Receive money via QR-Code</string>
+    <string name="send">Send</string>
+    <string name="scan_qrcode">Scan the QR-Code of your friend</string>
+    <string name="money_sent_success">Send money successfully</string>
+    <string name="empty_money_amount">Amount should not be empty</string>
 </resources>
