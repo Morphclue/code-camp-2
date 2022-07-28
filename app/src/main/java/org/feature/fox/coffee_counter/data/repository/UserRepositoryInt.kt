@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.data.repository
 
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
+import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody

@@ -46,8 +46,10 @@ import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.util.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -104,19 +106,15 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
         viewModel.transactions.forEach { transaction ->
             if (transaction.type == "funding") {
                 TransactionRow(
-                    Color.Green,
-                    "Funding",
-                    SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
-                        .format(Date(transaction.timestamp)),
-                    transaction.value
+                    type = "Funding",
+                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(Date(transaction.timestamp)),
+                    value = transaction.value
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
-                    Color.DarkGray,
-                    "Order",
-                    SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
-                        .format(Date(transaction.timestamp)),
-                    transaction.value
+                    type =  "Order",
+                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(Date(transaction.timestamp)),
+                    value = transaction.value
                 )
             }
         }
@@ -140,7 +138,8 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 fun PieChartBoughtItems(data: MutableList<Purchase>){
     println("Size of purchases: ${data.size}")
     Column(
-        modifier = Modifier.height(150.dp),
+        modifier = Modifier
+            .height(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -207,7 +206,8 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
 @Composable
 fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
     Column(
-        modifier = Modifier.height(150.dp),
+        modifier = Modifier
+            .height(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

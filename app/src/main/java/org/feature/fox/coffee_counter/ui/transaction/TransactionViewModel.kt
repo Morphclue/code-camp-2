@@ -204,7 +204,6 @@ class TransactionViewModel @Inject constructor(
 class TransactionViewModelPreview : ITransactionViewModel {
     override val showMainActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
-    override val transactions = mutableListOf<TransactionResponse>()
     override val transactions: MutableList<TransactionResponse>
         get() = TODO("Not yet implemented")
     override val purchases: MutableList<Purchase>
@@ -227,6 +226,7 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override suspend fun getPurchasesOfUser() {}
 
     override suspend fun getFundingOfUser() {}
+
     override suspend fun getBalanceOfUser() {}
 
     override suspend fun generateQRCode() {
