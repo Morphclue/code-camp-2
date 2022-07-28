@@ -26,5 +26,5 @@ interface ItemRepositoryInt {
 
     suspend fun deleteItemById(itemId: String): Resource<String>
 
-    suspend fun purchaseItem(itemId: String, purchaseBody: PurchaseBody): Resource<String>
+    suspend fun purchaseItem(userId: String, purchaseBody: PurchaseBody): Resource<String>
 }
