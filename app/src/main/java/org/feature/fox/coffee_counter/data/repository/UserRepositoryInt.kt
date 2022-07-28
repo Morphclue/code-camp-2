@@ -7,6 +7,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
+import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
@@ -51,6 +52,8 @@ interface UserRepositoryInt {
     suspend fun getTransactions(id: String): Resource<List<TransactionResponse>>
 
     suspend fun purchaseItem(id: String, purchaseBody: PurchaseBody): Resource<String>
+
+    suspend fun sendMoney(id: String, sendMoneyBody: SendMoneyBody): Resource<String>
 
     suspend fun getImage(id: String): Resource<Image>
 
