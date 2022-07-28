@@ -15,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
@@ -28,7 +27,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
-import java.util.*
+import org.feature.fox.coffee_counter.util.Utils
 import javax.inject.Inject
 
 interface IUserListViewModel : IToast {
@@ -198,16 +197,7 @@ class UserListViewModel @Inject constructor(
     }
 
     override fun search() {
-        filteredUserList.clear()
-        val searchResults = userList.filter {
-            FuzzySearch.partialRatio(it.name.lowercase(Locale.ROOT),
-                searchField.value.text.lowercase(Locale.ROOT)) > 80
-        }
-        if (searchResults.isNotEmpty()) {
-            filteredUserList.addAll(searchResults)
-            return
-        }
-        filteredUserList.addAll(userList)
+        Utils.fuzzySearch(filteredUserList, userList, searchField.value.text)
     }
 
     private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
