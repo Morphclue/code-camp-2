@@ -171,7 +171,7 @@ class ItemsViewModel @Inject constructor(
 
     override suspend fun addStringItemToShoppingCart(item: String) {
         try {
-            val avItem: Item = availableItemsState.first{it.name == item}
+            val avItem: Item = availableItemsState.first{it.id == item}
 
             val success = addItemToShoppingCart(avItem)
             if (success){
