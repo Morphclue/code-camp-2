@@ -178,7 +178,7 @@ fun ProfileIcon(viewModel: IProfileViewModel) {
                     .padding(8.dp)
                     .background(Color.White, CircleShape)
                     .clip(CircleShape)
-                    .border(1.dp, LiverOrgan, CircleShape)
+                    .border(1.dp, Color.Black, CircleShape)
                     .then(
                         Modifier.size(30.dp)
                     ),
