@@ -13,7 +13,7 @@ import javax.inject.Inject
 class ItemRepository @Inject constructor(
     private val itemDao: ItemDao,
     private val apiService: ApiService,
-) : ItemRepositoryInt {
+) : IItemRepository {
     override suspend fun insertItemDb(item: Item) {
         itemDao.insertItemDb(item)
     }

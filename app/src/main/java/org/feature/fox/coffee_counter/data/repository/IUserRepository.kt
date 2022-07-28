@@ -16,7 +16,7 @@ import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.util.Resource
 import java.io.InputStream
 
-interface UserRepositoryInt {
+interface IUserRepository {
     suspend fun insertUserDb(user: User)
 
     suspend fun insertFundingDb(funding: Funding)

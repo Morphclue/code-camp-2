@@ -6,7 +6,7 @@ import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.util.Resource
 
-interface ItemRepositoryInt {
+interface IItemRepository {
     suspend fun insertItemDb(item: Item)
 
     suspend fun deleteItemDb(item: Item)
