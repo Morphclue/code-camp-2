@@ -169,13 +169,15 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
                     entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
                 }
                 val pieChart = PieChart(context)
-                val dataset = PieDataSet(entries, "")
-                dataset.colors = listColors
-                dataset.sliceSpace = 3f
-                dataset.valueTextSize = 7f
+                if(entries.size != 0) {
+                    val dataset = PieDataSet(entries, "")
+                    dataset.colors = listColors
+                    dataset.sliceSpace = 3f
+                    dataset.valueTextSize = 7f
 
-                val pieData = PieData(dataset)
-                pieChart.data = pieData
+                    val pieData = PieData(dataset)
+                    pieChart.data = pieData
+                }
                 pieChart.setUsePercentValues(false)
                 // Cirlce Styling
                 pieChart.holeRadius = 20f
@@ -187,10 +189,10 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
 
                 pieChart.setDrawEntryLabels(false)
 
-                pieChart.description.text = "Consumed Items"
-                pieChart.description.textSize = 10f
-                pieChart.description.yOffset = 110f
-                pieChart.description.xOffset = -60f
+                //pieChart.description.text = "Consumed Items"
+                //pieChart.description.textSize = 10f
+                //pieChart.description.yOffset = 110f
+                //pieChart.description.xOffset = -60f
                 pieChart.setNoDataText("No Purchases found")
                 pieChart.invalidate()
 
@@ -220,11 +222,15 @@ fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
                 data.forEach { pair ->
                     entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
                 }
+
+                if(entries.size != 0 ) {
+                    val dataset = LineDataSet(entries, "")
+                    dataset.axisDependency = YAxis.AxisDependency.LEFT
+                    val lineData = LineData(dataset)
+                    lineChart.data = lineData
+                }
+
                 val formatter = DateTimeFormatter()
-                val dataset = LineDataSet(entries, "")
-                dataset.axisDependency = YAxis.AxisDependency.LEFT
-                val lineData = LineData(dataset)
-                lineChart.data = lineData
                 lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
                 lineChart.xAxis.setDrawGridLines(false)
                 lineChart.xAxis.granularity = 2f
@@ -232,6 +238,7 @@ fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
                 lineChart.xAxis.valueFormatter = formatter
                 lineChart.axisLeft.setDrawGridLines(false)
                 lineChart.axisRight.isEnabled = false
+                lineChart.setNoDataText("No funding/orders yet")
                 lineChart.invalidate()
 
                 lineChart
