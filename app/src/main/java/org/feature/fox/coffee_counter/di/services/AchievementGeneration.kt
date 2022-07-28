@@ -8,6 +8,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.ui.common.showAchievementNotification
+import org.feature.fox.coffee_counter.util.UIText
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
@@ -36,8 +37,9 @@ class AchievementGeneration @Inject constructor(
         purchases: List<Purchase>,
         achievements: List<Achievement>
     ) {
-        val achievement1Name = "Rookie numbers"
-        val achievement1Description = "You only spent 100€"
+        val achievement1Name = UIText.StringResource(R.string.rookie_numbers).toString()
+        val achievement1Description =
+            UIText.StringResource(R.string.rookie_numbers_description).toString()
 
         if (!achievements.any { it.name == achievement1Name }) {
             var totalSpentMoney = 0.0
@@ -57,8 +59,9 @@ class AchievementGeneration @Inject constructor(
             }
         }
 
-        val achievement2Name = "Rich Bitch"
-        val achievement2Description = "You spent more then 1000€, not bad"
+        val achievement2Name = UIText.StringResource(R.string.rich_bitch).toString()
+        val achievement2Description =
+            UIText.StringResource(R.string.rich_bitch_description).toString()
 
         if (!achievements.any { it.name == achievement2Name }) {
             var totalSpentMoney = 0.0
@@ -78,8 +81,9 @@ class AchievementGeneration @Inject constructor(
             }
         }
 
-        val achievement3Name = "You are the 1%"
-        val achievement3Description = "You spent more then 10000€, wtf"
+        val achievement3Name = UIText.StringResource(R.string.the_one_percent).toString()
+        val achievement3Description =
+            UIText.StringResource(R.string.the_one_percent_description).toString()
 
         if (!achievements.any { it.name == achievement3Name }) {
             var totalSpentMoney = 0.0
@@ -106,17 +110,20 @@ class AchievementGeneration @Inject constructor(
         items: List<Item>,
     ) {
         items.forEach { item ->
-            if (!achievements.any { it.name == "${item.name} Junkie" }) {
+            val achievementName = "${item.name} ${UIText.StringResource(R.string.junkie)}"
+            val achievementDescription =
+                "${UIText.StringResource(R.string.drank_over_100)} ${item.name}"
+            if (!achievements.any { it.name == achievementName }) {
                 var totalPurchases = 0
                 purchases.filter { it.itemName == item.name }.forEach { purchase ->
                     totalPurchases += purchase.amount
                 }
                 if (totalPurchases >= 100) {
                     val junkieAchievement = Achievement(
-                        name = "${item.name} Junkie",
+                        name = achievementName,
                         userId = preference.getTag(BuildConfig.USER_ID),
                         timestamp = System.currentTimeMillis() / 1000,
-                        description = "You drank over 100 ${item.name}",
+                        description = achievementDescription,
                         icon = R.drawable.coffee
                     )
                     userRepository.insertAchievementDb(junkieAchievement)
@@ -130,8 +137,9 @@ class AchievementGeneration @Inject constructor(
         purchases: List<Purchase>,
         achievements: List<Achievement>,
     ) {
-        val achievementName = "Sleep is for the weak"
-        val achievementDescription = "You bought a drink in the night"
+        val achievementName = UIText.StringResource(R.string.weak_sleep).toString()
+        val achievementDescription =
+            UIText.StringResource(R.string.weak_sleep_description).toString()
         val purchaseTime: LocalTime = LocalTime.parse(
             SimpleDateFormat(
                 "HH:mm:ss",
