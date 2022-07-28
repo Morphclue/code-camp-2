@@ -52,6 +52,7 @@ interface IUserListViewModel : IToast {
     suspend fun createUser()
     suspend fun getTotalBalance()
     suspend fun sendMoney()
+    fun search()
 }
 
 @HiltViewModel
@@ -192,6 +193,10 @@ class UserListViewModel @Inject constructor(
         sendMoneyDialogVisible.value = false
     }
 
+    override fun search() {
+        TODO("Not yet implemented")
+    }
+
     private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
         val index = userList.indexOf(currentUser.value)
         userList.remove(currentUser.value)
@@ -293,6 +298,10 @@ class UserListViewModelPreview : IUserListViewModel {
     }
 
     override suspend fun sendMoney() {
+        TODO("Not yet implemented")
+    }
+
+    override fun search() {
         TODO("Not yet implemented")
     }
 }

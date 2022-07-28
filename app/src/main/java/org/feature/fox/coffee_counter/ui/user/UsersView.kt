@@ -86,7 +86,10 @@ fun UsersView(viewModel: IUserListViewModel) {
             {
                 SearchBar(
                     fraction = 0.8f,
-                    state = viewModel.searchField
+                    state = viewModel.searchField,
+                    onClick = {
+                        viewModel.search()
+                    }
                 )
                 Button(
                     shape = CircleShape,
