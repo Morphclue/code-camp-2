@@ -9,7 +9,9 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.ui.common.showAchievementNotification
+import java.text.SimpleDateFormat
 import java.time.LocalTime
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,20 +38,20 @@ class AchievementGeneration @Inject constructor(
         achievements: List<Achievement>
     ) {
         val achievement1Name = "Rookie numbers"
-        val achievement1Description = "You only spent 100€. Pump those numbers up"
+        val achievement1Description = "You only spent 100€"
 
         if (!achievements.any { it.name == achievement1Name }) {
             var totalSpentMoney = 0.0
             purchases.forEach { purchase ->
                 totalSpentMoney += purchase.totalValue
             }
-            if (totalSpentMoney >= 100) {
+            if (totalSpentMoney <= -100) {
                 val cashAchievement = Achievement(
                     name = achievement1Name,
                     userId = preference.getTag(BuildConfig.USER_ID),
                     timestamp = System.currentTimeMillis() / 1000,
                     description = achievement1Description,
-                    icon = R.drawable.coffee.toString()
+                    icon = R.drawable.rookie_numbers
                 )
                 userRepository.insertAchievementDb(cashAchievement)
                 showAchievementNotification(cashAchievement)
@@ -64,13 +66,13 @@ class AchievementGeneration @Inject constructor(
             purchases.forEach { purchase ->
                 totalSpentMoney += purchase.totalValue
             }
-            if (totalSpentMoney >= 100) {
+            if (totalSpentMoney <= -1000) {
                 val cashAchievement = Achievement(
                     name = achievement2Name,
                     userId = preference.getTag(BuildConfig.USER_ID),
                     timestamp = System.currentTimeMillis() / 1000,
                     description = achievement2Description,
-                    icon = R.drawable.rookie_numbers.toString()
+                    icon = R.drawable.rich_bitch
                 )
                 userRepository.insertAchievementDb(cashAchievement)
                 showAchievementNotification(cashAchievement)
@@ -85,13 +87,13 @@ class AchievementGeneration @Inject constructor(
             purchases.forEach { purchase ->
                 totalSpentMoney += purchase.totalValue
             }
-            if (totalSpentMoney >= 1000) {
+            if (totalSpentMoney <= -10000) {
                 val cashAchievement = Achievement(
                     name = achievement3Name,
                     userId = preference.getTag(BuildConfig.USER_ID),
                     timestamp = System.currentTimeMillis() / 1000,
                     description = achievement3Description,
-                    icon = R.drawable.rich_bitch.toString()
+                    icon = R.drawable.the_one_percent
                 )
                 userRepository.insertAchievementDb(cashAchievement)
                 showAchievementNotification(cashAchievement)
@@ -110,13 +112,13 @@ class AchievementGeneration @Inject constructor(
                 purchases.filter { it.itemName == item.name }.forEach { purchase ->
                     totalPurchases += purchase.amount
                 }
-                if (totalPurchases >= 10000) {
+                if (totalPurchases >= 100) {
                     val junkieAchievement = Achievement(
                         name = "${item.name} Junkie",
                         userId = preference.getTag(BuildConfig.USER_ID),
                         timestamp = System.currentTimeMillis() / 1000,
-                        description = "You are a ${item.name} Junkie, you drank over 100 ${item.name}",
-                        icon = R.drawable.the_one_percent.toString()
+                        description = "You drank over 100 ${item.name}",
+                        icon = R.drawable.coffee
                     )
                     userRepository.insertAchievementDb(junkieAchievement)
                     showAchievementNotification(junkieAchievement)
@@ -130,8 +132,13 @@ class AchievementGeneration @Inject constructor(
         achievements: List<Achievement>,
     ) {
         val achievementName = "Sleep is for the weak"
-        val achievementDescription = "Sleep is for the weak, you bought a drink in the night"
-        val purchaseTime: LocalTime = LocalTime.parse(purchases.last().timestamp.toString())
+        val achievementDescription = "You bought a drink in the night"
+        val purchaseTime: LocalTime = LocalTime.parse(
+            SimpleDateFormat(
+                "HH:mm:ss",
+                Locale.GERMAN
+            ).format(purchases.last().timestamp)
+        )
         if (!achievements.any { it.name == achievementName } &&
             (purchaseTime.isAfter(LocalTime.parse("00:00:00")) &&
                     purchaseTime.isBefore(LocalTime.parse("04:00:00")))
@@ -141,7 +148,7 @@ class AchievementGeneration @Inject constructor(
                 userId = preference.getTag(BuildConfig.USER_ID),
                 timestamp = System.currentTimeMillis() / 1000,
                 description = achievementDescription,
-                icon = R.drawable.weak_sleep.toString()
+                icon = R.drawable.weak_sleep
             )
             userRepository.insertAchievementDb(nightAchievement)
             showAchievementNotification(nightAchievement)

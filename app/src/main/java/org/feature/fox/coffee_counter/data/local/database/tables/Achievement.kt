@@ -14,5 +14,5 @@ data class Achievement(
 
     val description: String,
 
-    val icon: String,
+    val icon: Int,
 )

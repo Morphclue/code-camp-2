@@ -72,6 +72,7 @@ class ProfileViewModel @Inject constructor(
             loadData()
             getImage()
             getTotalBalance()
+            getAchievements()
         }
     }
 
