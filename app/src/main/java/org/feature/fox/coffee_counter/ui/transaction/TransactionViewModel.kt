@@ -74,7 +74,7 @@ class TransactionViewModel @Inject constructor(
             getTotalBalance()
             getPurchasesOfUser()
             getFundingOfUser()
-            //getBalanceOfUser()
+            getBalanceOfUser()
             generateQRCode()
         }
     }
