@@ -1,10 +1,8 @@
 package org.feature.fox.coffee_counter.ui
 
-import android.nfc.FormatException
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import android.nfc.TagLostException
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import android.widget.Toast
@@ -22,7 +20,6 @@ import org.feature.fox.coffee_counter.ui.profile.ProfileViewModel
 import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
 import org.feature.fox.coffee_counter.ui.user.UserListViewModel
-import java.io.IOException
 
 
 @AndroidEntryPoint

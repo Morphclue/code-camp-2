@@ -35,7 +35,9 @@ interface UserRepositoryInt {
 
     suspend fun deleteImageDb(image: Image)
 
-    // API Calls
+    //================================================================================
+    // API CALLS - PROVIDE RESOURCES
+    //================================================================================
 
     suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>
 

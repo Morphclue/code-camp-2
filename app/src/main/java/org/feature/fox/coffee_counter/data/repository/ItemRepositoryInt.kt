@@ -7,14 +7,15 @@ import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.util.Resource
 
 interface ItemRepositoryInt {
-
     suspend fun insertItemDb(item: Item)
 
     suspend fun deleteItemDb(item: Item)
 
     suspend fun updateItemDb(item: Item)
 
-    // API Calls
+    //================================================================================
+    // API CALLS - PROVIDE RESOURCES
+    //================================================================================
 
     suspend fun postItem(itemBody: ItemBody): Resource<String>
 

@@ -78,7 +78,9 @@ class AuthenticationViewModel @Inject constructor(
         val elements = response.data.token.split('.')
         if (elements.size == 3) {
             val (_, payload, _) = elements
-            preference.setTag(BuildConfig.IS_ADMIN, JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin"))
+            preference.setTag(BuildConfig.IS_ADMIN,
+                JSONObject(Base64.decode(payload, Base64.DEFAULT)
+                    .decodeToString()).getBoolean("isAdmin"))
         } else {
             error("Invalid token")
         }

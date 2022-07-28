@@ -21,7 +21,7 @@ class BalanceStateProvider : PreviewParameterProvider<Pair<String, MutableState<
 @Preview
 @Composable
 fun MoneyAppBar(
-    @PreviewParameter(BalanceStateProvider::class) pair: Pair<String, MutableState<Double>>
+    @PreviewParameter(BalanceStateProvider::class) pair: Pair<String, MutableState<Double>>,
 ) {
     TopAppBar(title = {
         Row(

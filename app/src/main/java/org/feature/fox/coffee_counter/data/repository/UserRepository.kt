@@ -27,7 +27,6 @@ class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
 ) : UserRepositoryInt {
-
     override suspend fun insertUserDb(user: User) {
         userDao.insertUserDb(user)
     }

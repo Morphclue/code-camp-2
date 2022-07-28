@@ -23,7 +23,7 @@ import org.feature.fox.coffee_counter.R
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    fraction: Float = 1.0f
+    fraction: Float = 1.0f,
 ) {
     val idState = remember { mutableStateOf(TextFieldValue()) }
     TextField(

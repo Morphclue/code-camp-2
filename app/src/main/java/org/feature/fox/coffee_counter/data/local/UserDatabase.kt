@@ -13,7 +13,5 @@ import org.feature.fox.coffee_counter.data.local.database.tables.User
     version = 1
 )
 abstract class UserDatabase : RoomDatabase() {
-
     abstract fun userDao(): UserDao
-
 }
