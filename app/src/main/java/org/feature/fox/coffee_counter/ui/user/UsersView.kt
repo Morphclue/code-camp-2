@@ -166,6 +166,7 @@ fun ShareMoneyButton(viewModel: IUserListViewModel, user: UserIdResponse) {
         modifier = Modifier
             .size(45.dp),
         onClick = {
+            viewModel.currentUser.value = user
             viewModel.sendMoneyDialogVisible.value = true
         },
     ) {

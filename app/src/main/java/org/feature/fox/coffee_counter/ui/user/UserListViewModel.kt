@@ -17,6 +17,7 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
+import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import org.feature.fox.coffee_counter.data.repository.UserRepository
@@ -104,16 +105,7 @@ class UserListViewModel @Inject constructor(
                 )
             )
 
-            val index = userList.indexOf(currentUser.value)
-            userList.remove(currentUser.value)
-            currentUser.value
-            userList.add(
-                index, UserIdResponse(
-                    userIdResponse.id,
-                    userIdResponse.name,
-                    userIdResponse.balance + fundingAmount
-                )
-            )
+            removeAndAddUser(userIdResponse, userIdResponse.balance + fundingAmount)
         }
 
         funding.value = TextFieldValue()
@@ -167,7 +159,43 @@ class UserListViewModel @Inject constructor(
     }
 
     override suspend fun sendMoney() {
-        // TODO: implement sendMoney
+        sendAmount.value = TextFieldValue(sendAmount.value.text.replace(",", "."))
+        if (sendAmount.value.text.count { '.' == it } > 1) {
+            toastChannel.send(UIText.StringResource(R.string.incorrect_money_format))
+            return
+        }
+        val sendMoneyAmount = sendAmount.value.text.toDouble()
+
+        currentUser.value?.let { userIdResponse ->
+            val response = userRepository.sendMoney(
+                preference.getTag(BuildConfig.USER_ID),
+                SendMoneyBody(sendMoneyAmount, userIdResponse.id)
+            )
+
+            if (response.data == null) {
+                toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                    ?: UIText.StringResource(R.string.unknown_error))
+                return
+            }
+
+            removeAndAddUser(userIdResponse, userIdResponse.balance + sendMoneyAmount)
+        }
+        toastChannel.send(UIText.StringResource(R.string.money_sent_success))
+        sendAmount.value = TextFieldValue()
+        sendMoneyDialogVisible.value = false
+    }
+
+    private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
+        val index = userList.indexOf(currentUser.value)
+        userList.remove(currentUser.value)
+        currentUser.value
+        userList.add(
+            index, UserIdResponse(
+                user.id,
+                user.name,
+                amount
+            )
+        )
     }
 
     private suspend fun loadUsers() {
