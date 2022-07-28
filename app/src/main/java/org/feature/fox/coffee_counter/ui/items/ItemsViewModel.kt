@@ -14,15 +14,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
 import org.feature.fox.coffee_counter.data.repository.UserRepository
+import org.feature.fox.coffee_counter.di.services.AchievementGeneration
 import org.feature.fox.coffee_counter.di.services.AppPreference
-import org.feature.fox.coffee_counter.ui.common.showAchievementNotification
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
@@ -54,7 +53,6 @@ interface IItemsViewModel : IToast {
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
-    suspend fun checkAchievements()
 }
 
 @HiltViewModel
@@ -62,6 +60,7 @@ class ItemsViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
     private val userRepository: UserRepository,
     private val preference: AppPreference,
+    private val achievementGenerator: AchievementGeneration,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
@@ -242,7 +241,7 @@ class ItemsViewModel @Inject constructor(
                 cartItem.amount = 0
             }
         }
-        checkAchievements()
+        achievementGenerator.checkAchievements(availableItemsState)
         isLoaded.value = false
         getItems()
         getTotalBalance()
@@ -360,32 +359,6 @@ class ItemsViewModel @Inject constructor(
         }
         balance.value = response.data.balance
     }
-
-    override suspend fun checkAchievements() {
-        val purchases: List<Purchase> =
-            userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID))
-        val achievements: List<Achievement> =
-            userRepository.getAchievementListOfUserDb(preference.getTag(BuildConfig.USER_ID))
-
-        //Coffee Junkie
-        if (!achievements.any { it.name == "Coffee Junkie" }) {
-            var totalCoffee = 0
-            //TODO fix Coffee name/prevent spacebar at start/end on creating/editing
-            purchases.filter { it.itemName == "Coffee " }.forEach { purchase ->
-                totalCoffee += purchase.amount
-            }
-            if (totalCoffee >= 100) {
-                //TODO add Achievement to db
-                val cJunkieAchievement = Achievement(
-                    name = "Coffee Junkie",
-                    userId = preference.getTag(BuildConfig.USER_ID),
-                    timestamp = System.currentTimeMillis() / 1000,
-                    description = "You are a Coffee Junkie, you drank over 100 Coffee",
-                )
-                showAchievementNotification(cJunkieAchievement)
-            }
-        }
-    }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
@@ -456,10 +429,6 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun getTotalBalance() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun checkAchievements() {
         TODO("Not yet implemented")
     }
 }

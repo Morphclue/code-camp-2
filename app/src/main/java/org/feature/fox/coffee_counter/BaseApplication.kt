@@ -32,7 +32,7 @@ class BaseApplication : Application() {
             val notificationChannel = NotificationChannel(
                 BuildConfig.NOTIFICATION_CHANNEL_ID,
                 "Notification Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             )
             notificationChannel.description = "This is the notification Channel"
             val manager = getSystemService(
