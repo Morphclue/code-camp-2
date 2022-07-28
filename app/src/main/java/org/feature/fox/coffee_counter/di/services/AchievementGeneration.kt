@@ -1,7 +1,6 @@
 package org.feature.fox.coffee_counter.di.services
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
+
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
@@ -17,7 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AchievementGeneration @Inject constructor(
-    @ApplicationContext context: Context, private val userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) {
 

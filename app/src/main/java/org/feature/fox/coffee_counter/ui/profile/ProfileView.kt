@@ -178,6 +178,7 @@ fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
     CustomButton(text = stringResource(R.string.logout), fraction = 0.9f)
     CustomButton(text = stringResource(R.string.achievement_overview), fraction = 0.9f, onClick = {
         coroutineScope.launch {
+            viewModel.getAchievements()
             viewModel.achievementOverviewVisible.value = true
         }
     })

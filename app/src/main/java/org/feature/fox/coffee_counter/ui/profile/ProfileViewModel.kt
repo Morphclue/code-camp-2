@@ -72,7 +72,6 @@ class ProfileViewModel @Inject constructor(
             loadData()
             getImage()
             getTotalBalance()
-            getAchievements()
         }
     }
 
@@ -209,6 +208,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     override suspend fun getAchievements() {
+        achievementList.clear()
         userRepository.getAchievementListOfUserDb(preference.getTag(BuildConfig.USER_ID))
             .forEach { achievement ->
                 achievementList.add(
