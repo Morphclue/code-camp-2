@@ -212,7 +212,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val editId = mutableStateOf(TextFieldValue())
     override val editPassword = mutableStateOf(TextFieldValue())
     override val editReEnterPassword = mutableStateOf(TextFieldValue())
-    override val isAdminState = mutableStateOf(false)
+    override val isAdminState = mutableStateOf(true)
     override var currentUser = MutableLiveData<UserIdResponse>()
     override val balance = mutableStateOf(13.0)
     override val toastChannel = Channel<UIText>()
