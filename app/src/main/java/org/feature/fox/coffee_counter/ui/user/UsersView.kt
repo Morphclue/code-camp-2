@@ -129,7 +129,7 @@ fun UserList(viewModel: IUserListViewModel) {
             viewModel.userList.forEach { user ->
                 UserRow(viewModel, user)
             }
-            Box(Modifier.height(30.dp))
+            Box(Modifier.height(50.dp))
         }
     }
 }
