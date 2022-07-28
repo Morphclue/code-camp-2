@@ -41,6 +41,9 @@ interface ApiService {
     @GET(BuildConfig.USERS_ENDPOINT)
     suspend fun getUsers(): Response<List<UserResponse>>
 
+    @GET("${BuildConfig.USERS_ENDPOINT}/admin/users")
+    suspend fun getUsersAsAdmin(): Response<List<UserResponse>>
+
     @GET("${BuildConfig.USERS_ENDPOINT}/{id}")
     suspend fun getUserById(
         @Path("id") id: String,

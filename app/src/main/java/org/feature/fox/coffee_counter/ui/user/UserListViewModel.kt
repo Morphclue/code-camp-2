@@ -199,31 +199,26 @@ class UserListViewModel @Inject constructor(
     }
 
     private suspend fun loadUsers() {
-        val response = userRepository.getUsers()
+        val response = if (isAdminState.value) {
+            userRepository.getUsersAsAdmin()
+        } else {
+            userRepository.getUsers()
+        }
+
+        println("loadUsers: ${response.data}")
+
         if (response.data == null) {
             return
         }
 
-        if (isAdminState.value) {
-            response.data.forEach { user ->
-                val idResponse = userRepository.getUserById(user.id)
-
-                if (idResponse.data == null) {
-                    return@forEach
-                }
-
-                userList.add(idResponse.data)
-            }
-        } else {
-            response.data.forEach { user ->
-                userList.add(UserIdResponse(
-                    id = user.id,
-                    name = user.name,
-                    balance = 0.0,
-                ))
-            }
-
+        response.data.forEach { user ->
+            userList.add(UserIdResponse(
+                id = user.id,
+                name = user.name,
+                balance = user.balance ?: 0.0
+            ))
         }
+
         isLoaded.value = true
     }
 }
