@@ -1,6 +1,7 @@
 package org.feature.fox.coffee_counter.ui.user
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ fun UsersView(viewModel: IUserListViewModel) {
     ToastMessage(viewModel, context)
     FundingDialog(viewModel)
     AddUserDialog(viewModel)
+    SendMoneyDialog(viewModel)
 
     Scaffold(
         topBar = { MoneyAppBar(Pair(stringResource(R.string.user_list_title), viewModel.balance)) },
@@ -132,8 +134,11 @@ fun UserRow(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .padding(5.dp),
-        elevation = 5.dp
+            .padding(5.dp)
+            .clickable {
+                viewModel.sendMoneyDialogVisible.value = true
+            },
+        elevation = 5.dp,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -146,7 +151,7 @@ fun UserRow(
                 user.name,
                 fontWeight = FontWeight.Medium
             )
-            if(viewModel.isAdminState.value) MoneyEditRow(viewModel, user)
+            if (viewModel.isAdminState.value) MoneyEditRow(viewModel, user)
         }
     }
 }

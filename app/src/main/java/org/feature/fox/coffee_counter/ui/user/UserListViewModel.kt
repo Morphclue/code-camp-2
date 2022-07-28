@@ -31,6 +31,7 @@ interface IUserListViewModel : IToast {
     val isLoaded: MutableState<Boolean>
     val fundingDialogVisible: MutableState<Boolean>
     val editDialogVisible: MutableState<Boolean>
+    val sendMoneyDialogVisible: MutableState<Boolean>
     val funding: MutableState<TextFieldValue>
     val editName: MutableState<TextFieldValue>
     val editId: MutableState<TextFieldValue>
@@ -39,10 +40,12 @@ interface IUserListViewModel : IToast {
     val editReEnterPassword: MutableState<TextFieldValue>
     var currentUser: MutableLiveData<UserIdResponse>
     val balance: MutableState<Double>
+    val sendAmount: MutableState<TextFieldValue>
 
     suspend fun addFunding()
     suspend fun createUser()
     suspend fun getTotalBalance()
+    suspend fun sendMoney()
 }
 
 @HiltViewModel
@@ -55,6 +58,7 @@ class UserListViewModel @Inject constructor(
     override val isLoaded = mutableStateOf(false)
     override val fundingDialogVisible = mutableStateOf(false)
     override val editDialogVisible = mutableStateOf(false)
+    override val sendMoneyDialogVisible = mutableStateOf(false)
     override val funding = mutableStateOf(TextFieldValue())
     override val editName = mutableStateOf(TextFieldValue())
     override val editId = mutableStateOf(TextFieldValue())
@@ -65,6 +69,7 @@ class UserListViewModel @Inject constructor(
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val balance = mutableStateOf(0.0)
+    override val sendAmount = mutableStateOf(TextFieldValue())
 
     init {
         viewModelScope.launch {
@@ -90,8 +95,6 @@ class UserListViewModel @Inject constructor(
                     ?: UIText.StringResource(R.string.unknown_error))
                 return
             }
-
-
 
             userRepository.insertFundingDb(
                 Funding(
@@ -163,13 +166,17 @@ class UserListViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    override suspend fun sendMoney() {
+        // TODO: implement sendMoney
+    }
+
     private suspend fun loadUsers() {
         val response = userRepository.getUsers()
         if (response.data == null) {
             return
         }
 
-        if(isAdminState.value) {
+        if (isAdminState.value) {
             response.data.forEach { user ->
                 val idResponse = userRepository.getUserById(user.id)
 
@@ -179,7 +186,7 @@ class UserListViewModel @Inject constructor(
 
                 userList.add(idResponse.data)
             }
-        }else{
+        } else {
             response.data.forEach { user ->
                 userList.add(UserIdResponse(
                     id = user.id,
@@ -199,6 +206,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val isLoaded = mutableStateOf(true)
     override val fundingDialogVisible = mutableStateOf(false)
     override val editDialogVisible = mutableStateOf(true)
+    override val sendMoneyDialogVisible = mutableStateOf(false)
     override val funding = mutableStateOf(TextFieldValue())
     override val editName = mutableStateOf(TextFieldValue())
     override val editId = mutableStateOf(TextFieldValue())
@@ -209,6 +217,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val balance = mutableStateOf(13.0)
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
+    override val sendAmount = mutableStateOf(TextFieldValue())
 
     override suspend fun addFunding() {
         TODO("Not yet implemented")
@@ -219,6 +228,10 @@ class UserListViewModelPreview : IUserListViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendMoney() {
         TODO("Not yet implemented")
     }
 }
