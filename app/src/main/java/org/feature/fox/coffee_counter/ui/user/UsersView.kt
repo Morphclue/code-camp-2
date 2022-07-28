@@ -48,6 +48,7 @@ import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.items.LoadingBox
+import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
 @Preview(showSystemUi = true)
 @Composable
@@ -189,7 +190,7 @@ fun ProfilePicture(viewModel: IUserListViewModel, id: String) {
             .wrapContentSize()
             .size(30.dp)
             .clip(CircleShape)
-            .border(1.dp, Color.Black, CircleShape),
+            .border(1.dp, LiverOrgan, CircleShape),
         contentScale = ContentScale.Crop,
     )
 }
