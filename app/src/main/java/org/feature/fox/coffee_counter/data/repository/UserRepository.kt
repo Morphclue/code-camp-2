@@ -109,6 +109,22 @@ class UserRepository @Inject constructor(
         }
     }
 
+    override suspend fun getUsersAsAdmin(): Resource<List<UserResponse>> {
+        return try {
+            val response = apiService.getUsersAsAdmin()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    return@let Resource.success(it)
+                } ?: Resource.error(BuildConfig.UNKNOWN_ERROR, null)
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: ""
+                Resource.error(errorMessage, null)
+            }
+        } catch (e: Exception) {
+            Resource.error(BuildConfig.REACH_SERVER_ERROR, null)
+        }
+    }
+
     override suspend fun getUserById(id: String): Resource<UserIdResponse> {
         return try {
             val response = apiService.getUserById(id)

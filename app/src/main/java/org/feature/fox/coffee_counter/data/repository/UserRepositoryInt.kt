@@ -48,6 +48,8 @@ interface UserRepositoryInt {
 
     suspend fun getUsers(): Resource<List<UserResponse>>
 
+    suspend fun getUsersAsAdmin(): Resource<List<UserResponse>>
+
     suspend fun getUserById(id: String): Resource<UserIdResponse>
 
     suspend fun updateUser(id: String, userBody: UserBody): Resource<String>
