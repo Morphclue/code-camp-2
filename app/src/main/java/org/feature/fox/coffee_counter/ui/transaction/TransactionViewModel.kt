@@ -189,6 +189,7 @@ class TransactionViewModel @Inject constructor(
     override suspend fun getBalanceOfUser() {
         balanceList.clear()
         // Assuming that they are already sorted by timestamp
+        if(transactions == null) return
         balanceList.add(Pair(transactions[0].timestamp, 0.0))
         for (i in 1 until transactions.size) {
             balanceList.add(

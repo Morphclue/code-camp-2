@@ -70,7 +70,7 @@ fun HistoryView(
     QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
-        PieChartBoughtItems(daten = viewModel.purchases)
+        PieChartBoughtItems(viewModel)
         LineChartBalance(data = viewModel.balanceList)
         TransactionContainer(viewModel)
     }
@@ -133,15 +133,22 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 }
 
 // TODO: Maybe add detailed PieChart for total value of each category
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PieChartBoughtItems(daten: MutableList<Purchase>){
-    println("Size of purchases: ${daten.size}")
+fun PieChartBoughtItems(/*daten: MutableList<Purchase>*/ viewModel: ITransactionViewModel){
+    val coroutineScope = rememberCoroutineScope()
+    //println("Size of purchases: ${daten.size}")
     Column(
         modifier = Modifier
             .height(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        coroutineScope.launch {
+            viewModel.refreshTransactions()
+            //viewModel.getTotalBalance()
+            //viewModel.
+        }
         AndroidView(
             modifier = Modifier
                 .fillMaxSize(),
@@ -156,6 +163,7 @@ fun PieChartBoughtItems(daten: MutableList<Purchase>){
                 listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
                 val entries = mutableListOf<PieEntry>()
                 val chartMap = mutableMapOf<String, Pair<String, Int>>()
+                val daten = viewModel.purchases
                 daten.forEach { purchase ->
                     if (chartMap.containsKey(purchase.itemId)) {
                         val mapValue = chartMap[purchase.itemId]
