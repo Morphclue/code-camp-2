@@ -221,21 +221,20 @@ class UserListViewModel @Inject constructor(
                 balance = user.balance ?: 0.0
             ))
 
-            loadProfilePicture(user.id)
+            loadProfilePicture(user.id, user.imageTimestamp)
         }
 
         isLoaded.value = true
     }
 
-    private suspend fun loadProfilePicture(id: String) {
-        val timestampResponse = userRepository.getImageTimestamp(id)
-        if (timestampResponse.data == null) {
+    private suspend fun loadProfilePicture(id: String, imageTimestamp: Long?) {
+        if (imageTimestamp == null) {
             return
         }
 
         val dbImage = userRepository.getImageByIdDb(id)
         if (dbImage != null) {
-            if (dbImage.timestamp >= timestampResponse.data) {
+            if (dbImage.timestamp >= imageTimestamp) {
                 setImage(id, dbImage.encodedImage)
                 return
             }
