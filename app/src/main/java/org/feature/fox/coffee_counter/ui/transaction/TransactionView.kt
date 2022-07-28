@@ -45,7 +45,6 @@ import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
-import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.util.DateTimeFormatter
@@ -71,7 +70,8 @@ fun HistoryView(
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         PieChartBoughtItems(viewModel)
-        LineChartBalance(data = viewModel.balanceList)
+        //LineChartBalance(data = viewModel.balanceList)
+        LineChartBalance(viewModel)
         TransactionContainer(viewModel)
     }
 }
@@ -135,9 +135,8 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 // TODO: Maybe add detailed PieChart for total value of each category
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PieChartBoughtItems(/*daten: MutableList<Purchase>*/ viewModel: ITransactionViewModel){
+fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
     val coroutineScope = rememberCoroutineScope()
-    //println("Size of purchases: ${daten.size}")
     Column(
         modifier = Modifier
             .height(150.dp),
@@ -146,16 +145,13 @@ fun PieChartBoughtItems(/*daten: MutableList<Purchase>*/ viewModel: ITransaction
     ) {
         coroutineScope.launch {
             viewModel.refreshTransactions()
-            //viewModel.getTotalBalance()
-            //viewModel.
+            viewModel.getPurchasesOfUser()
         }
         AndroidView(
             modifier = Modifier
                 .fillMaxSize(),
             factory = { context ->
-                PieChart(context)
-            },
-            update = { pieChart ->
+                val pieChart = PieChart(context)
                 val listColors = ArrayList<Int>()
                 listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
                 listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
@@ -163,8 +159,8 @@ fun PieChartBoughtItems(/*daten: MutableList<Purchase>*/ viewModel: ITransaction
                 listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
                 val entries = mutableListOf<PieEntry>()
                 val chartMap = mutableMapOf<String, Pair<String, Int>>()
-                val daten = viewModel.purchases
-                daten.forEach { purchase ->
+                val purchases = viewModel.purchases
+                purchases.forEach { purchase ->
                     if (chartMap.containsKey(purchase.itemId)) {
                         val mapValue = chartMap[purchase.itemId]
                         if (mapValue != null) {
@@ -197,40 +193,77 @@ fun PieChartBoughtItems(/*daten: MutableList<Purchase>*/ viewModel: ITransaction
                 pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
                 pieChart.setDrawEntryLabels(false)
                 pieChart.notifyDataSetChanged()
-                //pieChart.description.text = "Consumed Items"
-                //pieChart.description.textSize = 10f
-                //pieChart.description.yOffset = 110f
-                //pieChart.description.xOffset = -60f
+                pieChart.description.text = "Consumed Items"
+                pieChart.description.textSize = 10f
+                pieChart.description.yOffset = 110f
+                pieChart.description.xOffset = -60f
                 pieChart.setNoDataText("No Purchases found")
-                /*pieChart.apply{
-                    data = pieData
-                    invalidate()
-                }*/
+                pieChart.invalidate()
+
+                pieChart
+            },
+            update = { pieChart ->
+                val listColors = ArrayList<Int>()
+                listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
+                listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
+                listColors.add(Color(241, 196, 15, 255).toArgb()) //Yellow
+                listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
+                val entries = mutableListOf<PieEntry>()
+                val chartMap = mutableMapOf<String, Pair<String, Int>>()
+                val purchases = viewModel.purchases
+                purchases.forEach { purchase ->
+                    if (chartMap.containsKey(purchase.itemId)) {
+                        val mapValue = chartMap[purchase.itemId]
+                        if (mapValue != null) {
+                            chartMap[purchase.itemId] =
+                                Pair(purchase.itemName, mapValue.second.plus(purchase.amount))
+                        }
+                    } else {
+                        chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
+                    }
+                }
+                chartMap.forEach {
+                    entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
+                }
+
+                if (entries.size != 0) {
+                    val dataset = PieDataSet(entries, "")
+                    dataset.colors = listColors
+                    dataset.sliceSpace = 3f
+                    dataset.valueTextSize = 7f
+                    val pieData = PieData(dataset)
+                    pieChart.data = pieData
+                }
                 pieChart.invalidate()
             }
         )
     }
 }
 
-//TODO format timestamps
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
+fun LineChartBalance(/*data: MutableList<Pair<Long, Double>>*/ viewModel: ITransactionViewModel) {
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .height(150.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        coroutineScope.launch {
+            viewModel.refreshTransactions()
+            viewModel.getBalanceOfUser()
+        }
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 val lineChart = LineChart(context)
                 val entries = mutableListOf<Entry>()
-                data.forEach { pair ->
+                viewModel.balanceList.forEach { pair ->
                     entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
                 }
 
-                if(entries.size != 0 ) {
+                if (entries.size != 0) {
                     val dataset = LineDataSet(entries, "")
                     dataset.axisDependency = YAxis.AxisDependency.LEFT
                     val lineData = LineData(dataset)
@@ -241,7 +274,6 @@ fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
                 lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
                 lineChart.xAxis.setDrawGridLines(false)
                 lineChart.xAxis.granularity = 2f
-                //lineChart.xAxis.valueFormatter = LargeValueFormatter()
                 lineChart.xAxis.valueFormatter = formatter
                 lineChart.axisLeft.setDrawGridLines(false)
                 lineChart.axisRight.isEnabled = false
@@ -249,6 +281,30 @@ fun LineChartBalance(data: MutableList<Pair<Long, Double>>) {
                 lineChart.description.text = "Balance over Time"
                 lineChart.invalidate()
                 lineChart
+            },
+            update = { lineChart ->
+                val entries = mutableListOf<Entry>()
+                viewModel.balanceList.forEach { pair ->
+                    entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
+                }
+
+                if (entries.size != 0) {
+                    val dataset = LineDataSet(entries, "")
+                    dataset.axisDependency = YAxis.AxisDependency.LEFT
+                    val lineData = LineData(dataset)
+                    lineChart.data = lineData
+                }
+
+                val formatter = DateTimeFormatter()
+                lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+                lineChart.xAxis.setDrawGridLines(false)
+                lineChart.xAxis.granularity = 2f
+                lineChart.xAxis.valueFormatter = formatter
+                lineChart.axisLeft.setDrawGridLines(false)
+                lineChart.axisRight.isEnabled = false
+                lineChart.setNoDataText("No funding/orders yet")
+                lineChart.description.text = "Balance over Time"
+                lineChart.invalidate()
             }
         )
     }

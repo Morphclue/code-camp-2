@@ -148,6 +148,7 @@ class TransactionViewModel @Inject constructor(
     }
 
     override suspend fun getPurchasesOfUser() {
+
         // Get Purchases from DB since new purchases only occur if the user buys items.
         // This is done inside ItemsView and updated at DB
         purchases =
@@ -177,7 +178,6 @@ class TransactionViewModel @Inject constructor(
                     )
                 )
         }
-
         //Update DB
         if (userRepository.getFundingOfUserByIdDb(preference.getTag(BuildConfig.USER_ID)).size != fundingList.size) {
             fundingList.forEach { funding ->
@@ -189,7 +189,7 @@ class TransactionViewModel @Inject constructor(
     override suspend fun getBalanceOfUser() {
         balanceList.clear()
         // Assuming that they are already sorted by timestamp
-        if(transactions == null) return
+        //if(transactions == null) return
         balanceList.add(Pair(transactions[0].timestamp, 0.0))
         for (i in 1 until transactions.size) {
             balanceList.add(
