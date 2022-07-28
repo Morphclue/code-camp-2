@@ -82,7 +82,7 @@ fun ItemsView(
         floatingActionButtonPosition = FabPosition.Center,
         content = {
             Column {
-                SearchBar()
+//                SearchBar()
                 if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
             }
         }

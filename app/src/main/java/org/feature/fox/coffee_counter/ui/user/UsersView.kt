@@ -84,7 +84,10 @@ fun UsersView(viewModel: IUserListViewModel) {
                 verticalAlignment = Alignment.CenterVertically,
             )
             {
-                SearchBar(fraction = 0.7f)
+                SearchBar(
+                    fraction = 0.8f,
+                    state = viewModel.searchField
+                )
                 Button(
                     shape = CircleShape,
                     onClick = {

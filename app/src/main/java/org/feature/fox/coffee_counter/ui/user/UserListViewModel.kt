@@ -46,6 +46,7 @@ interface IUserListViewModel : IToast {
     val balance: MutableState<Double>
     val sendAmount: MutableState<TextFieldValue>
     val userIdPictureMap: MutableMap<String, Bitmap?>
+    val searchField: MutableState<TextFieldValue>
 
     suspend fun addFunding()
     suspend fun createUser()
@@ -76,6 +77,7 @@ class UserListViewModel @Inject constructor(
     override val balance = mutableStateOf(0.0)
     override val sendAmount = mutableStateOf(TextFieldValue())
     override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
+    override val searchField = mutableStateOf(TextFieldValue())
 
     init {
         viewModelScope.launch {
@@ -276,6 +278,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val toast = toastChannel.receiveAsFlow()
     override val sendAmount = mutableStateOf(TextFieldValue())
     override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
+    override val searchField = mutableStateOf(TextFieldValue())
 
     override suspend fun addFunding() {
         TODO("Not yet implemented")
