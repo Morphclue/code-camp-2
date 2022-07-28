@@ -13,4 +13,7 @@ data class Achievement(
 
     @Json(name = "description")
     val description: String,
+
+    @Json(name = "icon")
+    val icon: String,
 )
