@@ -8,7 +8,7 @@ import java.util.*
 class DateTimeFormatter : ValueFormatter() {
 
     override fun getFormattedValue(value: Float): String {
-        val sdf = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
+        val sdf = SimpleDateFormat(BuildConfig.LINE_CHART_PATTERN, Locale.GERMAN)
         return sdf.format(value.toLong())
     }
 }
