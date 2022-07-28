@@ -70,7 +70,6 @@ fun HistoryView(
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
         PieChartBoughtItems(viewModel)
-        //LineChartBalance(data = viewModel.balanceList)
         LineChartBalance(viewModel)
         TransactionContainer(viewModel)
     }
@@ -152,38 +151,6 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                 .fillMaxSize(),
             factory = { context ->
                 val pieChart = PieChart(context)
-                val listColors = ArrayList<Int>()
-                listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
-                listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
-                listColors.add(Color(241, 196, 15, 255).toArgb()) //Yellow
-                listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
-                val entries = mutableListOf<PieEntry>()
-                val chartMap = mutableMapOf<String, Pair<String, Int>>()
-                val purchases = viewModel.purchases
-                purchases.forEach { purchase ->
-                    if (chartMap.containsKey(purchase.itemId)) {
-                        val mapValue = chartMap[purchase.itemId]
-                        if (mapValue != null) {
-                            chartMap[purchase.itemId] =
-                                Pair(purchase.itemName, mapValue.second.plus(purchase.amount))
-                        }
-                    } else {
-                        chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
-                    }
-                }
-                chartMap.forEach {
-                    entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
-                }
-
-                if(entries.size != 0) {
-                    val dataset = PieDataSet(entries, "")
-                    dataset.colors = listColors
-                    dataset.sliceSpace = 3f
-                    dataset.valueTextSize = 7f
-                    val pieData = PieData(dataset)
-                    pieChart.data = pieData
-                }
-                pieChart.setUsePercentValues(false)
                 // Cirlce Styling
                 pieChart.holeRadius = 20f
                 pieChart.transparentCircleRadius = 25f
@@ -198,7 +165,6 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                 pieChart.description.yOffset = 110f
                 pieChart.description.xOffset = -60f
                 pieChart.setNoDataText("No Purchases found")
-                pieChart.invalidate()
 
                 pieChart
             },
@@ -242,7 +208,7 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun LineChartBalance(/*data: MutableList<Pair<Long, Double>>*/ viewModel: ITransactionViewModel) {
+fun LineChartBalance(viewModel: ITransactionViewModel) {
     val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
@@ -258,18 +224,6 @@ fun LineChartBalance(/*data: MutableList<Pair<Long, Double>>*/ viewModel: ITrans
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 val lineChart = LineChart(context)
-                val entries = mutableListOf<Entry>()
-                viewModel.balanceList.forEach { pair ->
-                    entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
-                }
-
-                if (entries.size != 0) {
-                    val dataset = LineDataSet(entries, "")
-                    dataset.axisDependency = YAxis.AxisDependency.LEFT
-                    val lineData = LineData(dataset)
-                    lineChart.data = lineData
-                }
-
                 val formatter = DateTimeFormatter()
                 lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
                 lineChart.xAxis.setDrawGridLines(false)
@@ -279,6 +233,8 @@ fun LineChartBalance(/*data: MutableList<Pair<Long, Double>>*/ viewModel: ITrans
                 lineChart.axisRight.isEnabled = false
                 lineChart.setNoDataText("No funding/orders yet")
                 lineChart.description.text = "Balance over Time"
+                lineChart.description.xOffset = 150f
+                lineChart.description.yOffset = 100f
                 lineChart.invalidate()
                 lineChart
             },
@@ -294,16 +250,6 @@ fun LineChartBalance(/*data: MutableList<Pair<Long, Double>>*/ viewModel: ITrans
                     val lineData = LineData(dataset)
                     lineChart.data = lineData
                 }
-
-                val formatter = DateTimeFormatter()
-                lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-                lineChart.xAxis.setDrawGridLines(false)
-                lineChart.xAxis.granularity = 2f
-                lineChart.xAxis.valueFormatter = formatter
-                lineChart.axisLeft.setDrawGridLines(false)
-                lineChart.axisRight.isEnabled = false
-                lineChart.setNoDataText("No funding/orders yet")
-                lineChart.description.text = "Balance over Time"
                 lineChart.invalidate()
             }
         )
