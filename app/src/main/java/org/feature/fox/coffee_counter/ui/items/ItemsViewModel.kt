@@ -41,6 +41,7 @@ interface IItemsViewModel : IToast {
     val editItemDialogVisible: MutableState<Boolean>
     val confirmBuyItemDialogVisible: MutableState<Boolean>
     val balance: MutableState<Double>
+    val searchField: MutableState<TextFieldValue>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item): Boolean
@@ -52,6 +53,7 @@ interface IItemsViewModel : IToast {
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
+    fun search()
 }
 
 @HiltViewModel
@@ -77,7 +79,7 @@ class ItemsViewModel @Inject constructor(
     override val editItemDialogVisible = mutableStateOf(false)
     override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(0.0)
-
+    override val searchField = mutableStateOf(TextFieldValue())
 
     init {
         viewModelScope.launch {
@@ -356,6 +358,10 @@ class ItemsViewModel @Inject constructor(
         }
         balance.value = response.data.balance
     }
+
+    override fun search() {
+        TODO("Not yet implemented")
+    }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
@@ -376,6 +382,7 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val editItemDialogVisible = mutableStateOf(false)
     override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(50.0)
+    override val searchField = mutableStateOf(TextFieldValue())
 
     init {
         availableItemsState = mutableStateListOf(
@@ -426,6 +433,10 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override fun search() {
         TODO("Not yet implemented")
     }
 }
