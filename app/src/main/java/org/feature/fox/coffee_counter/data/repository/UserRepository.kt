@@ -72,6 +72,10 @@ class UserRepository @Inject constructor(
         return userDao.getAchievementListOfUserDb(userId)
     }
 
+    override suspend fun insertAchievementDb(achievement: Achievement){
+        userDao.insertAchievementDb(achievement)
+    }
+
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {
         return try {
             val response = apiService.postLogin(loginBody)

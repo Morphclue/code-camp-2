@@ -35,6 +35,12 @@ interface UserRepositoryInt {
 
     suspend fun deleteImageDb(image: Image)
 
+    suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
+
+    suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
+
+    suspend fun insertAchievementDb(achievement: Achievement)
+
     // API Calls
 
     suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse>
@@ -64,8 +70,4 @@ interface UserRepositoryInt {
     suspend fun updateAdmin(id: String, userBody: UserBody): Resource<String>
 
     suspend fun addFunding(id: String, fundingBody: FundingBody): Resource<String>
-
-    suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
-
-    suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
 }

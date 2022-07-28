@@ -51,4 +51,7 @@ interface UserDao {
     @Transaction
     @Query("SELECT * FROM achievement WHERE userId=:userId")
     suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAchievementDb(achievement: Achievement)
 }
