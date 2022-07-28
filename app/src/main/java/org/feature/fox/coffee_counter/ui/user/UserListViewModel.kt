@@ -1,5 +1,8 @@
 package org.feature.fox.coffee_counter.ui.user
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
@@ -42,6 +45,7 @@ interface IUserListViewModel : IToast {
     var currentUser: MutableLiveData<UserIdResponse>
     val balance: MutableState<Double>
     val sendAmount: MutableState<TextFieldValue>
+    val userIdPictureMap: MutableMap<String, Bitmap?>
 
     suspend fun addFunding()
     suspend fun createUser()
@@ -71,6 +75,7 @@ class UserListViewModel @Inject constructor(
     override val toast = toastChannel.receiveAsFlow()
     override val balance = mutableStateOf(0.0)
     override val sendAmount = mutableStateOf(TextFieldValue())
+    override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
 
     init {
         viewModelScope.launch {
@@ -215,9 +220,41 @@ class UserListViewModel @Inject constructor(
                 name = user.name,
                 balance = user.balance ?: 0.0
             ))
+
+            loadProfilePicture(user.id)
         }
 
         isLoaded.value = true
+    }
+
+    private suspend fun loadProfilePicture(id: String) {
+        val timestampResponse = userRepository.getImageTimestamp(id)
+        if (timestampResponse.data == null) {
+            return
+        }
+
+        val dbImage = userRepository.getImageByIdDb(id)
+        if (dbImage != null) {
+            if (dbImage.timestamp >= timestampResponse.data) {
+                setImage(id, dbImage.encodedImage)
+                return
+            }
+        }
+
+        val response = userRepository.getImage(id)
+        if (response.data == null) {
+            toastChannel.send(response.message?.let { UIText.DynamicString(it) }
+                ?: UIText.StringResource(R.string.unknown_error))
+            return
+        }
+        userRepository.insertImageDb(response.data)
+        setImage(id, response.data.encodedImage)
+    }
+
+    private fun setImage(id: String, encodedImage: String) {
+        val imageBytes = Base64.decode(encodedImage, Base64.DEFAULT)
+        val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        userIdPictureMap[id] = bitmap
     }
 }
 
@@ -239,6 +276,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
     override val sendAmount = mutableStateOf(TextFieldValue())
+    override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
 
     override suspend fun addFunding() {
         TODO("Not yet implemented")
