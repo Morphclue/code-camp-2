@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.ui.authentication
 
+import android.util.Base64
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
@@ -21,6 +22,7 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import org.json.JSONObject
 import javax.inject.Inject
 
 interface IAuthenticationViewModel : IToast {
@@ -67,10 +69,19 @@ class AuthenticationViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return
         }
+
         preference.setTag(BuildConfig.USER_ID, idState.value.text.trim())
         preference.setTag(BuildConfig.USER_PASSWORD, passwordState.value.text.trim())
         preference.setTag(BuildConfig.EXPIRATION, response.data.expiration.toString())
         preference.setTag(BuildConfig.BEARER_TOKEN, response.data.token)
+
+        val elements = response.data.token.split('.')
+        if (elements.size == 3) {
+            val (_, payload, _) = elements
+            preference.setTag(BuildConfig.IS_ADMIN, JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin"))
+        } else {
+            error("Invalid token")
+        }
 
         // Fetch User Data to get name of user
         val user = userRepository.getUserById(idState.value.text.trim())
@@ -81,12 +92,11 @@ class AuthenticationViewModel @Inject constructor(
             return
         }
         // Insert User into db in case the user registered on another device
-        //TODO Fix admin state
         userRepository.insertUserDb(
             User(
                 userId = user.data.id,
                 name = user.data.name,
-                false,
+                isAdmin = preference.getTag(BuildConfig.IS_ADMIN, true),
             )
         )
 

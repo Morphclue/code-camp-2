@@ -1,11 +1,14 @@
 package org.feature.fox.coffee_counter.di.services.network
 
+import okhttp3.MultipartBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.models.body.FundingBody
 import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.LoginBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
+import org.feature.fox.coffee_counter.data.models.body.SendMoneyBody
 import org.feature.fox.coffee_counter.data.models.body.UserBody
+import org.feature.fox.coffee_counter.data.models.response.ImageResponse
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.data.models.response.LoginResponse
 import org.feature.fox.coffee_counter.data.models.response.TransactionResponse
@@ -15,8 +18,10 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 
@@ -93,6 +98,34 @@ interface ApiService {
 
     @DELETE("${BuildConfig.ITEMS_ENDPOINT}/{id}")
     suspend fun deleteItem(
+        @Path("id") id: String,
+    ): Response<String>
+
+    @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image")
+    suspend fun getImage(
+        @Path("id") id: String,
+    ): Response<ImageResponse>
+
+    @POST("${BuildConfig.USERS_ENDPOINT}/{id}/sendMoney")
+    suspend fun sendMoney(
+        @Path("id") id: String,
+        @Body sendMoneyBody: SendMoneyBody,
+    ): Response<String>
+
+    @GET("${BuildConfig.USERS_ENDPOINT}/{id}/image/timestamp")
+    suspend fun getImageTimestamp(
+        @Path("id") id: String,
+    ): Response<Long>
+
+    @Multipart
+    @POST("${BuildConfig.USERS_ENDPOINT}/{id}/image")
+    suspend fun postImage(
+        @Path("id") id: String,
+        @Part image: MultipartBody.Part,
+    ): Response<String>
+
+    @DELETE("${BuildConfig.USERS_ENDPOINT}/{id}/image")
+    suspend fun deleteImage(
         @Path("id") id: String,
     ): Response<String>
 }

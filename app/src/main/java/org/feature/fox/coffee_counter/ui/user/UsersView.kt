@@ -131,6 +131,7 @@ fun UserRow(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .height(60.dp)
             .padding(5.dp),
         elevation = 5.dp
     ) {
@@ -145,7 +146,7 @@ fun UserRow(
                 user.name,
                 fontWeight = FontWeight.Medium
             )
-            MoneyEditRow(viewModel, user)
+            if(viewModel.isAdminState.value) MoneyEditRow(viewModel, user)
         }
     }
 }
