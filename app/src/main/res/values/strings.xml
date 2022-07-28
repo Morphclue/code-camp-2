@@ -55,6 +55,7 @@
     <string name="currency">€</string>
     <string name="qrcode">Share money via QR-Code</string>
     <string name="send_money">Send money via QR-Code</string>
+    <string name="share_money">Share money with your friend</string>
     <string name="receive_money">Receive money via QR-Code</string>
     <string name="send">Send</string>
     <string name="scan_qrcode">Scan the QR-Code of your friend</string>

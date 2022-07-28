@@ -10,5 +10,11 @@ data class UserResponse(
     val id: String,
 
     @Json(name = "name")
-    val name: String
+    val name: String,
+
+    @Json(name = "balance")
+    val balance: Double? = null,
+
+    @Json(name = "imageTimestamp")
+    val imageTimestamp: Long? = null,
 )

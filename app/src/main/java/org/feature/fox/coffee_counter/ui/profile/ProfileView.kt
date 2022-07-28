@@ -48,6 +48,7 @@ import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
+import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
 @Preview(showSystemUi = true)
 @Composable
@@ -156,7 +157,7 @@ fun ProfileIcon(viewModel: IProfileViewModel) {
                     }
                 )
                 .clip(CircleShape)
-                .border(2.dp, Color.Black, CircleShape),
+                .border(2.dp, LiverOrgan, CircleShape),
             contentScale = ContentScale.Crop,
         )
     }
