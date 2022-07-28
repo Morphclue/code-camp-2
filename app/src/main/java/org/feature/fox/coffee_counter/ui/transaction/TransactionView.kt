@@ -147,7 +147,6 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
             modifier = Modifier
                 .fillMaxSize(),
             factory = { context ->
-                Log.e("PURCHASE", "Size inside piechart: ${data.size}")
                 val listColors = ArrayList<Int>()
                 listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
                 listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
