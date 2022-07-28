@@ -43,8 +43,8 @@ fun BottomNavBar(navController: NavHostController) {
     val items = listOf(
         BottomNavItem.Items,
         BottomNavItem.History,
-        BottomNavItem.Profile,
         BottomNavItem.Users,
+        BottomNavItem.Profile,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -65,10 +65,10 @@ fun BottomNavBar(navController: NavHostController) {
 @Composable
 fun Navigation(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel,
     transactionsViewModel: TransactionViewModel,
     itemsViewModel: ItemsViewModel,
     userListViewModel: UserListViewModel,
+    profileViewModel: ProfileViewModel,
 ) {
     NavHost(navController = navController, startDestination = BottomNavItem.Items.route) {
         composable(BottomNavItem.Items.route) {
@@ -77,11 +77,11 @@ fun Navigation(
         composable(BottomNavItem.History.route) {
             HistoryView(transactionsViewModel)
         }
-        composable(BottomNavItem.Profile.route) {
-            ProfileView(profileViewModel)
-        }
         composable(BottomNavItem.Users.route) {
             UsersView(userListViewModel)
+        }
+        composable(BottomNavItem.Profile.route) {
+            ProfileView(profileViewModel)
         }
     }
 }
