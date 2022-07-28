@@ -206,6 +206,7 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
     }
 }
 
+// TODO Last Value is hidden behind view
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LineChartBalance(viewModel: ITransactionViewModel) {
