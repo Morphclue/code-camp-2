@@ -154,12 +154,14 @@ fun PieChartBoughtItems(data: MutableList<Purchase>){
                 listColors.add(Color(241, 196, 15, 255).toArgb()) //Yellow
                 listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
                 val entries = mutableListOf<PieEntry>()
-                var chartMap = mutableMapOf<String, Pair<String, Int>>()
+                val chartMap = mutableMapOf<String, Pair<String, Int>>()
                 data.forEach { purchase ->
                     if (chartMap.containsKey(purchase.itemId)) {
                         val mapValue = chartMap[purchase.itemId]
-                        chartMap[purchase.itemId] =
-                            Pair(purchase.itemName, mapValue!!.second?.plus(purchase.amount))
+                        if (mapValue != null) {
+                            chartMap[purchase.itemId] =
+                                Pair(purchase.itemName, mapValue.second.plus(purchase.amount))
+                        }
                     } else {
                         chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
                     }
