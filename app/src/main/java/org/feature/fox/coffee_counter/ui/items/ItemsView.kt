@@ -43,7 +43,6 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
-import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
@@ -82,7 +81,13 @@ fun ItemsView(
         floatingActionButtonPosition = FabPosition.Center,
         content = {
             Column {
-                SearchBar()
+                // FIXME: add searchbar back in once the functionality is implemented
+//                SearchBar(
+//                    state = viewModel.searchField,
+//                    onValueChanged = {
+//                        viewModel.search()
+//                    },
+//                )
                 if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
             }
         }
