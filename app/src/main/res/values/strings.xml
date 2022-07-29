@@ -62,4 +62,5 @@
     <string name="money_sent_success">Send money successfully</string>
     <string name="empty_money_amount">Amount should not be empty</string>
     <string name="edit_profile_image">Edit profile image</string>
+    <string name="edit_fab">Edit FAB</string>
 </resources>
