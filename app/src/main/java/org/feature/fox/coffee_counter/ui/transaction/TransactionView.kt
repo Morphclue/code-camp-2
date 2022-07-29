@@ -164,21 +164,9 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                 .fillMaxSize(),
             factory = { context ->
                 val pieChart = PieChart(context)
-                // Cirlce Styling
-                pieChart.holeRadius = 20f
-                pieChart.transparentCircleRadius = 25f
-                // Legend Styling
-                pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
-                pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-                pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-                pieChart.setDrawEntryLabels(false)
-                pieChart.notifyDataSetChanged()
-                pieChart.description.text = "Consumed Items"
-                pieChart.description.textSize = 10f
-                pieChart.description.yOffset = 110f
-                pieChart.description.xOffset = -60f
-                pieChart.setNoDataText("No Purchases found")
-
+                stylePieChart(pieChart)
+                pieChart.description.text = UIText.StringResource(R.string.piechart_description).asString(context)
+                pieChart.setNoDataText(UIText.StringResource(R.string.piechart_nodata).asString(context))
                 pieChart
             },
             update = { pieChart ->
@@ -202,11 +190,9 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                         chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
                     }
                 }
-
                 chartMap.forEach {
                     entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
                 }
-
                 if (entries.size != 0) {
                     val dataset = PieDataSet(entries, "")
                     dataset.colors = listColors
@@ -240,17 +226,9 @@ fun LineChartBalance(viewModel: ITransactionViewModel) {
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 val lineChart = LineChart(context)
-                val formatter = DateTimeFormatter()
-                lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-                lineChart.xAxis.setDrawGridLines(false)
-                lineChart.xAxis.granularity = 2f
-                lineChart.xAxis.valueFormatter = formatter
-                lineChart.axisLeft.setDrawGridLines(false)
-                lineChart.axisRight.isEnabled = false
-                lineChart.setNoDataText("No funding/orders yet")
-                lineChart.description.text = "Balance over Time"
-                lineChart.description.xOffset = 150f
-                lineChart.description.yOffset = 100f
+                lineChart.description.text= UIText.StringResource(R.string.linechart_description).asString(context)
+                lineChart.setNoDataText(UIText.StringResource(R.string.linechart_nodata).asString(context))
+                styleLineChart(lineChart)
                 lineChart.invalidate()
                 lineChart
             },
@@ -336,4 +314,31 @@ fun TransactionValue(color: Color, value: String) {
         color = color,
         textAlign = TextAlign.End
     )
+}
+
+fun stylePieChart(pieChart: PieChart) {
+    pieChart.holeRadius = 20f
+    pieChart.transparentCircleRadius = 25f
+    // Legend Styling
+    pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
+    pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+    pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+    pieChart.setDrawEntryLabels(false)
+    pieChart.notifyDataSetChanged()
+    pieChart.description.textSize = 10f
+    pieChart.description.yOffset = 110f
+    pieChart.description.xOffset = -60f
+}
+
+
+fun styleLineChart(lineChart: LineChart) {
+    val formatter = DateTimeFormatter()
+    lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+    lineChart.xAxis.setDrawGridLines(false)
+    lineChart.xAxis.granularity = 2f
+    lineChart.xAxis.valueFormatter = formatter
+    lineChart.axisLeft.setDrawGridLines(false)
+    lineChart.axisRight.isEnabled = false
+    lineChart.description.xOffset = 150f
+    lineChart.description.yOffset = 100f
 }
