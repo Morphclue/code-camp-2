@@ -314,7 +314,7 @@ class ItemsViewModel @Inject constructor(
                 id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 price = currentItemPrice.value.text.toDouble(),
-                amount = currentItemPrice.value.text.toInt(),
+                amount = currentItemAmount.value.text.toInt(),
             )
         )
 
