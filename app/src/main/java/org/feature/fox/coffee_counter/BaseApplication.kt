@@ -14,11 +14,13 @@ class BaseApplication : Application() {
     }
 
     companion object {
-        private var instance: BaseApplication? = null
+        lateinit var instance: BaseApplication
+            private set
 
-        fun applicationContext(): Context {
-            return instance!!.applicationContext
-        }
+        val applicationContext: Context
+            get() {
+                return instance.applicationContext
+            }
     }
 
     override fun onCreate() {

@@ -11,10 +11,10 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 
 fun showAchievementNotification(achievement: Achievement) {
     val notificationManager: NotificationManagerCompat =
-        NotificationManagerCompat.from(BaseApplication.applicationContext())
+        NotificationManagerCompat.from(BaseApplication.applicationContext)
 
     val notification: Notification = NotificationCompat.Builder(
-        BaseApplication.applicationContext(), BuildConfig.NOTIFICATION_CHANNEL_ID
+        BaseApplication.applicationContext, BuildConfig.NOTIFICATION_CHANNEL_ID
     )
         .setSmallIcon(R.drawable.coffee)
         .setContentTitle(achievement.name)
