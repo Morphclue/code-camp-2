@@ -8,7 +8,6 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.ui.common.showAchievementNotification
-import org.feature.fox.coffee_counter.util.UIText
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.*
@@ -20,7 +19,6 @@ class AchievementGeneration @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) {
-
     suspend fun checkAchievements(
         items: List<Item>
     ) {
@@ -37,70 +35,62 @@ class AchievementGeneration @Inject constructor(
         purchases: List<Purchase>,
         achievements: List<Achievement>
     ) {
-        val achievement1Name = UIText.StringResource(R.string.rookie_numbers).toString()
-        val achievement1Description =
-            UIText.StringResource(R.string.rookie_numbers_description).toString()
+        val rookieAchievementName = "Rookie numbers"
+        val rookieAchievementDescription = "You only spent 100€"
 
-        if (!achievements.any { it.name == achievement1Name }) {
-            var totalSpentMoney = 0.0
+        val richBitchAchievementName = "Rich Bitch"
+        val richBitchAchievementDescription = "You spent more then 1000€, not bad"
+
+        val theOnePercentAchievementName = "You are the 1%"
+        val theOnePercentAchievementDescription = "You spent more then 10000€, wtf"
+
+        val rookieAchievementReceived = achievements.any { it.name == rookieAchievementName }
+        val richBitchAchievementReceived = achievements.any { it.name == richBitchAchievementName }
+        val theOnePercentAchievementReceived =
+            achievements.any { it.name == theOnePercentAchievementName }
+
+        var totalSpentMoney = 0.0
+
+        if (!rookieAchievementReceived && !richBitchAchievementReceived && !theOnePercentAchievementReceived) {
             purchases.forEach { purchase ->
                 totalSpentMoney += purchase.totalValue
-            }
-            if (totalSpentMoney <= -100) {
-                val cashAchievement = Achievement(
-                    name = achievement1Name,
-                    userId = preference.getTag(BuildConfig.USER_ID),
-                    timestamp = System.currentTimeMillis() / 1000,
-                    description = achievement1Description,
-                    icon = R.drawable.rookie_numbers
-                )
-                userRepository.insertAchievementDb(cashAchievement)
-                showAchievementNotification(cashAchievement)
             }
         }
 
-        val achievement2Name = UIText.StringResource(R.string.rich_bitch).toString()
-        val achievement2Description =
-            UIText.StringResource(R.string.rich_bitch_description).toString()
-
-        if (!achievements.any { it.name == achievement2Name }) {
-            var totalSpentMoney = 0.0
-            purchases.forEach { purchase ->
-                totalSpentMoney += purchase.totalValue
-            }
-            if (totalSpentMoney <= -1000) {
-                val cashAchievement = Achievement(
-                    name = achievement2Name,
-                    userId = preference.getTag(BuildConfig.USER_ID),
-                    timestamp = System.currentTimeMillis() / 1000,
-                    description = achievement2Description,
-                    icon = R.drawable.rich_bitch
-                )
-                userRepository.insertAchievementDb(cashAchievement)
-                showAchievementNotification(cashAchievement)
-            }
+        if (!rookieAchievementReceived && totalSpentMoney <= -100) {
+            val cashAchievement = Achievement(
+                name = rookieAchievementName,
+                userId = preference.getTag(BuildConfig.USER_ID),
+                timestamp = System.currentTimeMillis() / 1000,
+                description = rookieAchievementDescription,
+                icon = R.drawable.rookie_numbers
+            )
+            userRepository.insertAchievementDb(cashAchievement)
+            showAchievementNotification(cashAchievement)
         }
 
-        val achievement3Name = UIText.StringResource(R.string.the_one_percent).toString()
-        val achievement3Description =
-            UIText.StringResource(R.string.the_one_percent_description).toString()
+        if (!richBitchAchievementReceived && totalSpentMoney <= -1000) {
+            val cashAchievement = Achievement(
+                name = richBitchAchievementName,
+                userId = preference.getTag(BuildConfig.USER_ID),
+                timestamp = System.currentTimeMillis() / 1000,
+                description = richBitchAchievementDescription,
+                icon = R.drawable.rich_bitch
+            )
+            userRepository.insertAchievementDb(cashAchievement)
+            showAchievementNotification(cashAchievement)
+        }
 
-        if (!achievements.any { it.name == achievement3Name }) {
-            var totalSpentMoney = 0.0
-            purchases.forEach { purchase ->
-                totalSpentMoney += purchase.totalValue
-            }
-            if (totalSpentMoney <= -10000) {
-                val cashAchievement = Achievement(
-                    name = achievement3Name,
-                    userId = preference.getTag(BuildConfig.USER_ID),
-                    timestamp = System.currentTimeMillis() / 1000,
-                    description = achievement3Description,
-                    icon = R.drawable.the_one_percent
-                )
-                userRepository.insertAchievementDb(cashAchievement)
-                showAchievementNotification(cashAchievement)
-            }
+        if (!theOnePercentAchievementReceived && totalSpentMoney <= -10000) {
+            val cashAchievement = Achievement(
+                name = theOnePercentAchievementName,
+                userId = preference.getTag(BuildConfig.USER_ID),
+                timestamp = System.currentTimeMillis() / 1000,
+                description = theOnePercentAchievementDescription,
+                icon = R.drawable.the_one_percent
+            )
+            userRepository.insertAchievementDb(cashAchievement)
+            showAchievementNotification(cashAchievement)
         }
     }
 
@@ -110,9 +100,9 @@ class AchievementGeneration @Inject constructor(
         items: List<Item>,
     ) {
         items.forEach { item ->
-            val achievementName = "${item.name} ${UIText.StringResource(R.string.junkie)}"
+            val achievementName = "${item.name} junkie"
             val achievementDescription =
-                "${UIText.StringResource(R.string.drank_over_100)} ${item.name}"
+                "You drank over 100 ${item.name}"
             if (!achievements.any { it.name == achievementName }) {
                 var totalPurchases = 0
                 purchases.filter { it.itemName == item.name }.forEach { purchase ->
@@ -137,9 +127,8 @@ class AchievementGeneration @Inject constructor(
         purchases: List<Purchase>,
         achievements: List<Achievement>,
     ) {
-        val achievementName = UIText.StringResource(R.string.weak_sleep).toString()
-        val achievementDescription =
-            UIText.StringResource(R.string.weak_sleep_description).toString()
+        val achievementName = "Sleep is for the weak"
+        val achievementDescription = "You bought a drink in the night"
         val purchaseTime: LocalTime = LocalTime.parse(
             SimpleDateFormat(
                 "HH:mm:ss",
