@@ -237,6 +237,7 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item) {
                 .fillMaxWidth()
                 .padding(5.dp)
                 .clickable {
+                    viewModel.originalItemId.value = TextFieldValue(item.id).text
                     viewModel.currentItemId.value = TextFieldValue(item.id)
                     viewModel.currentItemName.value = TextFieldValue(item.name)
                     viewModel.currentItemAmount.value = TextFieldValue(item.amount.toString())

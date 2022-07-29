@@ -259,7 +259,6 @@ class ItemsViewModel @Inject constructor(
 
         val response = itemRepository.postItem(
             ItemBody(
-                id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble(),
@@ -271,10 +270,11 @@ class ItemsViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return false
         }
+
         // add new added item to DB
         itemRepository.insertItemDb(
             Item(
-                id = currentItemId.value.text,
+                id = response.data,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble()
@@ -293,7 +293,6 @@ class ItemsViewModel @Inject constructor(
         }
 
         val response = itemRepository.updateItem(
-            itemId = originalItemId.value,
             itemBody = ItemBody(
                 id = currentItemId.value.text,
                 name = currentItemName.value.text,
