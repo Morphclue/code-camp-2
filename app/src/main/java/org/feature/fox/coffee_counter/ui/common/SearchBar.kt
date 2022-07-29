@@ -11,34 +11,38 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    fraction: Float = 1.0f
+    fraction: Float = 1.0f,
+    state: MutableState<TextFieldValue>,
+    onValueChanged: () -> Unit = {},
 ) {
-    val idState = remember { mutableStateOf(TextFieldValue()) }
     TextField(
-        value = idState.value,
-        onValueChange = { idState.value = it },
-        leadingIcon = {
+        value = state.value,
+        onValueChange = {
+            state.value = it
+            onValueChanged()
+        },
+        trailingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = null
+                contentDescription = "Search",
             )
         },
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.LightGray,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
+            backgroundColor = Color.White,
+            focusedIndicatorColor = CrayolaCopper,
+            unfocusedIndicatorColor = CrayolaCopper,
         ),
         placeholder = {
             Text(stringResource(R.string.search_hint))
