@@ -93,9 +93,9 @@ class ItemRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateItem(itemId: String, itemBody: ItemBody): Resource<String> {
+    override suspend fun updateItem(itemBody: ItemBody): Resource<String> {
         return try {
-            val response = apiService.updateItem(itemId, itemBody)
+            val response = apiService.updateItem(itemBody)
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.success(it)

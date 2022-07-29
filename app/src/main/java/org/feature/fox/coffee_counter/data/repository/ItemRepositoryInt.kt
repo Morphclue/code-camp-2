@@ -22,7 +22,7 @@ interface ItemRepositoryInt {
 
     suspend fun getItemById(itemId: String): Resource<ItemResponse>
 
-    suspend fun updateItem(itemId: String, itemBody: ItemBody): Resource<String>
+    suspend fun updateItem(itemBody: ItemBody): Resource<String>
 
     suspend fun deleteItemById(itemId: String): Resource<String>
 

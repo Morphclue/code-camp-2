@@ -93,9 +93,8 @@ interface ApiService {
         @Body itemBody: ItemBody,
     ): Response<String>
 
-    @PUT("${BuildConfig.ITEMS_ENDPOINT}/{id}")
+    @PUT(BuildConfig.ITEMS_ENDPOINT)
     suspend fun updateItem(
-        @Path("id") id: String,
         @Body itemBody: ItemBody,
     ): Response<String>
 
