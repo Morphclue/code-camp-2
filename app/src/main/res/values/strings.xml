@@ -73,4 +73,6 @@
     <string name="rich_bitch_description">You spent more then 1000€, not bad</string>
     <string name="rookie_numbers">Rookie numbers</string>
     <string name="rookie_numbers_description">You only spent 100€</string>
+    <string name="edit_profile_image">Edit profile image</string>
+    <string name="edit_fab">Edit FAB</string>
 </resources>

@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -43,7 +44,6 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
-import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
@@ -82,7 +82,13 @@ fun ItemsView(
         floatingActionButtonPosition = FabPosition.Center,
         content = {
             Column {
-                SearchBar()
+                // FIXME: add searchbar back in once the functionality is implemented
+//                SearchBar(
+//                    state = viewModel.searchField,
+//                    onValueChanged = {
+//                        viewModel.search()
+//                    },
+//                )
                 if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
             }
         }
@@ -290,10 +296,12 @@ fun EditFAB(viewModel: IItemsViewModel) {
             viewModel.adminView.value = !viewModel.adminView.value
         },
         backgroundColor = CrayolaCopper,
-        contentColor = Color.White
-
+        contentColor = Color.White,
     ) {
-        Icon(Icons.Filled.Add, "")
+        Icon(
+            Icons.Outlined.Sync,
+            contentDescription = stringResource(R.string.edit_fab),
+        )
     }
 }
 
