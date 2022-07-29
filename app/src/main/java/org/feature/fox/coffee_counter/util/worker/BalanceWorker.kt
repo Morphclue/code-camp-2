@@ -15,8 +15,6 @@ import org.feature.fox.coffee_counter.di.services.AppPreference
 class BalanceWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
-    private val userRepository: UserRepository,
-    private val preference: AppPreference,
 ) : CoroutineWorker(context, workerParams) {
 
     // TODO fetch API and put values into DB. Implement queries that return live data from db

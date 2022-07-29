@@ -47,7 +47,12 @@ import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.ui.theme.Cinnabar
+import org.feature.fox.coffee_counter.ui.theme.MediumSeaGreen
+import org.feature.fox.coffee_counter.ui.theme.MoonYellow
+import org.feature.fox.coffee_counter.ui.theme.SummerSky
 import org.feature.fox.coffee_counter.util.DateTimeFormatter
+import org.feature.fox.coffee_counter.util.UIText
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -105,13 +110,21 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             if (transaction.type == "funding") {
                 TransactionRow(
                     type = "Funding",
-                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(Date(transaction.timestamp)),
+                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(
+                        Date(
+                            transaction.timestamp
+                        )
+                    ),
                     value = transaction.value
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
-                    type =  "Order",
-                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(Date(transaction.timestamp)),
+                    type = "Order",
+                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(
+                        Date(
+                            transaction.timestamp
+                        )
+                    ),
                     value = transaction.value
                 )
             }
@@ -169,11 +182,12 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                 pieChart
             },
             update = { pieChart ->
-                val listColors = ArrayList<Int>()
-                listColors.add(Color(52, 152, 219, 255).toArgb()) //Blue
-                listColors.add(Color(230, 76, 59, 255).toArgb()) //Red
-                listColors.add(Color(241, 196, 15, 255).toArgb()) //Yellow
-                listColors.add(Color(46, 204, 112, 255).toArgb()) //Green
+                val listColors = listOf(
+                    SummerSky.toArgb(),
+                    Cinnabar.toArgb(),
+                    MoonYellow.toArgb(),
+                    MediumSeaGreen.toArgb(),
+                )
                 val entries = mutableListOf<PieEntry>()
                 val chartMap = mutableMapOf<String, Pair<String, Int>>()
                 val purchases = viewModel.purchases
