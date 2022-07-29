@@ -38,6 +38,8 @@ interface UserRepositoryInt {
 
     suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
 
+    suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
+
     suspend fun deleteUserDb(user: User)
 
     suspend fun deleteImageDb(image: Image)

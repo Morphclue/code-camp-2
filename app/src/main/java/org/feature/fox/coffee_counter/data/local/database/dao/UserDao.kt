@@ -42,6 +42,10 @@ interface UserDao {
     suspend fun getImageByIdDb(id: String): Image?
 
     @Transaction
+    @Query("SELECT * FROM funding WHERE userId = :userId")
+    suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
+
+    @Transaction
     @Query("SELECT * FROM purchase WHERE userId=:userId")
     suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
 

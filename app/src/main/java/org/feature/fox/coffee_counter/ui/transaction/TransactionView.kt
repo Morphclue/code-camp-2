@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,17 +23,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.ui.theme.Cinnabar
+import org.feature.fox.coffee_counter.ui.theme.MediumSeaGreen
+import org.feature.fox.coffee_counter.ui.theme.MoonYellow
+import org.feature.fox.coffee_counter.ui.theme.SummerSky
+import org.feature.fox.coffee_counter.util.DateTimeFormatter
+import org.feature.fox.coffee_counter.util.UIText
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,6 +66,7 @@ fun HistoryViewPreview(
     HistoryView(viewModel = TransactionViewModelPreview())
 }
 
+// TODO update orders (Issue)
 @Composable
 fun HistoryView(
     viewModel: ITransactionViewModel,
@@ -53,6 +74,18 @@ fun HistoryView(
     QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(5.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            QRCodeButton(viewModel)
+        }
+        PieChartBoughtItems(viewModel)
+        LineChartBalance(viewModel)
         TransactionContainer(viewModel)
     }
 }
@@ -74,7 +107,6 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             viewModel.refreshTransactions()
             viewModel.getTotalBalance()
         }
-        QRCodeButton(viewModel)
         if (viewModel.transactions.isEmpty()) Text(
             stringResource(id = R.string.no_data),
             fontSize = 20.sp,
@@ -82,20 +114,27 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             color = Color.LightGray
         )
 
+
         viewModel.transactions.forEach { transaction ->
             if (transaction.type == "funding") {
                 TransactionRow(
-                    "Funding",
-                    SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
-                        .format(Date(transaction.timestamp)),
-                    transaction.value
+                    type = "Funding",
+                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(
+                        Date(
+                            transaction.timestamp
+                        )
+                    ),
+                    value = transaction.value
                 )
             } else if (transaction.type == "purchase") {
                 TransactionRow(
-                    "Order",
-                    SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN)
-                        .format(Date(transaction.timestamp)),
-                    transaction.value
+                    type = "Order",
+                    date = SimpleDateFormat(BuildConfig.DATE_PATTERN, Locale.GERMAN).format(
+                        Date(
+                            transaction.timestamp
+                        )
+                    ),
+                    value = transaction.value
                 )
             }
         }
@@ -112,6 +151,112 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
             viewModel.qrCodeDialogVisible.value = true
         }
     )
+}
+
+// TODO: Only display 4 categories and sum up all others
+@SuppressLint("CoroutineCreationDuringComposition")
+@Composable
+fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    Column(
+        modifier = Modifier
+            .height(150.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        coroutineScope.launch {
+            viewModel.refreshTransactions()
+            viewModel.getPurchasesOfUser()
+        }
+        AndroidView(
+            modifier = Modifier
+                .fillMaxSize(),
+            factory = { context ->
+                val pieChart = PieChart(context)
+                stylePieChart(pieChart)
+                pieChart.description.text = UIText.StringResource(R.string.piechart_description).asString(context)
+                pieChart.setNoDataText(UIText.StringResource(R.string.piechart_nodata).asString(context))
+                pieChart
+            },
+            update = { pieChart ->
+                val listColors = listOf(
+                    SummerSky.toArgb(),
+                    Cinnabar.toArgb(),
+                    MoonYellow.toArgb(),
+                    MediumSeaGreen.toArgb(),
+                )
+                val entries = mutableListOf<PieEntry>()
+                val chartMap = mutableMapOf<String, Pair<String, Int>>()
+                val purchases = viewModel.purchases
+                purchases.forEach { purchase ->
+                    if (chartMap.containsKey(purchase.itemId)) {
+                        val mapValue = chartMap[purchase.itemId]
+                        if (mapValue != null) {
+                            chartMap[purchase.itemId] =
+                                Pair(purchase.itemName, mapValue.second.plus(purchase.amount))
+                        }
+                    } else {
+                        chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
+                    }
+                }
+                chartMap.forEach {
+                    entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
+                }
+                if (entries.size != 0) {
+                    val dataset = PieDataSet(entries, "")
+                    dataset.colors = listColors
+                    dataset.sliceSpace = 3f
+                    dataset.valueTextSize = 7f
+                    val pieData = PieData(dataset)
+                    pieChart.data = pieData
+                }
+                pieChart.invalidate()
+            }
+        )
+    }
+}
+
+// TODO Last Value is hidden behind view
+@SuppressLint("CoroutineCreationDuringComposition")
+@Composable
+fun LineChartBalance(viewModel: ITransactionViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    Column(
+        modifier = Modifier
+            .height(150.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        coroutineScope.launch {
+            viewModel.refreshTransactions()
+            viewModel.getBalanceOfUser()
+        }
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                val lineChart = LineChart(context)
+                lineChart.description.text= UIText.StringResource(R.string.linechart_description).asString(context)
+                lineChart.setNoDataText(UIText.StringResource(R.string.linechart_nodata).asString(context))
+                styleLineChart(lineChart)
+                lineChart.invalidate()
+                lineChart
+            },
+            update = { lineChart ->
+                val entries = mutableListOf<Entry>()
+                viewModel.balanceList.forEach { pair ->
+                    entries.add(Entry(pair.first.toFloat(), pair.second.toFloat()))
+                }
+
+                if (entries.size != 0) {
+                    val dataset = LineDataSet(entries, "")
+                    dataset.axisDependency = YAxis.AxisDependency.LEFT
+                    val lineData = LineData(dataset)
+                    lineChart.data = lineData
+                }
+                lineChart.invalidate()
+            }
+        )
+    }
 }
 
 @Composable
@@ -178,4 +323,31 @@ fun TransactionValue(color: Color, value: String) {
         color = color,
         textAlign = TextAlign.End
     )
+}
+
+fun stylePieChart(pieChart: PieChart) {
+    pieChart.holeRadius = 20f
+    pieChart.transparentCircleRadius = 25f
+    // Legend Styling
+    pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
+    pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+    pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+    pieChart.setDrawEntryLabels(false)
+    pieChart.notifyDataSetChanged()
+    pieChart.description.textSize = 10f
+    pieChart.description.yOffset = 110f
+    pieChart.description.xOffset = -60f
+}
+
+
+fun styleLineChart(lineChart: LineChart) {
+    val formatter = DateTimeFormatter()
+    lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+    lineChart.xAxis.setDrawGridLines(false)
+    lineChart.xAxis.granularity = 2f
+    lineChart.xAxis.valueFormatter = formatter
+    lineChart.axisLeft.setDrawGridLines(false)
+    lineChart.axisRight.isEnabled = false
+    lineChart.description.xOffset = 150f
+    lineChart.description.yOffset = 100f
 }
