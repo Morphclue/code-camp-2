@@ -7,6 +7,8 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,11 +30,12 @@ import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import org.feature.fox.coffee_counter.util.Utils
+import java.util.*
 import javax.inject.Inject
 
 interface IUserListViewModel : IToast {
-    val userList: MutableList<UserIdResponse>
-    val filteredUserList: MutableList<UserIdResponse>
+    val userList: SnapshotStateList<UserIdResponse>
+    val filteredUserList: SnapshotStateList<UserIdResponse>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
     val fundingDialogVisible: MutableState<Boolean>
@@ -62,7 +65,7 @@ class UserListViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) : ViewModel(), IUserListViewModel {
-    override val userList = mutableStateListOf<UserIdResponse>()
+    override var userList = mutableStateListOf<UserIdResponse>()
     override val filteredUserList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
@@ -235,6 +238,7 @@ class UserListViewModel @Inject constructor(
         }
 
         isLoaded.value = true
+        userList = userList.sortedBy { it.name.lowercase(Locale.ROOT) }.toMutableStateList()
         filteredUserList.addAll(userList)
     }
 
@@ -269,7 +273,7 @@ class UserListViewModel @Inject constructor(
 }
 
 class UserListViewModelPreview : IUserListViewModel {
-    override val userList = mutableListOf<UserIdResponse>()
+    override val userList = mutableStateListOf<UserIdResponse>()
     override val filteredUserList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
