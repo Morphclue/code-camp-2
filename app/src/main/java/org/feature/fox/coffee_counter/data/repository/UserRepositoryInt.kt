@@ -26,21 +26,21 @@ interface UserRepositoryInt {
 
     suspend fun insertImageDb(image: Image)
 
+    suspend fun insertAchievementDb(achievement: Achievement)
+
     suspend fun updateUserDb(user: User)
 
     suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
     suspend fun getImageByIdDb(id: String): Image?
 
-    suspend fun deleteUserDb(user: User)
-
-    suspend fun deleteImageDb(image: Image)
-
     suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
 
     suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
 
-    suspend fun insertAchievementDb(achievement: Achievement)
+    suspend fun deleteUserDb(user: User)
+
+    suspend fun deleteImageDb(image: Image)
 
     // API Calls
 
