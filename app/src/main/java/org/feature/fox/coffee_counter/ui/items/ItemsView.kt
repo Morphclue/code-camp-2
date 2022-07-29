@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -290,10 +291,12 @@ fun EditFAB(viewModel: IItemsViewModel) {
             viewModel.adminView.value = !viewModel.adminView.value
         },
         backgroundColor = CrayolaCopper,
-        contentColor = Color.White
-
+        contentColor = Color.White,
     ) {
-        Icon(Icons.Filled.Add, "")
+        Icon(
+            Icons.Outlined.Sync,
+            contentDescription = stringResource(R.string.edit_fab),
+        )
     }
 }
 
