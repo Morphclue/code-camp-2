@@ -5,6 +5,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -60,16 +61,24 @@ class UserRepository @Inject constructor(
         userDao.insertPurchaseDb(purchase)
     }
 
-    override suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase> {
-        return userDao.getPurchasesOfUserByIdDb(userId)
-    }
-
     override suspend fun getFundingOfUserByIdDb(userId: String): List<Funding> {
         return userDao.getFundingOfUserByIdDb(userId)
     }
 
     override suspend fun getImageByIdDb(id: String): Image? {
         return userDao.getImageByIdDb(id)
+    }
+
+    override suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>{
+        return userDao.getPurchaseListOfUserDb(userId)
+    }
+
+    override suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>{
+        return userDao.getAchievementListOfUserDb(userId)
+    }
+
+    override suspend fun insertAchievementDb(achievement: Achievement){
+        userDao.insertAchievementDb(achievement)
     }
 
     override suspend fun postLogin(loginBody: LoginBody): Resource<LoginResponse> {

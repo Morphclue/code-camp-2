@@ -20,6 +20,7 @@ import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
 import org.feature.fox.coffee_counter.data.repository.UserRepository
+import org.feature.fox.coffee_counter.di.services.AchievementGeneration
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
@@ -61,6 +62,7 @@ class ItemsViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
     private val userRepository: UserRepository,
     private val preference: AppPreference,
+    private val achievementGenerator: AchievementGeneration,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
@@ -240,6 +242,7 @@ class ItemsViewModel @Inject constructor(
                 cartItem.amount = 0
             }
         }
+        achievementGenerator.checkAchievements(availableItemsState)
         isLoaded.value = false
         getItems()
         getTotalBalance()

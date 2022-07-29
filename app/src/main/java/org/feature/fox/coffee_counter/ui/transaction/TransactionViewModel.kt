@@ -152,7 +152,7 @@ class TransactionViewModel @Inject constructor(
         // Get Purchases from DB since new purchases only occur if the user buys items.
         // This is done inside ItemsView and updated at DB
         purchases =
-            userRepository.getPurchasesOfUserByIdDb(preference.getTag(BuildConfig.USER_ID)) as MutableList<Purchase>
+            userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID)) as MutableList<Purchase>
     }
 
 
