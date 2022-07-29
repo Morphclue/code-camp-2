@@ -27,10 +27,12 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import org.feature.fox.coffee_counter.util.Utils
 import javax.inject.Inject
 
 interface IUserListViewModel : IToast {
     val userList: MutableList<UserIdResponse>
+    val filteredUserList: MutableList<UserIdResponse>
     val scrollState: ScrollState
     val isLoaded: MutableState<Boolean>
     val fundingDialogVisible: MutableState<Boolean>
@@ -46,11 +48,13 @@ interface IUserListViewModel : IToast {
     val balance: MutableState<Double>
     val sendAmount: MutableState<TextFieldValue>
     val userIdPictureMap: MutableMap<String, Bitmap?>
+    val searchField: MutableState<TextFieldValue>
 
     suspend fun addFunding()
     suspend fun createUser()
     suspend fun getTotalBalance()
     suspend fun sendMoney()
+    fun search()
 }
 
 @HiltViewModel
@@ -59,6 +63,7 @@ class UserListViewModel @Inject constructor(
     private val preference: AppPreference,
 ) : ViewModel(), IUserListViewModel {
     override val userList = mutableStateListOf<UserIdResponse>()
+    override val filteredUserList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(false)
     override val fundingDialogVisible = mutableStateOf(false)
@@ -76,6 +81,7 @@ class UserListViewModel @Inject constructor(
     override val balance = mutableStateOf(0.0)
     override val sendAmount = mutableStateOf(TextFieldValue())
     override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
+    override val searchField = mutableStateOf(TextFieldValue())
 
     init {
         viewModelScope.launch {
@@ -190,6 +196,10 @@ class UserListViewModel @Inject constructor(
         sendMoneyDialogVisible.value = false
     }
 
+    override fun search() {
+        Utils.fuzzySearch(filteredUserList, userList, searchField.value.text)
+    }
+
     private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
         val index = userList.indexOf(currentUser.value)
         userList.remove(currentUser.value)
@@ -225,6 +235,7 @@ class UserListViewModel @Inject constructor(
         }
 
         isLoaded.value = true
+        filteredUserList.addAll(userList)
     }
 
     private suspend fun loadProfilePicture(id: String, imageTimestamp: Long?) {
@@ -259,6 +270,7 @@ class UserListViewModel @Inject constructor(
 
 class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableListOf<UserIdResponse>()
+    override val filteredUserList = mutableStateListOf<UserIdResponse>()
     override val scrollState = ScrollState(0)
     override val isLoaded = mutableStateOf(true)
     override val fundingDialogVisible = mutableStateOf(false)
@@ -276,6 +288,7 @@ class UserListViewModelPreview : IUserListViewModel {
     override val toast = toastChannel.receiveAsFlow()
     override val sendAmount = mutableStateOf(TextFieldValue())
     override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
+    override val searchField = mutableStateOf(TextFieldValue())
 
     override suspend fun addFunding() {
         TODO("Not yet implemented")
@@ -290,6 +303,10 @@ class UserListViewModelPreview : IUserListViewModel {
     }
 
     override suspend fun sendMoney() {
+        TODO("Not yet implemented")
+    }
+
+    override fun search() {
         TODO("Not yet implemented")
     }
 }
