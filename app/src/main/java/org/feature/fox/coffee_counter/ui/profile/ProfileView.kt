@@ -7,9 +7,11 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +25,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -143,23 +149,47 @@ fun ProfileIcon(viewModel: IProfileViewModel) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painter,
-            contentDescription = stringResource(R.string.profile_image_label),
-            modifier = Modifier
-                .wrapContentSize()
-                .size(150.dp)
-                .clickable(
-                    enabled = true,
-                    onClickLabel = "Clickable profile image",
-                    onClick = {
-                        launcher.launch("image/*")
-                    }
+        Box(
+            contentAlignment = Alignment.BottomEnd,
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = stringResource(R.string.profile_image_label),
+                modifier = Modifier
+                    .wrapContentSize()
+                    .size(150.dp)
+                    .clickable(
+                        enabled = true,
+                        onClickLabel = stringResource(R.string.profile_image_label),
+                        onClick = {
+                            launcher.launch("image/*")
+                        }
+                    )
+                    .clip(CircleShape)
+                    .border(2.dp, LiverOrgan, CircleShape),
+                contentScale = ContentScale.Crop,
+            )
+
+            IconButton(
+                onClick = {
+                    launcher.launch("image/*")
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .background(Color.White, CircleShape)
+                    .clip(CircleShape)
+                    .border(1.dp, Color.Black, CircleShape)
+                    .then(
+                        Modifier.size(30.dp)
+                    ),
+            ) {
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit_profile_image),
+                    tint = Color.Black
                 )
-                .clip(CircleShape)
-                .border(2.dp, LiverOrgan, CircleShape),
-            contentScale = ContentScale.Crop,
-        )
+            }
+        }
     }
 }
 
