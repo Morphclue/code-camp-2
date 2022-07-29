@@ -5,11 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "funding")
 data class Funding(
-
     @PrimaryKey
     val timestamp: Long,
 
     val userId: String,
 
-    val value: Double
+    val value: Double,
 )

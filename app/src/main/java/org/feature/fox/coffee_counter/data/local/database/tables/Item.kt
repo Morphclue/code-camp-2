@@ -12,5 +12,5 @@ data class Item(
 
     var amount: Int = 0,
 
-    var price: Double
+    var price: Double,
 )

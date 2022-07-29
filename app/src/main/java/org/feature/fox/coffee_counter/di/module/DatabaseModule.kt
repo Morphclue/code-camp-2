@@ -14,7 +14,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Singleton
     @Provides
     fun providesUserDatabase(
@@ -30,12 +29,12 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun providesItemDatabase(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ) = Room.databaseBuilder(context, ItemDatabase::class.java, "items").build()
 
     @Singleton
     @Provides
     fun providesItemDao(
-        database: ItemDatabase
+        database: ItemDatabase,
     ) = database.itemDao()
 }

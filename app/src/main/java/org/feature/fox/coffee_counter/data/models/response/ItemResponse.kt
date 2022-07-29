@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ItemResponse(
-
     @Json(name = "id")
     val id: String,
 
@@ -16,5 +15,5 @@ data class ItemResponse(
     val amount: Int,
 
     @Json(name = "price")
-    val price: Double
+    val price: Double,
 )

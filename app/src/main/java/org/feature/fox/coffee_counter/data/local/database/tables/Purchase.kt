@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "purchase")
 data class Purchase(
-
     @PrimaryKey
     val timestamp: Long,
 
@@ -17,6 +16,5 @@ data class Purchase(
 
     val itemName: String,
 
-    val amount: Int
-
+    val amount: Int,
 )

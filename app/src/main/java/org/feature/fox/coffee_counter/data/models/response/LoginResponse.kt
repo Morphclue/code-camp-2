@@ -5,10 +5,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class LoginResponse(
-
     @Json(name = "token")
     val token: String,
 
     @Json(name = "expiration")
-    val expiration: Long
+    val expiration: Long,
 )
