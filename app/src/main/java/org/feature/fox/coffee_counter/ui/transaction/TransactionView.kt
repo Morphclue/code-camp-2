@@ -74,6 +74,16 @@ fun HistoryView(
     QRCodeDialog(viewModel)
     Column {
         MoneyAppBar(Pair(stringResource(R.string.history_title), viewModel.balance))
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(5.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            QRCodeButton(viewModel)
+        }
         PieChartBoughtItems(viewModel)
         LineChartBalance(viewModel)
         TransactionContainer(viewModel)
@@ -97,7 +107,6 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
             viewModel.refreshTransactions()
             viewModel.getTotalBalance()
         }
-        QRCodeButton(viewModel)
         if (viewModel.transactions.isEmpty()) Text(
             stringResource(id = R.string.no_data),
             fontSize = 20.sp,
