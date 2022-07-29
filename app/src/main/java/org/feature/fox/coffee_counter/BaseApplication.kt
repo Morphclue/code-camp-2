@@ -10,7 +10,13 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class BaseApplication : Application() {
+class BaseApplication : Application(), Configuration.Provider {
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder().setWorkerFactory(workerFactory).build()
 
     init {
         instance = this
@@ -43,14 +49,4 @@ class BaseApplication : Application() {
         )
         manager.createNotificationChannel(notificationChannel)
     }
-}
-
-class BaseApplication : Application(), Configuration.Provider {
-
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder().setWorkerFactory(workerFactory).build()
-
 }
