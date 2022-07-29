@@ -28,6 +28,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImageDb(image: Image)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAchievementDb(achievement: Achievement)
+
     @Update
     suspend fun updateUserDb(user: User)
 
@@ -38,12 +41,6 @@ interface UserDao {
     @Query("SELECT * FROM image WHERE userId=:id")
     suspend fun getImageByIdDb(id: String): Image?
 
-    @Delete
-    suspend fun deleteUserDb(user: User)
-
-    @Delete
-    suspend fun deleteImageDb(image: Image)
-
     @Transaction
     @Query("SELECT * FROM purchase WHERE userId=:userId")
     suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
@@ -52,6 +49,9 @@ interface UserDao {
     @Query("SELECT * FROM achievement WHERE userId=:userId")
     suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAchievementDb(achievement: Achievement)
+    @Delete
+    suspend fun deleteUserDb(user: User)
+
+    @Delete
+    suspend fun deleteImageDb(image: Image)
 }
