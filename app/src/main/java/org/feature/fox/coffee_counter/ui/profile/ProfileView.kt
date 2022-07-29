@@ -160,7 +160,7 @@ fun ProfileIcon(viewModel: IProfileViewModel) {
                     .size(150.dp)
                     .clickable(
                         enabled = true,
-                        onClickLabel = "Clickable profile image",
+                        onClickLabel = stringResource(R.string.profile_image_label),
                         onClick = {
                             launcher.launch("image/*")
                         }
@@ -185,7 +185,7 @@ fun ProfileIcon(viewModel: IProfileViewModel) {
             ) {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription = "content description",
+                    contentDescription = stringResource(R.string.edit_profile_image),
                     tint = Color.Black
                 )
             }
