@@ -236,7 +236,6 @@ class ItemsViewModel @Inject constructor(
                         amount = transactionResponse.data.last().amount!!,
                     )
                 )
-
                 currentShoppingCartAmountState.value -= cartItem.price * cartItem.amount
                 cartItem.amount = 0
             }

@@ -60,6 +60,14 @@ class UserRepository @Inject constructor(
         userDao.insertPurchaseDb(purchase)
     }
 
+    override suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase> {
+        return userDao.getPurchasesOfUserByIdDb(userId)
+    }
+
+    override suspend fun getFundingOfUserByIdDb(userId: String): List<Funding> {
+        return userDao.getFundingOfUserByIdDb(userId)
+    }
+
     override suspend fun getImageByIdDb(id: String): Image? {
         return userDao.getImageByIdDb(id)
     }
