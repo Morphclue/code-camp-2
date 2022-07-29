@@ -31,11 +31,11 @@ interface UserRepositoryInt {
 
     suspend fun getImageByIdDb(id: String): Image?
 
-    suspend fun deleteUserDb(user: User)
-
     suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase>
 
     suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
+
+    suspend fun deleteUserDb(user: User)
 
     suspend fun deleteImageDb(image: Image)
 

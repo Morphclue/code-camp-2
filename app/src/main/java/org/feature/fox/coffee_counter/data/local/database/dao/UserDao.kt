@@ -38,12 +38,6 @@ interface UserDao {
     @Query("SELECT * FROM image WHERE userId=:id")
     suspend fun getImageByIdDb(id: String): Image?
 
-    @Delete
-    suspend fun deleteUserDb(user: User)
-
-    @Delete
-    suspend fun deleteImageDb(image: Image)
-
     @Transaction
     @Query("SELECT * FROM purchase WHERE userId = :userId")
     suspend fun getPurchasesOfUserByIdDb(userId: String): List<Purchase>
@@ -51,5 +45,11 @@ interface UserDao {
     @Transaction
     @Query("SELECT * FROM funding WHERE userId = :userId")
     suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
+
+    @Delete
+    suspend fun deleteUserDb(user: User)
+
+    @Delete
+    suspend fun deleteImageDb(image: Image)
 
 }
