@@ -153,9 +153,9 @@ class ItemsViewModel @Inject constructor(
             return false
         }
 
-        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
 
-        if(cartItem.amount >= item.amount){
+        if (cartItem.amount >= item.amount) {
             toastChannel.send(UIText.StringResource(R.string.not_available))
             return false
         }
@@ -173,28 +173,28 @@ class ItemsViewModel @Inject constructor(
 
     override suspend fun addStringItemToShoppingCart(item: String) {
         try {
-            val avItem: Item = availableItemsState.first{it.name == item}
+            val avItem: Item = availableItemsState.first { it.name == item }
 
             val success = addItemToShoppingCart(avItem)
-            if (success){
+            if (success) {
                 confirmBuyItemDialogVisible.value = true
             }
 
-        }catch(e: NoSuchElementException){
+        } catch (e: NoSuchElementException) {
             toastChannel.send(UIText.StringResource(R.string.not_exist))
             return
         }
     }
 
     override suspend fun getItemCartAmount(item: Item): Int {
-        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
         return cartItem.amount
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        val cartItem: Item = itemsInShoppingCartState.first{it.id == item.id}
+        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
 
-        if(cartItem.amount > 0){
+        if (cartItem.amount > 0) {
             cartItem.amount -= 1
             itemsInShoppingCartState.remove(cartItem)
             itemsInShoppingCartState.add(cartItem)
@@ -360,7 +360,8 @@ class ItemsViewModel @Inject constructor(
     }
 
     override fun search() {
-        TODO("Not yet implemented")
+        // TODO: needs to be implemented later,
+        //       but first this whole viewModel needs to be refactored
     }
 }
 
