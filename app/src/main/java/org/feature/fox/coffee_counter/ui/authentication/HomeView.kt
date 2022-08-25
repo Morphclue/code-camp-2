@@ -26,6 +26,9 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
+/**
+ * Preview for the HomeView.
+ */
 @Preview(showSystemUi = true)
 @Composable
 fun HomeView() {
@@ -38,6 +41,9 @@ fun HomeView() {
     }
 }
 
+/**
+ * SplashBox contains the BoxContent for the SplashScreen.
+ */
 @Composable
 fun SplashBox() {
     Box(
@@ -53,6 +59,9 @@ fun SplashBox() {
     }
 }
 
+/**
+ * BoxContent contains the Title and the Image for the SplashScreen.
+ */
 @Composable
 fun BoxContent() {
     Column(
@@ -67,11 +76,17 @@ fun BoxContent() {
     }
 }
 
+/**
+ * Holds the image of the coffee.
+ */
 @Composable
 fun CoffeeImage() {
     Image(painterResource(id = R.drawable.coffee), "Image of Coffee")
 }
 
+/**
+ * Holds the title of the SplashScreen.
+ */
 @Composable
 fun Title() {
     Text(
@@ -81,6 +96,10 @@ fun Title() {
     )
 }
 
+/**
+ * Holds the Login and Sign Up button.
+ * Depending on the button clicked the [AuthenticationActivity] with corresponding Intents is started.
+ */
 @Composable
 fun ButtonBox() {
     Column(
