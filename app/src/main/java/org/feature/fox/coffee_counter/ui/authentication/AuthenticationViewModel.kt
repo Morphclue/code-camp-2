@@ -26,7 +26,7 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 /**
- * Interface for the authentication view model.
+ * Interface for the [AuthenticationViewModel].
  */
 interface IAuthenticationViewModel : IToast {
     val nameState: MutableState<TextFieldValue>

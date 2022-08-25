@@ -58,7 +58,9 @@ import java.util.*
 
 private val rowTextFontSize: TextUnit = 18.sp
 
-
+/**
+ * Preview for the HistoryView.
+ */
 @Preview(showSystemUi = true)
 @Composable
 fun HistoryViewPreview(
@@ -66,7 +68,11 @@ fun HistoryViewPreview(
     HistoryView(viewModel = TransactionViewModelPreview())
 }
 
-// TODO update orders (Issue)
+/**
+ * Composable for the HistoryView.
+ * TODO update orders (Issue)
+ * @param viewModel the transaction ViewModel.
+ */
 @Composable
 fun HistoryView(
     viewModel: ITransactionViewModel,
@@ -90,6 +96,10 @@ fun HistoryView(
     }
 }
 
+/**
+ * Holds all the transactions.
+ * @param viewModel the transaction ViewModel.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun TransactionContainer(viewModel: ITransactionViewModel) {
@@ -142,6 +152,10 @@ fun TransactionContainer(viewModel: ITransactionViewModel) {
     }
 }
 
+/**
+ * Button that makes the QR Code Dialog visible.
+ * @param viewModel the transaction ViewModel.
+ */
 @Composable
 fun QRCodeButton(viewModel: ITransactionViewModel) {
     CustomButton(
@@ -153,7 +167,11 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
     )
 }
 
-// TODO: Only display 4 categories and sum up all others
+/**
+ * Pie Chart to display bought items.
+ * TODO: Only display 4 categories and sum up all others
+ * @param viewModel the transaction ViewModel.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
@@ -216,7 +234,11 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
     }
 }
 
-// TODO Last Value is hidden behind view
+/**
+ * Line Chart to display the balance.
+ * TODO Last Value is hidden behind view
+ * @param viewModel the transaction ViewModel.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LineChartBalance(viewModel: ITransactionViewModel) {
@@ -259,6 +281,12 @@ fun LineChartBalance(viewModel: ITransactionViewModel) {
     }
 }
 
+/**
+ * Row with a single transaction.
+ * @param type the type of the transaction.
+ * @param date the date of the transaction.
+ * @param value the value of the transaction.
+ */
 @Composable
 fun TransactionRow(type: String, date: String, value: Double) {
     val color = if (value > 0) Color.Green else Color.DarkGray
@@ -284,6 +312,10 @@ fun TransactionRow(type: String, date: String, value: Double) {
     }
 }
 
+/**
+ * The type of the transaction.
+ * @param type the type of the transaction.
+ */
 @Composable
 fun TransactionType(type: String) {
     Text(
@@ -294,6 +326,10 @@ fun TransactionType(type: String) {
     )
 }
 
+/**
+ * Circle with the color of the transaction.
+ * @param color
+ */
 @Composable
 fun TransactionCircle(color: Color) {
     Box(
@@ -304,6 +340,10 @@ fun TransactionCircle(color: Color) {
     )
 }
 
+/**
+ * The date of the transaction.
+ * @param date the date of the transaction.
+ */
 @Composable
 fun TransactionDate(date: String) {
     Text(
@@ -314,6 +354,11 @@ fun TransactionDate(date: String) {
     )
 }
 
+/**
+ * The value of the transaction.
+ * @param color the color of the value.
+ * @param value the value of the transaction.
+ */
 @Composable
 fun TransactionValue(color: Color, value: String) {
     Text(
@@ -325,10 +370,13 @@ fun TransactionValue(color: Color, value: String) {
     )
 }
 
+/**
+ * Function to style the pie chart.
+ * @param pieChart the pie chart to style.
+ */
 fun stylePieChart(pieChart: PieChart) {
     pieChart.holeRadius = 20f
     pieChart.transparentCircleRadius = 25f
-    // Legend Styling
     pieChart.legend.orientation = Legend.LegendOrientation.VERTICAL
     pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
     pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
@@ -339,7 +387,10 @@ fun stylePieChart(pieChart: PieChart) {
     pieChart.description.xOffset = -60f
 }
 
-
+/**
+ * Function to style the line chart.
+ * @param lineChart the line chart to style.
+ */
 fun styleLineChart(lineChart: LineChart) {
     val formatter = DateTimeFormatter()
     lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
