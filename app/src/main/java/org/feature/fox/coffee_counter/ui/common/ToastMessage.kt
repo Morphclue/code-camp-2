@@ -7,6 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import org.feature.fox.coffee_counter.util.IToast
 
+/**
+ * A [Toast] that is displayed on the screen.
+ * @param viewModel The view model that is used to display the toast.
+ * @param context The context of the application.
+ */
 @Composable
 fun ToastMessage(viewModel: IToast, context: Context) {
     LaunchedEffect(rememberScaffoldState()) {

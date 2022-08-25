@@ -8,7 +8,10 @@ import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 
-
+/**
+ * Function to show a notification for an achievement.
+ * @param achievement the achievement to show the notification for.
+ */
 fun showAchievementNotification(achievement: Achievement) {
     val notificationManager: NotificationManagerCompat =
         NotificationManagerCompat.from(BaseApplication.applicationContext)

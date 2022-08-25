@@ -17,6 +17,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
+/**
+ * A text field that shows an outlined border and a label.
+ * @param state the mutable state of the text field.
+ * @param label the label of the text field.
+ * @param keyboardOptions the keyboard options of the text field.
+ */
 @Composable
 fun CommonTextField(
     state: MutableState<TextFieldValue>,
