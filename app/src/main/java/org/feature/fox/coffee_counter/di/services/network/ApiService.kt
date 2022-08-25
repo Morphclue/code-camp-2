@@ -24,7 +24,9 @@ import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
-
+/**
+ * Interface for all the different API calls.
+ */
 interface ApiService {
     @POST(BuildConfig.LOGIN_ENDPOINT)
     suspend fun postLogin(@Body loginBody: LoginBody): Response<LoginResponse>
