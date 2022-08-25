@@ -50,6 +50,9 @@ import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.items.LoadingBox
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
+/**
+ * Preview for the UsersView.
+ */
 @Preview(showSystemUi = true)
 @Composable
 fun UsersViewPreview() {
@@ -60,6 +63,10 @@ fun UsersViewPreview() {
     UsersView(preview)
 }
 
+/**
+ * Main composable for the UsersView.
+ * @param viewModel the UserList ViewModel.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun UsersView(viewModel: IUserListViewModel) {
@@ -108,6 +115,9 @@ fun UsersView(viewModel: IUserListViewModel) {
     }
 }
 
+/**
+ * Loading box for when the user list is loading.
+ */
 @Composable
 fun LoadingBox() {
     Column(
@@ -120,6 +130,10 @@ fun LoadingBox() {
     }
 }
 
+/**
+ * Composable for the user list.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun UserList(viewModel: IUserListViewModel) {
     Column {
@@ -140,6 +154,11 @@ fun UserList(viewModel: IUserListViewModel) {
     }
 }
 
+/**
+ * A single user row.
+ * @param viewModel the UserList ViewModel.
+ * @param user the user to display.
+ */
 @Composable
 fun UserRow(
     viewModel: IUserListViewModel,
@@ -182,6 +201,11 @@ fun UserRow(
     }
 }
 
+/**
+ * Composable for the profile picture.
+ * @param viewModel the UserList ViewModel.
+ * @param id the id of the user.
+ */
 @Composable
 fun ProfilePicture(viewModel: IUserListViewModel, id: String) {
     val painter = if (viewModel.userIdPictureMap[id] == null) {
@@ -201,6 +225,11 @@ fun ProfilePicture(viewModel: IUserListViewModel, id: String) {
     )
 }
 
+/**
+ * A button that allows sharing of money.
+ * @param viewModel the UserList ViewModel.
+ * @param user the user to share money with.
+ */
 @Composable
 fun ShareMoneyButton(viewModel: IUserListViewModel, user: UserIdResponse) {
     Button(
@@ -219,6 +248,11 @@ fun ShareMoneyButton(viewModel: IUserListViewModel, user: UserIdResponse) {
     }
 }
 
+/**
+ * A button that allows editing of money.
+ * @param viewModel the UserList ViewModel.
+ * @param user the user to edit money for.
+ */
 @Composable
 fun MoneyEditRow(
     viewModel: IUserListViewModel,

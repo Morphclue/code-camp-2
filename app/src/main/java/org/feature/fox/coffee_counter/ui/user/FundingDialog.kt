@@ -21,6 +21,10 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 
+/**
+ * Dialog to create send funding.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun FundingDialog(
     viewModel: IUserListViewModel,
@@ -59,6 +63,10 @@ fun FundingDialog(
     }
 }
 
+/**
+ * Buttons for the funding dialog.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun FundingDialogButtons(viewModel: IUserListViewModel) {
     val scope = rememberCoroutineScope()
