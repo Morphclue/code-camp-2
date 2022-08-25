@@ -72,6 +72,8 @@ fun ProfileView(
     val additionalScrollDp = 120.dp
     val coroutineScope = rememberCoroutineScope()
 
+    AchievementOverview(viewModel)
+
     BoxWithConstraints {
         Column {
             MoneyAppBar(Pair(stringResource(R.string.profile_title), viewModel.balance))
@@ -204,6 +206,12 @@ fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
         }
     })
     CustomButton(text = stringResource(R.string.logout), fraction = 0.9f)
+    CustomButton(text = stringResource(R.string.achievement_overview), fraction = 0.9f, onClick = {
+        coroutineScope.launch {
+            viewModel.getAchievements()
+            viewModel.achievementOverviewVisible.value = true
+        }
+    })
 
     val versionName = BuildConfig.VERSION_NAME
     Text(text = "version $versionName", fontWeight = FontWeight.Light)

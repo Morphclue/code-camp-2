@@ -23,9 +23,9 @@ interface IItemRepository {
 
     suspend fun getItemById(itemId: String): Resource<ItemResponse>
 
-    suspend fun updateItem(itemId: String, itemBody: ItemBody): Resource<String>
+    suspend fun updateItem(itemBody: ItemBody): Resource<String>
 
     suspend fun deleteItemById(itemId: String): Resource<String>
 
-    suspend fun purchaseItem(itemId: String, purchaseBody: PurchaseBody): Resource<String>
+    suspend fun purchaseItem(userId: String, purchaseBody: PurchaseBody): Resource<String>
 }

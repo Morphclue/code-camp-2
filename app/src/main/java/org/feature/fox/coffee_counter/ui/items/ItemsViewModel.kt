@@ -20,6 +20,7 @@ import org.feature.fox.coffee_counter.data.models.body.ItemBody
 import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.repository.ItemRepository
 import org.feature.fox.coffee_counter.data.repository.UserRepository
+import org.feature.fox.coffee_counter.di.services.AchievementGeneration
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
@@ -61,6 +62,7 @@ class ItemsViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
     private val userRepository: UserRepository,
     private val preference: AppPreference,
+    private val achievementGenerator: AchievementGeneration,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
@@ -236,11 +238,11 @@ class ItemsViewModel @Inject constructor(
                         amount = transactionResponse.data.last().amount!!,
                     )
                 )
-
                 currentShoppingCartAmountState.value -= cartItem.price * cartItem.amount
                 cartItem.amount = 0
             }
         }
+        achievementGenerator.checkAchievements(availableItemsState)
         isLoaded.value = false
         getItems()
         getTotalBalance()
@@ -257,7 +259,6 @@ class ItemsViewModel @Inject constructor(
 
         val response = itemRepository.postItem(
             ItemBody(
-                id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble(),
@@ -269,10 +270,11 @@ class ItemsViewModel @Inject constructor(
                 ?: UIText.StringResource(R.string.unknown_error))
             return false
         }
+
         // add new added item to DB
         itemRepository.insertItemDb(
             Item(
-                id = currentItemId.value.text,
+                id = response.data,
                 name = currentItemName.value.text,
                 amount = currentItemAmount.value.text.toInt(),
                 price = currentItemPrice.value.text.toDouble()
@@ -291,7 +293,6 @@ class ItemsViewModel @Inject constructor(
         }
 
         val response = itemRepository.updateItem(
-            itemId = originalItemId.value,
             itemBody = ItemBody(
                 id = currentItemId.value.text,
                 name = currentItemName.value.text,
@@ -312,7 +313,7 @@ class ItemsViewModel @Inject constructor(
                 id = currentItemId.value.text,
                 name = currentItemName.value.text,
                 price = currentItemPrice.value.text.toDouble(),
-                amount = currentItemPrice.value.text.toInt(),
+                amount = currentItemAmount.value.text.toInt(),
             )
         )
 

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.R
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 import org.feature.fox.coffee_counter.data.models.body.UserBody
 import org.feature.fox.coffee_counter.data.repository.UserRepository
@@ -25,6 +27,8 @@ import java.io.InputStream
 import javax.inject.Inject
 
 interface IProfileViewModel : IToast {
+    val achievementOverviewVisible: MutableState<Boolean>
+    val achievementList: MutableList<Achievement>
     val nameState: MutableState<TextFieldValue>
     val idState: MutableState<TextFieldValue>
     val passwordState: MutableState<TextFieldValue>
@@ -41,6 +45,7 @@ interface IProfileViewModel : IToast {
     suspend fun getTotalBalance()
     suspend fun getImage()
     suspend fun updateImage(stream: InputStream)
+    suspend fun getAchievements()
 }
 
 @HiltViewModel
@@ -48,6 +53,8 @@ class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) : ViewModel(), IProfileViewModel {
+    override val achievementOverviewVisible = mutableStateOf(false)
+    override val achievementList = mutableStateListOf<Achievement>()
     override val nameState = mutableStateOf(TextFieldValue())
     override val idState = mutableStateOf(TextFieldValue())
     override val passwordState = mutableStateOf(TextFieldValue())
@@ -200,6 +207,22 @@ class ProfileViewModel @Inject constructor(
         getImage()
     }
 
+    override suspend fun getAchievements() {
+        achievementList.clear()
+        userRepository.getAchievementListOfUserDb(preference.getTag(BuildConfig.USER_ID))
+            .forEach { achievement ->
+                achievementList.add(
+                    Achievement(
+                        name = achievement.name,
+                        userId = achievement.userId,
+                        timestamp = achievement.timestamp,
+                        description = achievement.description,
+                        icon = achievement.icon,
+                    )
+                )
+            }
+    }
+
     private fun removeTags() {
         preference.removeTag(BuildConfig.USER_ID)
         preference.removeTag(BuildConfig.USER_PASSWORD)
@@ -209,6 +232,8 @@ class ProfileViewModel @Inject constructor(
 }
 
 class ProfileViewModelPreview : IProfileViewModel {
+    override val achievementOverviewVisible = mutableStateOf(false)
+    override val achievementList = mutableListOf<Achievement>()
     override val nameState = mutableStateOf(TextFieldValue("Max"))
     override val idState = mutableStateOf(TextFieldValue("a-cool-id"))
     override val passwordState = mutableStateOf(TextFieldValue("123456789"))
@@ -242,6 +267,10 @@ class ProfileViewModelPreview : IProfileViewModel {
     }
 
     override suspend fun updateImage(stream: InputStream) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAchievements() {
         TODO("Not yet implemented")
     }
 }

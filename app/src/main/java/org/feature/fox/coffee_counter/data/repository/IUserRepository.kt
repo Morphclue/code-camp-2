@@ -1,5 +1,6 @@
 package org.feature.fox.coffee_counter.data.repository
 
+import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
 import org.feature.fox.coffee_counter.data.local.database.tables.Funding
 import org.feature.fox.coffee_counter.data.local.database.tables.Image
 import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
@@ -25,11 +26,19 @@ interface IUserRepository {
 
     suspend fun insertImageDb(image: Image)
 
+    suspend fun insertAchievementDb(achievement: Achievement)
+
     suspend fun updateUserDb(user: User)
 
     suspend fun getAdminStateOfUserByIdDb(userId: String): Boolean
 
     suspend fun getImageByIdDb(id: String): Image?
+
+    suspend fun getPurchaseListOfUserDb(userId: String): List<Purchase>
+
+    suspend fun getAchievementListOfUserDb(userId: String): List<Achievement>
+
+    suspend fun getFundingOfUserByIdDb(userId: String): List<Funding>
 
     suspend fun deleteUserDb(user: User)
 
