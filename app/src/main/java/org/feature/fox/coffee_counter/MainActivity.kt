@@ -13,8 +13,18 @@ import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.util.worker.BalanceWorker
 import java.util.concurrent.TimeUnit
 
+/**
+ * Main activity of the application.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    /**
+     * Called when the activity is created.
+     * TODO: Add further description.
+     *
+     * @param savedInstanceState the saved instance state.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val constraints =
