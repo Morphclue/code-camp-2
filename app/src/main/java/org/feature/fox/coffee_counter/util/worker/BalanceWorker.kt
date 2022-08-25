@@ -11,6 +11,15 @@ import kotlinx.coroutines.withContext
 import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.di.services.AppPreference
 
+/**
+ * TODO Add description.
+ *
+ * @constructor
+ * TODO
+ *
+ * @param context
+ * @param workerParams
+ */
 @HiltWorker
 class BalanceWorker @AssistedInject constructor(
     @Assisted context: Context,
