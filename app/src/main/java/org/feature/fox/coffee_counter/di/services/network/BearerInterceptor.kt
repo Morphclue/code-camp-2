@@ -12,11 +12,22 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
+/**
+ * Interceptor for adding authentication headers to requests.
+ *
+ * @property preference the AppPreference service.
+ * @property apiService the ApiService.
+ */
 @Singleton
 class BearerInterceptor @Inject constructor(
     private val preference: AppPreference,
     private val apiService: Provider<ApiService>,
 ) : Interceptor {
+    /**
+     * Intercepts a request and adds authentication headers to it.
+     * @param chain the chain of interceptors.
+     * @return the response.
+     */
     override fun intercept(chain: Interceptor.Chain): Response {
         var response = chain.proceed(buildRequest(chain))
         if (response.code == HttpURLConnection.HTTP_UNAUTHORIZED) {
@@ -28,10 +39,14 @@ class BearerInterceptor @Inject constructor(
                 }
             }
         }
-
         return response
     }
 
+    /**
+     * Builds a request with authentication headers.
+     * @param chain the chain of interceptors.
+     * @return the request.
+     */
     private fun buildRequest(chain: Interceptor.Chain): Request {
         val bearerToken = preference.getTag(BuildConfig.BEARER_TOKEN)
         return chain.request().newBuilder()
@@ -39,6 +54,9 @@ class BearerInterceptor @Inject constructor(
             .build()
     }
 
+    /**
+     * Refreshes the bearer token.
+     */
     private suspend fun refreshBearer() {
         if (apiService.get() == null) {
             return

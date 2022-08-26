@@ -33,6 +33,9 @@ import org.feature.fox.coffee_counter.util.Utils
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Interface for the [UserListViewModel]
+ */
 interface IUserListViewModel : IToast {
     val userList: SnapshotStateList<UserIdResponse>
     val filteredUserList: SnapshotStateList<UserIdResponse>
@@ -60,6 +63,12 @@ interface IUserListViewModel : IToast {
     fun search()
 }
 
+/**
+ * ViewModel for the UserList.
+ *
+ * @property userRepository The user repository.
+ * @property preference The app preference.
+ */
 @HiltViewModel
 class UserListViewModel @Inject constructor(
     private val userRepository: UserRepository,
@@ -86,6 +95,9 @@ class UserListViewModel @Inject constructor(
     override val userIdPictureMap = mutableMapOf<String, Bitmap?>()
     override val searchField = mutableStateOf(TextFieldValue())
 
+    /**
+     * Initializes the view model.
+     */
     init {
         viewModelScope.launch {
             isAdminState.value = preference.getTag(BuildConfig.IS_ADMIN, true)
@@ -94,6 +106,9 @@ class UserListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Adds funding to a user.
+     */
     override suspend fun addFunding() {
         funding.value = TextFieldValue(funding.value.text.replace(",", "."))
         if (funding.value.text.count { '.' == it } > 1) {
@@ -126,6 +141,9 @@ class UserListViewModel @Inject constructor(
         fundingDialogVisible.value = false
     }
 
+    /**
+     * Creates a new user.
+     */
     override suspend fun createUser() {
         if (editPassword.value.text != editReEnterPassword.value.text) {
             toastChannel.send(UIText.StringResource(R.string.match_password))
@@ -160,7 +178,10 @@ class UserListViewModel @Inject constructor(
         editDialogVisible.value = false
     }
 
-    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+    /**
+     * Gets the total balance of the logged in user.
+     * FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+     */
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
@@ -172,6 +193,9 @@ class UserListViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    /**
+     * Sends money to a user.
+     */
     override suspend fun sendMoney() {
         sendAmount.value = TextFieldValue(sendAmount.value.text.replace(",", "."))
         if (sendAmount.value.text.count { '.' == it } > 1) {
@@ -199,10 +223,18 @@ class UserListViewModel @Inject constructor(
         sendMoneyDialogVisible.value = false
     }
 
+    /**
+     * Searches for a user by fuzzy search.
+     */
     override fun search() {
         Utils.fuzzySearch(filteredUserList, userList, searchField.value.text)
     }
 
+    /**
+     * Removes and adds a user to the user list.
+     * @param user The user to be removed and added.
+     * @param amount The new balance of the user.
+     */
     private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
         val index = userList.indexOf(currentUser.value)
         userList.remove(currentUser.value)
@@ -216,6 +248,9 @@ class UserListViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Loads all users.
+     */
     private suspend fun loadUsers() {
         val response = if (isAdminState.value) {
             userRepository.getUsersAsAdmin()
@@ -242,6 +277,11 @@ class UserListViewModel @Inject constructor(
         filteredUserList.addAll(userList)
     }
 
+    /**
+     * Loads the profile picture of a user.
+     * @param id The id of the user.
+     * @param imageTimestamp The timestamp of the image.
+     */
     private suspend fun loadProfilePicture(id: String, imageTimestamp: Long?) {
         if (imageTimestamp == null) {
             return
@@ -265,6 +305,11 @@ class UserListViewModel @Inject constructor(
         setImage(id, response.data.encodedImage)
     }
 
+    /**
+     * Sets the profile picture of a user.
+     * @param id The id of the user.
+     * @param encodedImage The encoded image of the user.
+     */
     private fun setImage(id: String, encodedImage: String) {
         val imageBytes = Base64.decode(encodedImage, Base64.DEFAULT)
         val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -272,6 +317,9 @@ class UserListViewModel @Inject constructor(
     }
 }
 
+/**
+ * Preview for the UserList.
+ */
 class UserListViewModelPreview : IUserListViewModel {
     override val userList = mutableStateListOf<UserIdResponse>()
     override val filteredUserList = mutableStateListOf<UserIdResponse>()

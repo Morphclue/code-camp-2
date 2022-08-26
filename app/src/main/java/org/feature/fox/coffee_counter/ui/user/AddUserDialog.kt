@@ -21,6 +21,10 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 
+/**
+ * Dialog to add a new user.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun AddUserDialog(
     viewModel: IUserListViewModel,
@@ -80,6 +84,10 @@ fun AddUserDialog(
     }
 }
 
+/**
+ * Buttons for the AddUserDialog.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun AddUserDialogButtons(viewModel: IUserListViewModel) {
     val scope = rememberCoroutineScope()

@@ -14,6 +14,12 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * TODO add description.
+ *
+ * @property userRepository
+ * @property preference
+ */
 @Singleton
 class AchievementGeneration @Inject constructor(
     private val userRepository: UserRepository,

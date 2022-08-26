@@ -25,6 +25,9 @@ import org.feature.fox.coffee_counter.util.UIText
 import org.json.JSONObject
 import javax.inject.Inject
 
+/**
+ * Interface for the [AuthenticationViewModel].
+ */
 interface IAuthenticationViewModel : IToast {
     val nameState: MutableState<TextFieldValue>
     val idState: MutableState<TextFieldValue>
@@ -39,6 +42,12 @@ interface IAuthenticationViewModel : IToast {
     fun updateRememberMe(value: Boolean)
 }
 
+/**
+ * View model for the authentication screen.
+ *
+ * @property userRepository The user repository.
+ * @property preference The app preference.
+ */
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
     private val userRepository: UserRepository,
@@ -54,12 +63,18 @@ class AuthenticationViewModel @Inject constructor(
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
 
+    /**
+     * Loads initial values if remember me is checked.
+     */
     init {
         viewModelScope.launch {
             loadValues()
         }
     }
 
+    /**
+     * Send a login request to the server.
+     */
     override suspend fun login() {
         val loginBody = LoginBody(idState.value.text.trim(), passwordState.value.text.trim())
         val response = userRepository.postLogin(loginBody)
@@ -78,7 +93,9 @@ class AuthenticationViewModel @Inject constructor(
         val elements = response.data.token.split('.')
         if (elements.size == 3) {
             val (_, payload, _) = elements
-            preference.setTag(BuildConfig.IS_ADMIN, JSONObject(Base64.decode(payload, Base64.DEFAULT).decodeToString()).getBoolean("isAdmin"))
+            preference.setTag(BuildConfig.IS_ADMIN,
+                JSONObject(Base64.decode(payload, Base64.DEFAULT)
+                    .decodeToString()).getBoolean("isAdmin"))
         } else {
             error("Invalid token")
         }
@@ -101,7 +118,6 @@ class AuthenticationViewModel @Inject constructor(
         )
 
         // Fetch Transactions of User and insert/update DB
-
         val transactions = userRepository.getTransactions(preference.getTag(BuildConfig.USER_ID))
         if (transactions.data == null) {
             toastChannel.send(transactions.message?.let { UIText.DynamicString(it) }
@@ -132,6 +148,9 @@ class AuthenticationViewModel @Inject constructor(
         showCoreActivity.value = true
     }
 
+    /**
+     * Send a register request to the server.
+     */
     override suspend fun register() {
         if (passwordState.value.text.trim() != reEnteredPasswordState.value.text.trim()) {
             toastChannel.send(UIText.StringResource(R.string.match_password))
@@ -174,11 +193,18 @@ class AuthenticationViewModel @Inject constructor(
         toastChannel.send(UIText.StringResource(R.string.created_account))
     }
 
+    /**
+     * Update the remember me checkbox.
+     * @param value The new value of the checkbox.
+     */
     override fun updateRememberMe(value: Boolean) {
         isChecked.value = value
         preference.setTag(BuildConfig.REMEMBER_ME, value)
     }
 
+    /**
+     * Loads the values of the fields if remember me is checked.
+     */
     private fun loadValues() {
         isChecked.value = preference.getTag(BuildConfig.REMEMBER_ME, true)
         if (!isChecked.value) {
@@ -188,11 +214,17 @@ class AuthenticationViewModel @Inject constructor(
         passwordState.value = TextFieldValue(preference.getTag(BuildConfig.USER_PASSWORD))
     }
 
+    /**
+     * Switch to the login view.
+     */
     private fun switchToLogin() {
         resetValues()
         loginState.value = true
     }
 
+    /**
+     * Resets all necessary TextInputFields.
+     */
     private fun resetValues() {
         nameState.value = TextFieldValue()
         passwordState.value = TextFieldValue()
@@ -200,6 +232,9 @@ class AuthenticationViewModel @Inject constructor(
     }
 }
 
+/**
+ * Preview for the authentication screen.
+ */
 class AuthenticationViewModelPreview : IAuthenticationViewModel {
     override val nameState = mutableStateOf(TextFieldValue("Peter"))
     override val idState = mutableStateOf(TextFieldValue("4242"))

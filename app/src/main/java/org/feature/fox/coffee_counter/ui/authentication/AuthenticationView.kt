@@ -33,6 +33,9 @@ import org.feature.fox.coffee_counter.ui.common.CustomButton
 import org.feature.fox.coffee_counter.ui.common.PasswordTextField
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
 
+/**
+ * Preview function for the AuthenticationView.
+ */
 @Preview(showSystemUi = true)
 @Composable
 fun AuthenticationViewPreview(
@@ -40,6 +43,10 @@ fun AuthenticationViewPreview(
     AuthenticationView(AuthenticationViewModelPreview())
 }
 
+/**
+ * The core of the AuthenticationView.
+ * @param viewModel The view model for the AuthenticationView.
+ */
 @Composable
 fun AuthenticationView(
     viewModel: IAuthenticationViewModel,
@@ -58,6 +65,10 @@ fun AuthenticationView(
     }
 }
 
+/**
+ * The LoginView inside the AuthenticationView.
+ * @param viewModel The view model for the AuthenticationView.
+ */
 @Composable
 fun LoginFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
@@ -85,6 +96,10 @@ fun LoginFragment(viewModel: IAuthenticationViewModel) {
     )
 }
 
+/**
+ * The RegisterView inside the AuthenticationView.
+ * @param viewModel The view model for the AuthenticationView.
+ */
 @Composable
 fun RegisterFragment(viewModel: IAuthenticationViewModel) {
     val coroutineScope = rememberCoroutineScope()
@@ -109,6 +124,10 @@ fun RegisterFragment(viewModel: IAuthenticationViewModel) {
     )
 }
 
+/**
+ * The header for the LoginView and RegisterView.
+ * @param viewModel The view model for the AuthenticationView.
+ */
 @Composable
 fun LoginSignupHeader(viewModel: IAuthenticationViewModel) {
     Row(
@@ -136,6 +155,12 @@ fun LoginSignupHeader(viewModel: IAuthenticationViewModel) {
     }
 }
 
+/**
+ * The header button for the LoginView and RegisterView.
+ * @param text The text of the button.
+ * @param shadow The shadow of the button.
+ * @param onClick The onClick action of the button.
+ */
 @Composable
 fun HeaderButton(
     text: String,
@@ -153,6 +178,10 @@ fun HeaderButton(
     )
 }
 
+/**
+ * The remember me checkbox for the LoginView.
+ * @param viewModel The view model for the AuthenticationView.
+ */
 @Composable
 fun RememberMeCheckbox(viewModel: IAuthenticationViewModel) {
     Row(

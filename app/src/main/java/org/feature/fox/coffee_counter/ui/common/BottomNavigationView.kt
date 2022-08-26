@@ -32,12 +32,19 @@ import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
 import org.feature.fox.coffee_counter.ui.user.UserListViewModel
 import org.feature.fox.coffee_counter.ui.user.UsersView
 
+/**
+ * Preview for the BottomNavBar component.
+ */
 @Preview
 @Composable
 fun PreviewBottomNavBar() {
     BottomNavBar(navController = rememberNavController())
 }
 
+/**
+ * The main BottomNavbar component.
+ * @param navController The navigation controller.
+ */
 @Composable
 fun BottomNavBar(navController: NavHostController) {
     val items = listOf(
@@ -62,6 +69,14 @@ fun BottomNavBar(navController: NavHostController) {
     }
 }
 
+/**
+ * Navigation component for navigation to the different routes.
+ * @param navController The navigation controller.
+ * @param transactionsViewModel The transaction ViewModel.
+ * @param itemsViewModel The items ViewModel.
+ * @param userListViewModel The user list ViewModel.
+ * @param profileViewModel The profile ViewModel.
+ */
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -86,6 +101,12 @@ fun Navigation(
     }
 }
 
+/**
+ * Extension function for adding an item to the BottomNavBar.
+ * @param item The item to add.
+ * @param currentDestination The current destination.
+ * @param navController The navigation controller.
+ */
 @Composable
 fun RowScope.AddItem(
     item: BottomNavItem,
@@ -103,6 +124,10 @@ fun RowScope.AddItem(
     )
 }
 
+/**
+ * The displayed icon for the BottomNavBar.
+ * @param item The item to display the icon for.
+ */
 @Composable
 fun NavBarIcon(
     item: BottomNavItem,

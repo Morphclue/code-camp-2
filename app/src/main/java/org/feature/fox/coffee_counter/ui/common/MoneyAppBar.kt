@@ -13,11 +13,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
+/**
+ * PreviewParameterProvider for TopAppBar.
+ */
 class BalanceStateProvider : PreviewParameterProvider<Pair<String, MutableState<Double>>> {
     override val values: Sequence<Pair<String, MutableState<Double>>> =
         sequenceOf(Pair("Beverage", mutableStateOf(13.0)))
 }
 
+/**
+ * TopAppBar with title and money.
+ * @param pair Pair of title and money.
+ */
 @Preview
 @Composable
 fun MoneyAppBar(

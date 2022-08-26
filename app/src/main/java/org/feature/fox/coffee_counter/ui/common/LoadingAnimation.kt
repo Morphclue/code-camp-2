@@ -22,6 +22,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
+/**
+ * A LoadingAnimation that can be displayed when data is being fetched.
+ * Reference: https://youtu.be/xakNOVaYLAg
+ */
 @Composable
 fun LoadingAnimation(
 ) {

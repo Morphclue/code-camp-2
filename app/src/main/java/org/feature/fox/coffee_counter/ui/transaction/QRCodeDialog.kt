@@ -28,12 +28,19 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 import org.feature.fox.coffee_counter.ui.common.CustomButton
 
+/**
+ * Preview of the QRCodeDialog.
+ */
 @Preview
 @Composable
 fun QRCodeDialogPreview() {
     QRCodeDialog(TransactionViewModelPreview())
 }
 
+/**
+ * The dialog that is shown when the user wants to scan a QR code.
+ * @param viewModel The transaction ViewModel.
+ */
 @Composable
 fun QRCodeDialog(viewModel: ITransactionViewModel) {
     if (!viewModel.qrCodeDialogVisible.value) {
@@ -67,6 +74,10 @@ fun QRCodeDialog(viewModel: ITransactionViewModel) {
     }
 }
 
+/**
+ * The dialog that is shown when the user wants to decide what he wants to do.
+ * @param viewModel The transaction ViewModel.
+ */
 @Composable
 fun QRCodeMainDialog(viewModel: ITransactionViewModel) {
     Text(
@@ -90,6 +101,10 @@ fun QRCodeMainDialog(viewModel: ITransactionViewModel) {
     QRCodeDialogButtons(viewModel)
 }
 
+/**
+ * The dialog that is shown when the user wants to send money.
+ * @param viewModel The transaction ViewModel.
+ */
 @Composable
 fun QRCodeSendDialog(viewModel: ITransactionViewModel) {
     Text(
@@ -109,6 +124,10 @@ fun QRCodeSendDialog(viewModel: ITransactionViewModel) {
     QRCodeDialogButtons(viewModel)
 }
 
+/**
+ * The dialog that is shown when the user wants to receive money.
+ * @param viewModel The transaction ViewModel.
+ */
 @Composable
 fun QRCodeReceiveDialog(viewModel: ITransactionViewModel) {
     Text(
@@ -133,6 +152,10 @@ fun QRCodeReceiveDialog(viewModel: ITransactionViewModel) {
     QRCodeDialogButtons(viewModel)
 }
 
+/**
+ * The different buttons that are shown in the QRCodeDialog.
+ * @param viewModel The transaction ViewModel.
+ */
 @Composable
 fun QRCodeDialogButtons(viewModel: ITransactionViewModel) {
     val coroutineScope = rememberCoroutineScope()

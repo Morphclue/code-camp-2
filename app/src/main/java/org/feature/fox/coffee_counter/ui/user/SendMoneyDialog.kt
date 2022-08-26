@@ -19,6 +19,10 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 
+/**
+ * A dialog to send money to a user.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun SendMoneyDialog(viewModel: IUserListViewModel) {
     if (!viewModel.sendMoneyDialogVisible.value) {
@@ -43,6 +47,10 @@ fun SendMoneyDialog(viewModel: IUserListViewModel) {
     }
 }
 
+/**
+ * The content of the send money dialog.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun SendMoneyDialogContent(viewModel: IUserListViewModel) {
     Text(
@@ -61,6 +69,10 @@ fun SendMoneyDialogContent(viewModel: IUserListViewModel) {
     }
 }
 
+/**
+ * The buttons of the send money dialog.
+ * @param viewModel the UserList ViewModel.
+ */
 @Composable
 fun SendMoneyDialogButtons(viewModel: IUserListViewModel) {
     val coroutineScope = rememberCoroutineScope()

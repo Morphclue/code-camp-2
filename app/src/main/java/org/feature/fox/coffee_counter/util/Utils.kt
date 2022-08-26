@@ -5,8 +5,18 @@ import me.xdrop.fuzzywuzzy.FuzzySearch
 import org.feature.fox.coffee_counter.data.models.response.UserIdResponse
 import java.util.*
 
+/**
+ * Utility class for useful functionalities.
+ */
 class Utils {
     companion object {
+        /**
+         * Filter FuzzySearch results by score > 80.
+         *
+         * @param filteredList list of filtered items
+         * @param list list of all items
+         * @param text text to search
+         */
         fun fuzzySearch(
             filteredList: SnapshotStateList<UserIdResponse>,
             list: SnapshotStateList<UserIdResponse>,
@@ -23,6 +33,5 @@ class Utils {
             }
             filteredList.addAll(list)
         }
-
     }
 }
