@@ -21,7 +21,10 @@ import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 import org.feature.fox.coffee_counter.ui.transaction.TransactionViewModel
 import org.feature.fox.coffee_counter.ui.user.UserListViewModel
 
-
+/**
+ * The core activity of the application.
+ * It contains all 4 different viewModels.
+ */
 @AndroidEntryPoint
 class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
     private val itemsViewModel: ItemsViewModel by viewModels()
@@ -30,9 +33,14 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
     private val userListViewModel: UserListViewModel by viewModels()
     private var nfcAdapter: NfcAdapter? = null
 
+    /**
+     * Called when the activity is created.
+     * Passes all viewModels to the Navigation.
+     *
+     * @param savedInstanceState the saved instance state.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             CoffeeCounterTheme {
                 val navController = rememberNavController()
@@ -52,6 +60,10 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
     }
 
+    /**
+     * Called when the activity is resumed.
+     * Enables the reader mode for the nfc adapter.
+     */
     override fun onResume() {
         super.onResume()
         if (nfcAdapter != null) {
@@ -74,11 +86,20 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
         }
     }
 
+    /**
+     * Called when the activity is paused.
+     * Disables the reader mode for the nfc adapter.
+     */
     override fun onPause() {
         super.onPause()
         if (nfcAdapter != null) nfcAdapter?.disableReaderMode(this)
     }
 
+    /**
+     * Called when a nfc tag is read/discovered.
+     *
+     * @param tag the tag that was read/discovered.
+     */
     override fun onTagDiscovered(tag: Tag) {
         val nNdef: Ndef? = Ndef.get(tag)
 
@@ -99,6 +120,12 @@ class CoreActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
         }
     }
 
+    /**
+     * Reads the payload of the ndef tag.
+     *
+     * @param tag Ndef tag that was read/discovered.
+     * @return the payload of the ndef tag.
+     */
     private fun readPayload(tag: Ndef): String {
         val startOfMessage = 3
         val message: NdefMessage = tag.cachedNdefMessage

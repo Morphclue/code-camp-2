@@ -20,6 +20,13 @@ import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
+/**
+ * A search bar that can be used to search for something.
+ * @param modifier Modifier to apply to the search bar.
+ * @param fraction The fraction of the search bar.
+ * @param state The state of the search bar.
+ * @param onValueChanged The callback for when the value of the search bar changes.
+ */
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,

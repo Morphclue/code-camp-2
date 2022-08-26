@@ -27,6 +27,11 @@ import androidx.compose.ui.unit.dp
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.theme.CrayolaBrown
 
+/**
+ * A TextField that is used to enter a password.
+ * @param state the mutable state of the TextField.
+ * @param label the label of the TextField.
+ */
 @Composable
 fun PasswordTextField(state: MutableState<TextFieldValue>, label: String) {
     val textState by remember { mutableStateOf(state) }

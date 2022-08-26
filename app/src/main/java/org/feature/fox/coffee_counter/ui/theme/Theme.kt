@@ -11,6 +11,11 @@ private val LightColorPalette = lightColors(
     secondary = CrayolaCopper
 )
 
+/**
+ * Custom theme for this app.
+ *
+ * @param content composable function to be wrapped in the theme.
+ */
 @Composable
 fun CoffeeCounterTheme(
     content: @Composable () -> Unit,

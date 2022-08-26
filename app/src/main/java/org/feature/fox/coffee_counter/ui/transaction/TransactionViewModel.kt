@@ -25,8 +25,10 @@ import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
 import javax.inject.Inject
 
+/**
+ * Interface for the [TransactionViewModel].
+ */
 interface ITransactionViewModel : IToast {
-
     val showMainActivity: MutableLiveData<Boolean>
     val toastMessage: MutableLiveData<String>
     val transactions: MutableList<TransactionResponse>
@@ -48,12 +50,16 @@ interface ITransactionViewModel : IToast {
     suspend fun sendMoney(qrCodeText: String)
 }
 
+/**
+ * ViewModel for the transaction view.
+ * @property userRepository The user repository.
+ * @property preference The app preference.
+ */
 @HiltViewModel
 class TransactionViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val preference: AppPreference,
 ) : ViewModel(), ITransactionViewModel {
-
     override val showMainActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
     override val toastChannel = Channel<UIText>()
@@ -68,6 +74,9 @@ class TransactionViewModel @Inject constructor(
     override var purchases = mutableListOf<Purchase>()
     override var balanceList = mutableListOf<Pair<Long, Double>>()
 
+    /**
+     * Loads initial values of transactions.
+     */
     init {
         viewModelScope.launch {
             refreshTransactions()
@@ -79,6 +88,9 @@ class TransactionViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Refreshes the transactions.
+     */
     override suspend fun refreshTransactions() {
         val response = userRepository.getTransactions(preference.getTag(BuildConfig.USER_ID))
 
@@ -90,7 +102,10 @@ class TransactionViewModel @Inject constructor(
         transactions = response.data as MutableList<TransactionResponse>
     }
 
-    // reference: https://stackoverflow.com/questions/28232116/android-using-zxing-generate-qr-code
+    /**
+     * Generates a QR code.
+     * reference: https://stackoverflow.com/questions/28232116/android-using-zxing-generate-qr-code
+     */
     override suspend fun generateQRCode() {
         val writer = QRCodeWriter()
         val qrCodeSize = 300
@@ -113,6 +128,10 @@ class TransactionViewModel @Inject constructor(
         qrCode.value = bitmap
     }
 
+    /**
+     * Sends money to the given QR code.
+     * @param qrCodeText The recipient's QR code.
+     */
     override suspend fun sendMoney(qrCodeText: String) {
         sendAmount.value = TextFieldValue(sendAmount.value.text.replace(",", "."))
         if (sendAmount.value.text.count { '.' == it } > 1) {
@@ -135,7 +154,10 @@ class TransactionViewModel @Inject constructor(
         qrCodeReceiveState.value = false
     }
 
-    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+    /**
+     * Gets the total balance of the user.
+     * FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+     */
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
@@ -147,18 +169,20 @@ class TransactionViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    /**
+     * Gets the purchases of the user.
+     */
     override suspend fun getPurchasesOfUser() {
-
-        // Get Purchases from DB since new purchases only occur if the user buys items.
-        // This is done inside ItemsView and updated at DB
-        purchases =
-            userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID)) as MutableList<Purchase>
+        purchases = userRepository.getPurchaseListOfUserDb(
+            preference.getTag(BuildConfig.USER_ID)
+        ) as MutableList<Purchase>
     }
 
 
+    /**
+     * Gets the funding of the user.
+     */
     override suspend fun getFundingOfUser() {
-
-        // Fetch Transactions from API
         val response = userRepository.getTransactions(preference.getTag(BuildConfig.USER_ID))
         if (response.data == null) {
             toastChannel.send(response.message?.let { UIText.DynamicString(it) }
@@ -166,7 +190,6 @@ class TransactionViewModel @Inject constructor(
             return
         }
 
-        // Filter for Fundings and add them
         val fundingList = mutableListOf<Funding>()
         response.data.toMutableList().forEach { transactionResponse ->
             if (transactionResponse.type == "funding")
@@ -178,7 +201,7 @@ class TransactionViewModel @Inject constructor(
                     )
                 )
         }
-        //Update DB
+
         if (userRepository.getFundingOfUserByIdDb(preference.getTag(BuildConfig.USER_ID)).size != fundingList.size) {
             fundingList.forEach { funding ->
                 userRepository.insertFundingDb(funding)
@@ -186,14 +209,14 @@ class TransactionViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Gets the balance of the user.
+     */
     override suspend fun getBalanceOfUser() {
         balanceList.clear()
-        // Assuming that they are already sorted by timestamp
-        if (transactions == null) return
         if (transactions.size == 0) {
             balanceList.add(Pair(System.currentTimeMillis() / 1000, 0.0))
         }
-        //balanceList.add(Pair(transactions[0].timestamp, 0.0))
         for (i in 1 until transactions.size) {
             balanceList.add(
                 Pair(
@@ -205,6 +228,9 @@ class TransactionViewModel @Inject constructor(
     }
 }
 
+/**
+ * Preview for the transaction screen.
+ */
 class TransactionViewModelPreview : ITransactionViewModel {
     override val showMainActivity = MutableLiveData<Boolean>()
     override val toastMessage = MutableLiveData<String>()
@@ -224,15 +250,10 @@ class TransactionViewModelPreview : ITransactionViewModel {
     override val sendAmount = mutableStateOf(TextFieldValue())
 
     override suspend fun refreshTransactions() {}
-
     override suspend fun getTotalBalance() {}
-
     override suspend fun getPurchasesOfUser() {}
-
     override suspend fun getFundingOfUser() {}
-
     override suspend fun getBalanceOfUser() {}
-
     override suspend fun generateQRCode() {
         TODO("Not yet implemented")
     }

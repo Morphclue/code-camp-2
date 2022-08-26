@@ -7,6 +7,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.ImageVector
 
+/**
+ * Contains all routes of the BottomNavigationView.
+ * @property name Name of the route.
+ * @property route Route of the route.
+ * @property icon Icon of the route.
+ */
 sealed class BottomNavItem(
     val name: String,
     val route: String,
