@@ -2,7 +2,7 @@ package org.feature.fox.coffee_counter.data.repository
 
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.feature.fox.coffee_counter.BuildConfig
 import org.feature.fox.coffee_counter.data.local.database.dao.UserDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Achievement
@@ -27,8 +27,7 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
-) : UserRepositoryInt {
-
+) : IUserRepository {
     override suspend fun insertUserDb(user: User) {
         userDao.insertUserDb(user)
     }
@@ -266,10 +265,9 @@ class UserRepository @Inject constructor(
     override suspend fun uploadImage(id: String, inputStream: InputStream): Resource<String> {
         return try {
             val image = MultipartBody.Part.createFormData(
-                "pic", "myPic", RequestBody.create(
-                    "image/*".toMediaTypeOrNull(),
-                    inputStream.readBytes()
-                )
+                "pic",
+                "myPic",
+                inputStream.readBytes().toRequestBody("image/*".toMediaTypeOrNull())
             )
             val response = apiService.postImage(id, image)
             if (response.isSuccessful) {

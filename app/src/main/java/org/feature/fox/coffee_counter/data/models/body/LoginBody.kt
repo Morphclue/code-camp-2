@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class LoginBody(
-
     @Json(name = "id")
     val id: String,
 

@@ -2,8 +2,6 @@ package org.feature.fox.coffee_counter.util
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 
 /**
  * A class to provide string resources.
@@ -26,14 +24,6 @@ sealed class UIText {
         @StringRes val resId: Int,
         vararg val args: Any,
     ) : UIText()
-
-    @Composable
-    fun asString(): String {
-        return when (this) {
-            is DynamicString -> value
-            is StringResource -> stringResource(resId, *args)
-        }
-    }
 
     /**
      * Returns the string resource for the given [context].

@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PurchaseBody(
-
     @Json(name = "itemId")
     val itemId: String,
 

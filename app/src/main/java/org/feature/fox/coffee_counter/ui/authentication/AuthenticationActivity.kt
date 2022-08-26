@@ -12,7 +12,6 @@ import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
  */
 @AndroidEntryPoint
 class AuthenticationActivity : ComponentActivity() {
-
     private val authenticationViewModel: AuthenticationViewModel by viewModels()
 
     /**

@@ -9,7 +9,6 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Item
 
 @Dao
 interface ItemDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItemDb(item: Item)
 
@@ -18,5 +17,4 @@ interface ItemDao {
 
     @Update
     suspend fun updateItemDb(item: Item)
-
 }

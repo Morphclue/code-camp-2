@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 class ItemBody(
-
     @Json(name = "id")
     val id: String? = null,
 
