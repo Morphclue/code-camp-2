@@ -20,7 +20,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -44,6 +43,7 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
@@ -75,20 +75,28 @@ fun ItemsView(
             )
         },
         floatingActionButton = {
-            if (viewModel.isAdmin.value) EditFAB(viewModel)
             if (viewModel.adminView.value) AddItemFAB(viewModel)
             if (!viewModel.adminView.value) BuyFAB(viewModel)
         },
         floatingActionButtonPosition = FabPosition.Center,
         content = {
             Column {
-                // FIXME: add searchbar back in once the functionality is implemented
-//                SearchBar(
-//                    state = viewModel.searchField,
-//                    onValueChanged = {
-//                        viewModel.search()
-//                    },
-//                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                )
+                {
+                    SearchBar(
+                        fraction = 0.8f,
+                        state = viewModel.searchField,
+                        onValueChanged = {
+                            viewModel.search()
+                        },
+                    )
+                    if (viewModel.isAdmin.value) SwitchAdminView(viewModel)
+                }
                 if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
             }
         }
@@ -122,11 +130,10 @@ fun ItemList(viewModel: IItemsViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             coroutineScope.launch {
-                viewModel.getItems()
                 viewModel.getTotalBalance()
             }
             if (viewModel.adminView.value) AmountTitle()
-            viewModel.availableItemsState.forEach { item ->
+            viewModel.filteredItemsList.forEach { item ->
                 if (viewModel.adminView.value) {
                     AdminItemRow(viewModel, item)
                 } else {
@@ -290,18 +297,17 @@ fun AmountTitle() {
 }
 
 @Composable
-fun EditFAB(viewModel: IItemsViewModel) {
-    FloatingActionButton(
-        modifier = Modifier.padding(start = 170.dp, bottom = 50.dp),
+fun SwitchAdminView(viewModel: IItemsViewModel) {
+    Button(
+        shape = CircleShape,
         onClick = {
             viewModel.adminView.value = !viewModel.adminView.value
-        },
-        backgroundColor = CrayolaCopper,
-        contentColor = Color.White,
-    ) {
+        })
+    {
+
         Icon(
             Icons.Outlined.Sync,
-            contentDescription = stringResource(R.string.edit_fab),
+            contentDescription = stringResource(R.string.switch_admin_view),
         )
     }
 }

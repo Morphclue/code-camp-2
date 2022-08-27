@@ -24,10 +24,12 @@ import org.feature.fox.coffee_counter.di.services.AchievementGeneration
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import org.feature.fox.coffee_counter.util.Utils
 import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
     var availableItemsState: SnapshotStateList<Item>
+    var filteredItemsList: SnapshotStateList<Item>
     val itemsInShoppingCartState: SnapshotStateList<Item>
     val currentShoppingCartAmountState: MutableState<Double>
     val adminView: MutableState<Boolean>
@@ -65,6 +67,7 @@ class ItemsViewModel @Inject constructor(
     private val achievementGenerator: AchievementGeneration,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
+    override var filteredItemsList = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
     override val toastChannel = Channel<UIText>()
@@ -136,6 +139,7 @@ class ItemsViewModel @Inject constructor(
                 )
             }
         }
+        filteredItemsList.addAll(availableItemsState)
         isLoaded.value = true
     }
 
@@ -242,6 +246,7 @@ class ItemsViewModel @Inject constructor(
                 cartItem.amount = 0
             }
         }
+        searchField.value = TextFieldValue("")
         achievementGenerator.checkAchievements(availableItemsState)
         isLoaded.value = false
         getItems()
@@ -361,14 +366,14 @@ class ItemsViewModel @Inject constructor(
     }
 
     override fun search() {
-        // TODO: needs to be implemented later,
-        //       but first this whole viewModel needs to be refactored
+        Utils.fuzzySearchItems(filteredItemsList, availableItemsState, searchField.value.text)
     }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
     override val currentShoppingCartAmountState = mutableStateOf(55.0)
     override var availableItemsState = mutableStateListOf<Item>()
+    override var filteredItemsList = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
