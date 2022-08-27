@@ -216,6 +216,8 @@ class TransactionViewModel @Inject constructor(
         balanceList.clear()
         if (transactions.size == 0) {
             balanceList.add(Pair(System.currentTimeMillis() / 1000, 0.0))
+        } else {
+            balanceList.add(Pair(transactions[0].timestamp, transactions[0].value))
         }
         for (i in 1 until transactions.size) {
             balanceList.add(
