@@ -93,8 +93,6 @@ dependencies {
     def mpandroidchart_version = "v3.1.0"
     def qrcode_version = "3.4.1"
     def journeyapps_version = "4.3.0"
-    def work_version = "2.7.1"
-    def hiltwork_version = "1.0.0"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -158,16 +156,6 @@ dependencies {
 
     //MPAndroidChart
     implementation "com.github.PhilJay:MPAndroidChart:$mpandroidchart_version"
-
-
-    // Work Manager
-    implementation "androidx.work:work-runtime-ktx:$work_version"
-    implementation "androidx.work:work-gcm:$work_version"
-    implementation "androidx.work:work-multiprocess:$work_version"
-    // Hilt Workmanager
-    implementation "androidx.hilt:hilt-work:$hiltwork_version"
-    kapt "androidx.hilt:hilt-compiler:$hiltwork_version"
-
 
     // Local Unit Tests
     testImplementation 'junit:junit:4.13.2'
