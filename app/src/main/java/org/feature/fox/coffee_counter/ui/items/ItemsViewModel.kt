@@ -50,7 +50,6 @@ interface IItemsViewModel : IToast {
     suspend fun addItemToShoppingCart(item: Item): Boolean
     suspend fun addStringItemToShoppingCart(item: String)
     suspend fun removeItemFromShoppingCart(item: Item)
-    suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
     suspend fun addItem(): Boolean
     suspend fun updateItem()
@@ -94,6 +93,9 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  Loads the item list
+     */
     override suspend fun getItems() {
         val response = itemRepository.getItems()
 
@@ -143,6 +145,10 @@ class ItemsViewModel @Inject constructor(
         isLoaded.value = true
     }
 
+    /**
+     *  Adds the item to the shopping cart
+     *  @param item The item
+     */
     override suspend fun addItemToShoppingCart(item: Item): Boolean {
 
         if (item.amount <= 0) {
@@ -177,6 +183,10 @@ class ItemsViewModel @Inject constructor(
         return true
     }
 
+    /**
+     *  Adds the item with the given id to the shopping cart
+     *  @param item The id of the item
+     */
     override suspend fun addStringItemToShoppingCart(item: String) {
         try {
             val avItem: Item = availableItemsState.first { it.id == item }
@@ -192,11 +202,10 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
-    override suspend fun getItemCartAmount(item: Item): Int {
-        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
-        return cartItem.amount
-    }
-
+    /**
+     *  Removes item from the shopping cart
+     *  @param item The item
+     */
     override suspend fun removeItemFromShoppingCart(item: Item) {
         val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
 
@@ -208,6 +217,9 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  Buys the items in the shopping cart
+     */
     override suspend fun buyItems() {
         itemsInShoppingCartState.forEach { cartItem ->
             if (cartItem.amount > 0) {
@@ -253,6 +265,9 @@ class ItemsViewModel @Inject constructor(
         getTotalBalance()
     }
 
+    /**
+     *  Adds a new Item with the given values.
+     */
     override suspend fun addItem(): Boolean {
         if (currentItemName.value.text.isEmpty() ||
             currentItemAmount.value.text.isEmpty() ||
@@ -291,6 +306,9 @@ class ItemsViewModel @Inject constructor(
         return true
     }
 
+    /**
+     *  Updates the selected Item
+     */
     override suspend fun updateItem() {
         if (currentItemPrice.value.text.toDouble() < 0) {
             toastChannel.send(UIText.StringResource(R.string.price_negative))
@@ -327,6 +345,9 @@ class ItemsViewModel @Inject constructor(
         getItems()
     }
 
+    /**
+     * Deletes the selected item.
+     */
     override suspend fun deleteItem() {
         val itemToBeDeleted = itemRepository.getItemById(originalItemId.value)
         val response = itemRepository.deleteItemById(originalItemId.value)
@@ -353,7 +374,10 @@ class ItemsViewModel @Inject constructor(
         getItems()
     }
 
-    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+    /**
+     * Gets the total balance of the user.
+     * FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+     */
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
@@ -365,6 +389,9 @@ class ItemsViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    /**
+     * Searches for an item by fuzzy search.
+     */
     override fun search() {
         Utils.fuzzySearchItems(filteredItemsList, availableItemsState, searchField.value.text)
     }
@@ -416,10 +443,6 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getItemCartAmount(item: Item): Int {
         TODO("Not yet implemented")
     }
 
