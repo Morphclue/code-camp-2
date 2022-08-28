@@ -24,10 +24,12 @@ import org.feature.fox.coffee_counter.di.services.AchievementGeneration
 import org.feature.fox.coffee_counter.di.services.AppPreference
 import org.feature.fox.coffee_counter.util.IToast
 import org.feature.fox.coffee_counter.util.UIText
+import org.feature.fox.coffee_counter.util.Utils
 import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
     var availableItemsState: SnapshotStateList<Item>
+    var filteredItemsList: SnapshotStateList<Item>
     val itemsInShoppingCartState: SnapshotStateList<Item>
     val currentShoppingCartAmountState: MutableState<Double>
     val adminView: MutableState<Boolean>
@@ -48,7 +50,6 @@ interface IItemsViewModel : IToast {
     suspend fun addItemToShoppingCart(item: Item): Boolean
     suspend fun addStringItemToShoppingCart(item: String)
     suspend fun removeItemFromShoppingCart(item: Item)
-    suspend fun getItemCartAmount(item: Item): Int
     suspend fun buyItems()
     suspend fun addItem(): Boolean
     suspend fun updateItem()
@@ -65,6 +66,7 @@ class ItemsViewModel @Inject constructor(
     private val achievementGenerator: AchievementGeneration,
 ) : ViewModel(), IItemsViewModel {
     override var availableItemsState = mutableStateListOf<Item>()
+    override var filteredItemsList = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
     override val toastChannel = Channel<UIText>()
@@ -91,6 +93,9 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  Loads the item list
+     */
     override suspend fun getItems() {
         val response = itemRepository.getItems()
 
@@ -136,9 +141,14 @@ class ItemsViewModel @Inject constructor(
                 )
             }
         }
+        filteredItemsList.addAll(availableItemsState)
         isLoaded.value = true
     }
 
+    /**
+     *  Adds the item to the shopping cart
+     *  @param item The item
+     */
     override suspend fun addItemToShoppingCart(item: Item): Boolean {
 
         if (item.amount <= 0) {
@@ -173,6 +183,10 @@ class ItemsViewModel @Inject constructor(
         return true
     }
 
+    /**
+     *  Adds the item with the given id to the shopping cart
+     *  @param item The id of the item
+     */
     override suspend fun addStringItemToShoppingCart(item: String) {
         try {
             val avItem: Item = availableItemsState.first { it.id == item }
@@ -188,11 +202,10 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
-    override suspend fun getItemCartAmount(item: Item): Int {
-        val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
-        return cartItem.amount
-    }
-
+    /**
+     *  Removes item from the shopping cart
+     *  @param item The item
+     */
     override suspend fun removeItemFromShoppingCart(item: Item) {
         val cartItem: Item = itemsInShoppingCartState.first { it.id == item.id }
 
@@ -204,6 +217,9 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  Buys the items in the shopping cart
+     */
     override suspend fun buyItems() {
         itemsInShoppingCartState.forEach { cartItem ->
             if (cartItem.amount > 0) {
@@ -242,12 +258,16 @@ class ItemsViewModel @Inject constructor(
                 cartItem.amount = 0
             }
         }
+        searchField.value = TextFieldValue("")
         achievementGenerator.checkAchievements(availableItemsState)
         isLoaded.value = false
         getItems()
         getTotalBalance()
     }
 
+    /**
+     *  Adds a new Item with the given values.
+     */
     override suspend fun addItem(): Boolean {
         if (currentItemName.value.text.isEmpty() ||
             currentItemAmount.value.text.isEmpty() ||
@@ -286,6 +306,9 @@ class ItemsViewModel @Inject constructor(
         return true
     }
 
+    /**
+     *  Updates the selected Item
+     */
     override suspend fun updateItem() {
         if (currentItemPrice.value.text.toDouble() < 0) {
             toastChannel.send(UIText.StringResource(R.string.price_negative))
@@ -322,6 +345,9 @@ class ItemsViewModel @Inject constructor(
         getItems()
     }
 
+    /**
+     * Deletes the selected item.
+     */
     override suspend fun deleteItem() {
         val itemToBeDeleted = itemRepository.getItemById(originalItemId.value)
         val response = itemRepository.deleteItemById(originalItemId.value)
@@ -348,7 +374,10 @@ class ItemsViewModel @Inject constructor(
         getItems()
     }
 
-    //FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+    /**
+     * Gets the total balance of the user.
+     * FIXME: Maybe use "observeTotalBalance" instead of calling this Method after each change
+     */
     override suspend fun getTotalBalance() {
         val response = userRepository.getUserById(preference.getTag(BuildConfig.USER_ID))
 
@@ -360,15 +389,18 @@ class ItemsViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    /**
+     * Searches for an item by fuzzy search.
+     */
     override fun search() {
-        // TODO: needs to be implemented later,
-        //       but first this whole viewModel needs to be refactored
+        Utils.fuzzySearchItems(filteredItemsList, availableItemsState, searchField.value.text)
     }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
     override val currentShoppingCartAmountState = mutableStateOf(55.0)
     override var availableItemsState = mutableStateListOf<Item>()
+    override var filteredItemsList = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val toastChannel = Channel<UIText>()
     override val toast = toastChannel.receiveAsFlow()
@@ -411,10 +443,6 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun removeItemFromShoppingCart(item: Item) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getItemCartAmount(item: Item): Int {
         TODO("Not yet implemented")
     }
 

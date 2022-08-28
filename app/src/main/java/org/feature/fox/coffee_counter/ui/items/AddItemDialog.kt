@@ -21,7 +21,10 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 
-
+/**
+ * Dialog to add a new Item.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun AddItemDialog(
     viewModel: IItemsViewModel,
@@ -69,6 +72,10 @@ fun AddItemDialog(
     }
 }
 
+/**
+ * Buttons for the AddItemDialog.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun AddItemDialogButtons(
     viewModel: IItemsViewModel,

@@ -21,6 +21,10 @@ import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.ui.common.CommonTextField
 
+/**
+ * Dialog to Edit an Item.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun EditItemDialog(
     viewModel: IItemsViewModel,
@@ -74,6 +78,10 @@ fun EditItemDialog(
     }
 }
 
+/**
+ * Buttons for the EditItemDialog.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun EditItemDialogButtons(
     viewModel: IItemsViewModel,
