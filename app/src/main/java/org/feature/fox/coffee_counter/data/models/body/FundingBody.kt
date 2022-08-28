@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * Definition of the data class corresponding to the JSON Funding Body
+ * Definition of the data class corresponding to the JSON Funding Body.
  */
 @JsonClass(generateAdapter = true)
 data class FundingBody(

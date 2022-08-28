@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * Definition of the data class corresponding to the JSON User Body
+ * Definition of the data class corresponding to the JSON User Body.
  */
 
 @JsonClass(generateAdapter = true)

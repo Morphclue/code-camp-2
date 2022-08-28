@@ -10,7 +10,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 /**
- * Declaration of the User Database with its Entities according to RoomDB
+ * Declaration of the User Database with its Entities according to RoomDB.
  */
 @Database(
     entities = [User::class, Funding::class, Purchase::class, Image::class, Achievement::class],

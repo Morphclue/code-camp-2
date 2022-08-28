@@ -15,7 +15,7 @@ import org.feature.fox.coffee_counter.data.local.database.tables.Purchase
 import org.feature.fox.coffee_counter.data.local.database.tables.User
 
 /**
- * Implementation of the DAO for the User database according to RoomDB
+ * Implementation of the DAO for the User database according to RoomDB.
  */
 @Dao
 interface UserDao {

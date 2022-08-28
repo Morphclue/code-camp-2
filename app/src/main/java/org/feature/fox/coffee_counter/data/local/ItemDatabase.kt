@@ -6,7 +6,7 @@ import org.feature.fox.coffee_counter.data.local.database.dao.ItemDao
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 
 /**
- * Declaration of the Item Database with its Entities according to RoomDB
+ * Declaration of the Item Database with its Entities according to RoomDB.
  */
 @Database(
     entities = [Item::class],

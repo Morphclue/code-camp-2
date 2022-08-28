@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Definition of the Purchase Entity according to RoomDB
+ * Definition of the Purchase Entity according to RoomDB.
  */
 @Entity(tableName = "purchase")
 data class Purchase(

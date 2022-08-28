@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
- * Definition of the data class corresponding to the JSON SendMoney Body
+ * Definition of the data class corresponding to the JSON SendMoney Body.
  */
 
 @JsonClass(generateAdapter = true)

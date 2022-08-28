@@ -6,6 +6,9 @@ import org.feature.fox.coffee_counter.data.models.body.PurchaseBody
 import org.feature.fox.coffee_counter.data.models.response.ItemResponse
 import org.feature.fox.coffee_counter.util.Resource
 
+/**
+ * Interface for the Item Repository combining access to both Item-related RoomDB queries and API Calls.
+ */
 interface IItemRepository {
     suspend fun insertItemDb(item: Item)
 

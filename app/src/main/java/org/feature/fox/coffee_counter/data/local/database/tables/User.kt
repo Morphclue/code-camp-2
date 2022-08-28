@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Definition of the User Entity according to RoomDB
+ * Definition of the User Entity according to RoomDB.
  */
 @Entity(tableName = "users")
 data class User(

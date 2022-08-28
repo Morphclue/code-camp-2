@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Definition of the Funding Entity according to RoomDB
+ * Definition of the Funding Entity according to RoomDB.
  */
 @Entity(tableName = "funding")
 data class Funding(
