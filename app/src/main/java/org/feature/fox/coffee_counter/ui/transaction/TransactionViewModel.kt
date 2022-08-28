@@ -223,7 +223,7 @@ class TransactionViewModel @Inject constructor(
             balanceList.add(
                 Pair(
                     transactions[i].timestamp,
-                    balanceList[i - 1].second + transactions[i - 1].value
+                    balanceList[i - 1].second + transactions[i].value
                 )
             )
         }
