@@ -4,26 +4,13 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 
 /**
  * Basis for the whole application.
  */
 @HiltAndroidApp
-class BaseApplication : Application(), Configuration.Provider {
-
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    /**
-     * Getter for the worker factory.
-     * @return Configuration of the worker factory.
-     */
-    override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder().setWorkerFactory(workerFactory).build()
+class BaseApplication : Application() {
 
     init {
         instance = this
