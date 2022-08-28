@@ -95,7 +95,6 @@ fun ItemsView(
                 )
                 {
                     SearchBar(
-                        fraction = 0.8f,
                         state = viewModel.searchField,
                         onValueChanged = {
                             viewModel.search()
