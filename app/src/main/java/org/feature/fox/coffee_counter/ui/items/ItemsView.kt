@@ -70,7 +70,6 @@ fun ItemsView(
     EditItemDialog(viewModel)
     ConfirmBuyDialog(viewModel)
 
-
     Scaffold(
         topBar = {
             MoneyAppBar(
@@ -95,6 +94,7 @@ fun ItemsView(
                 )
                 {
                     SearchBar(
+                        fraction = if (viewModel.isAdmin.value) 0.8f else 1f,
                         state = viewModel.searchField,
                         onValueChanged = {
                             viewModel.search()
