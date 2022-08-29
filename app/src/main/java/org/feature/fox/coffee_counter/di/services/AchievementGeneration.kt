@@ -10,12 +10,12 @@ import org.feature.fox.coffee_counter.data.repository.UserRepository
 import org.feature.fox.coffee_counter.ui.common.showAchievementNotification
 import java.text.SimpleDateFormat
 import java.time.LocalTime
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * TODO add description.
+ * Checks if the user got a new achievement and generates it
  *
  * @property userRepository
  * @property preference
@@ -37,6 +37,11 @@ class AchievementGeneration @Inject constructor(
         moneySpenderAchievement(purchases, achievements)
     }
 
+    /**
+     * Generates achievements for paying a total of 100€, 1000€ and 10000€.
+     * @param purchases List of purchases.
+     * @param achievements List of already received achievements.
+     */
     private suspend fun moneySpenderAchievement(
         purchases: List<Purchase>,
         achievements: List<Achievement>
@@ -100,6 +105,12 @@ class AchievementGeneration @Inject constructor(
         }
     }
 
+    /**
+     * Generates an achievement for each available item.
+     * @param purchases List of purchases.
+     * @param achievements List of already received achievements.
+     * @param items List of available Items.
+     */
     private suspend fun junkieAchievements(
         purchases: List<Purchase>,
         achievements: List<Achievement>,
@@ -129,6 +140,11 @@ class AchievementGeneration @Inject constructor(
         }
     }
 
+    /**
+     * Generates an achievement for buying between 0:00 and 4:00.
+     * @param purchases List of purchases.
+     * @param achievements List of already received achievements.
+     */
     private suspend fun nightPurchaseAchievement(
         purchases: List<Purchase>,
         achievements: List<Achievement>,

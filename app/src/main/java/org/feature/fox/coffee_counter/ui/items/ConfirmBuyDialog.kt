@@ -22,7 +22,10 @@ import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
 import org.feature.fox.coffee_counter.R
 
-
+/**
+ * Dialog to confirm buying the Items in the shopping cart.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun ConfirmBuyDialog(
     viewModel: IItemsViewModel,
@@ -80,6 +83,10 @@ fun ConfirmBuyDialog(
     }
 }
 
+/**
+ * Buttons for the ConfirmBuyDialog.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun ConfirmBuyDialogButtons(
     viewModel: IItemsViewModel,

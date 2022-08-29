@@ -20,7 +20,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -44,16 +43,23 @@ import org.feature.fox.coffee_counter.R
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
+import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
 import org.feature.fox.coffee_counter.ui.theme.CrayolaCopper
 
+/**
+ * Preview for the ItemsView.
+ */
 @Preview(showSystemUi = true)
 @Composable
 fun ItemsViewPreview() {
     ItemsView(ItemsViewModelPreview())
 }
 
-
+/**
+ * Main composable for the ItemsView.
+ * @param viewModel the ItemList ViewModel.
+ */
 @Composable
 fun ItemsView(
     viewModel: IItemsViewModel,
@@ -75,27 +81,36 @@ fun ItemsView(
             )
         },
         floatingActionButton = {
-            if (viewModel.isAdmin.value) EditFAB(viewModel)
             if (viewModel.adminView.value) AddItemFAB(viewModel)
             if (!viewModel.adminView.value) BuyFAB(viewModel)
         },
         floatingActionButtonPosition = FabPosition.Center,
         content = {
             Column {
-                // FIXME: add searchbar back in once the functionality is implemented
-//                SearchBar(
-//                    state = viewModel.searchField,
-//                    onValueChanged = {
-//                        viewModel.search()
-//                    },
-//                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                )
+                {
+                    SearchBar(
+                        state = viewModel.searchField,
+                        onValueChanged = {
+                            viewModel.search()
+                        },
+                    )
+                    if (viewModel.isAdmin.value) SwitchAdminView(viewModel)
+                }
                 if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
             }
         }
     )
 }
 
-
+/**
+ * Loading box for when the item list is loading.
+ */
 @Composable
 fun LoadingBox() {
     Column(
@@ -108,6 +123,10 @@ fun LoadingBox() {
     }
 }
 
+/**
+ * Composable for the item list.
+ * @param viewModel the ItemsList ViewModel.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemList(viewModel: IItemsViewModel) {
@@ -122,11 +141,10 @@ fun ItemList(viewModel: IItemsViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             coroutineScope.launch {
-                viewModel.getItems()
                 viewModel.getTotalBalance()
             }
             if (viewModel.adminView.value) AmountTitle()
-            viewModel.availableItemsState.forEach { item ->
+            viewModel.filteredItemsList.forEach { item ->
                 if (viewModel.adminView.value) {
                     AdminItemRow(viewModel, item)
                 } else {
@@ -138,6 +156,11 @@ fun ItemList(viewModel: IItemsViewModel) {
     }
 }
 
+/**
+ * A single Item row in the normal view.
+ * @param viewModel the ItemsList ViewModel.
+ * @param item the Item to be displayed.
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemRow(viewModel: IItemsViewModel, item: Item) {
@@ -179,6 +202,11 @@ fun ItemRow(viewModel: IItemsViewModel, item: Item) {
     }
 }
 
+/**
+ * A button that allows to add an Item to the shopping cart.
+ * @param viewModel the ItemsList ViewModel.
+ * @param item the Item to be added.
+ */
 @Composable
 fun AddToCartButton(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
@@ -200,6 +228,11 @@ fun AddToCartButton(viewModel: IItemsViewModel, item: Item) {
     }
 }
 
+/**
+ * A button that allows to delete an Item from the shopping cart.
+ * @param viewModel the ItemsList ViewModel.
+ * @param item the Item to be removed.
+ */
 @Composable
 fun RemoveFromCartButton(viewModel: IItemsViewModel, item: Item) {
     val coroutineScope = rememberCoroutineScope()
@@ -221,6 +254,12 @@ fun RemoveFromCartButton(viewModel: IItemsViewModel, item: Item) {
     }
 }
 
+
+/**
+ * A single Item row in the admin view.
+ * @param viewModel the ItemsList ViewModel.
+ * @param item the Item to be displayed.
+ */
 @Composable
 fun AdminItemRow(viewModel: IItemsViewModel, item: Item) {
     val scope = rememberCoroutineScope()
@@ -267,7 +306,9 @@ fun AdminItemRow(viewModel: IItemsViewModel, item: Item) {
     }
 }
 
-
+/**
+ * Composable for amount column in the admin view.
+ */
 @Composable
 fun AmountTitle() {
     Row(
@@ -289,23 +330,30 @@ fun AmountTitle() {
     }
 }
 
+/**
+ * A button that allows to switch to the admin view and back to the normal view.
+ * @param viewModel the ItemsList ViewModel.
+ */
 @Composable
-fun EditFAB(viewModel: IItemsViewModel) {
-    FloatingActionButton(
-        modifier = Modifier.padding(start = 170.dp, bottom = 50.dp),
+fun SwitchAdminView(viewModel: IItemsViewModel) {
+    Button(
+        shape = CircleShape,
         onClick = {
             viewModel.adminView.value = !viewModel.adminView.value
-        },
-        backgroundColor = CrayolaCopper,
-        contentColor = Color.White,
-    ) {
+        })
+    {
+
         Icon(
             Icons.Outlined.Sync,
-            contentDescription = stringResource(R.string.edit_fab),
+            contentDescription = stringResource(R.string.switch_admin_view),
         )
     }
 }
 
+/**
+ * A button that allows to create an Item and add it to the Database.
+ * @param viewModel the ItemsList ViewModel.
+ */
 @Composable
 fun AddItemFAB(viewModel: IItemsViewModel) {
     ExtendedFloatingActionButton(
@@ -318,6 +366,10 @@ fun AddItemFAB(viewModel: IItemsViewModel) {
     )
 }
 
+/**
+ * A button that allows to buy everything currently in the shopping cart.
+ * @param viewModel the ItemsList ViewModel.
+ */
 @Composable
 fun BuyFAB(viewModel: IItemsViewModel) {
     val coroutineScope = rememberCoroutineScope()

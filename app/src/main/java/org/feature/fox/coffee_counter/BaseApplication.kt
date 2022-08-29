@@ -10,8 +10,7 @@ import dagger.hilt.android.HiltAndroidApp
  * Basis for the whole application.
  */
 @HiltAndroidApp
-class BaseApplication : Application() {
-
+class BaseApplication : Application(){
     init {
         instance = this
     }

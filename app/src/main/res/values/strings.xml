@@ -78,5 +78,5 @@
     <string name="linechart_description">Balance over Time</string>
     <string name="linechart_nodata">No funding/orders yet</string>
     <string name="edit_profile_image">Edit profile image</string>
-    <string name="edit_fab">Edit FAB</string>
+    <string name="switch_admin_view">Switch Admin View</string>
 </resources>
