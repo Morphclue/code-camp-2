@@ -205,7 +205,13 @@ fun ProfileButtons(viewModel: IProfileViewModel, context: Context) {
             viewModel.updateUser()
         }
     })
-    CustomButton(text = stringResource(R.string.logout), fraction = 0.9f)
+
+    CustomButton(text = stringResource(R.string.logout), fraction = 0.9f, onClick = {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+    })
+
     CustomButton(text = stringResource(R.string.achievement_overview), fraction = 0.9f, onClick = {
         coroutineScope.launch {
             viewModel.getAchievements()
