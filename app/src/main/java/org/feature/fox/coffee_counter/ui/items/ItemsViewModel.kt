@@ -92,7 +92,7 @@ class ItemsViewModel @Inject constructor(
         viewModelScope.launch {
             isAdmin.value = preference.getTag(BuildConfig.IS_ADMIN, true)
             getItems()
-            getTotalBalance()
+            generateRecommendation()
         }
     }
 
@@ -265,7 +265,7 @@ class ItemsViewModel @Inject constructor(
         achievementGenerator.checkAchievements(availableItemsList)
         isLoaded.value = false
         getItems()
-        getTotalBalance()
+        generateRecommendation()
     }
 
     /**
