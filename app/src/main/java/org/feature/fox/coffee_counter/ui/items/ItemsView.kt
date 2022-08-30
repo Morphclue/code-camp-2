@@ -143,7 +143,7 @@ fun ItemList(viewModel: IItemsViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             val recommendedItem = viewModel.recommendedItem.value
-            if (recommendedItem != null) {
+            if (recommendedItem != null && !viewModel.adminView.value) {
                 Text(
                     text = stringResource(id = R.string.recommendation),
                 )
