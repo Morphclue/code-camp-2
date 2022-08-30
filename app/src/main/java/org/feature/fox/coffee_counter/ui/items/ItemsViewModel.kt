@@ -392,6 +392,9 @@ class ItemsViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    /**
+     * Generates a recommendation based on a specific timeframe
+     */
     override suspend fun generateRecommendation() {
         val purchases: List<Purchase> =
             userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID))
