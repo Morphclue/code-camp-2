@@ -236,11 +236,12 @@ class UserListViewModel @Inject constructor(
      * @param amount The new balance of the user.
      */
     private fun removeAndAddUser(user: UserIdResponse, amount: Double) {
-        val index = userList.indexOf(currentUser.value)
-        userList.remove(currentUser.value)
-        currentUser.value
+        val filteredUser = userList.filterIndexed { index, _ ->
+            user.id == userList[index].id
+        }.first()
+        userList.remove(filteredUser)
         userList.add(
-            index, UserIdResponse(
+            UserIdResponse(
                 user.id,
                 user.name,
                 amount

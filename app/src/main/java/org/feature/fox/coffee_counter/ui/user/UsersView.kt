@@ -47,7 +47,6 @@ import org.feature.fox.coffee_counter.ui.common.LoadingAnimation
 import org.feature.fox.coffee_counter.ui.common.MoneyAppBar
 import org.feature.fox.coffee_counter.ui.common.SearchBar
 import org.feature.fox.coffee_counter.ui.common.ToastMessage
-import org.feature.fox.coffee_counter.ui.items.LoadingBox
 import org.feature.fox.coffee_counter.ui.theme.LiverOrgan
 
 /**
