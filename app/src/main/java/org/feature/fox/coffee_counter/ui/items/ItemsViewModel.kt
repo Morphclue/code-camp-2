@@ -144,6 +144,7 @@ class ItemsViewModel @Inject constructor(
                 )
             }
         }
+        filteredItemsList = mutableStateListOf()
         filteredItemsList.addAll(availableItemsList)
         isLoaded.value = true
     }
