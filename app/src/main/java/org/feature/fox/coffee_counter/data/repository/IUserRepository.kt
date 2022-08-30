@@ -17,6 +17,9 @@ import org.feature.fox.coffee_counter.data.models.response.UserResponse
 import org.feature.fox.coffee_counter.util.Resource
 import java.io.InputStream
 
+/**
+ * Interface for the User Repository combining access to both User-related RoomDB queries and API Calls.
+ */
 interface IUserRepository {
     suspend fun insertUserDb(user: User)
 

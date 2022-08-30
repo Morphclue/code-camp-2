@@ -169,7 +169,6 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 
 /**
  * Pie Chart to display bought items.
- * TODO: Only display 4 categories and sum up all others
  * @param viewModel the transaction ViewModel.
  */
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -217,13 +216,20 @@ fun PieChartBoughtItems(viewModel: ITransactionViewModel) {
                         chartMap[purchase.itemId] = Pair(purchase.itemName, purchase.amount)
                     }
                 }
-                chartMap.forEach {
-                    entries.add(PieEntry(it.value.second.toFloat(), it.value.first))
+                var sortedChartValues =
+                    chartMap.values.sortedWith(compareBy({ it.second }, { it.first }))
+                sortedChartValues =
+                    if (sortedChartValues.size >= 4) sortedChartValues.asReversed().subList(0, 4)
+                    else if (sortedChartValues.isEmpty()) emptyList()
+                    else sortedChartValues.asReversed().subList(0, sortedChartValues.size - 1)
+                sortedChartValues.forEach {
+                    entries.add(PieEntry(it.second.toFloat(), it.first + " (" + it.second + ")"))
                 }
                 if (entries.size != 0) {
                     val dataset = PieDataSet(entries, "")
                     dataset.colors = listColors
                     dataset.sliceSpace = 3f
+                    dataset.setDrawValues(false)
                     dataset.valueTextSize = 7f
                     val pieData = PieData(dataset)
                     pieChart.data = pieData
@@ -272,6 +278,7 @@ fun LineChartBalance(viewModel: ITransactionViewModel) {
                 if (entries.size != 0) {
                     val dataset = LineDataSet(entries, "")
                     dataset.axisDependency = YAxis.AxisDependency.LEFT
+                    dataset.setDrawValues(false)
                     val lineData = LineData(dataset)
                     lineChart.data = lineData
                 }
@@ -381,6 +388,7 @@ fun stylePieChart(pieChart: PieChart) {
     pieChart.legend.verticalAlignment = Legend.LegendVerticalAlignment.CENTER
     pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
     pieChart.setDrawEntryLabels(false)
+    pieChart.setDrawCenterText(true)
     pieChart.notifyDataSetChanged()
     pieChart.description.textSize = 10f
     pieChart.description.yOffset = 110f

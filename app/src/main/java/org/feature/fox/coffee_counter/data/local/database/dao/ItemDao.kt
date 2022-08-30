@@ -7,6 +7,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Update
 import org.feature.fox.coffee_counter.data.local.database.tables.Item
 
+/**
+ * Implementation of the DAO for the Item database according to RoomDB.
+ */
 @Dao
 interface ItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
