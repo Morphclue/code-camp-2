@@ -417,7 +417,7 @@ class ItemsViewModel @Inject constructor(
                 }
             } else if (twentyFourHours < maxTime) {
                 if (moduloTimeStamp in 0..(maxTime - twentyFourHours)
-                    || moduloTimeStamp in minTime..0
+                    || moduloTimeStamp in minTime..twentyFourHours
                 ) {
                     filteredPurchases.add(purchase)
                 }
