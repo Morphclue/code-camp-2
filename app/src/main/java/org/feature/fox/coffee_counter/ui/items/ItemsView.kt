@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Icon
@@ -131,7 +132,6 @@ fun LoadingBox() {
 @Composable
 fun ItemList(viewModel: IItemsViewModel) {
     val coroutineScope = rememberCoroutineScope()
-
     Column {
         Column(
             modifier = Modifier
@@ -142,7 +142,21 @@ fun ItemList(viewModel: IItemsViewModel) {
         ) {
             coroutineScope.launch {
                 viewModel.getTotalBalance()
+                viewModel.generateRecommendation()
             }
+
+            val recommendedItem = viewModel.recommendedItem.value
+            if (recommendedItem != null) {
+                Text(
+                    text = stringResource(id = R.string.recommendation),
+                )
+                ItemRow(viewModel, recommendedItem)
+                Divider(
+                    color = Color.Gray,
+                    thickness = 1.dp
+                )
+            }
+
             if (viewModel.adminView.value) AmountTitle()
             viewModel.filteredItemsList.forEach { item ->
                 if (viewModel.adminView.value) {
