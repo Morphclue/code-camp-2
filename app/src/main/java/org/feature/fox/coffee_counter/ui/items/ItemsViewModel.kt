@@ -28,7 +28,7 @@ import org.feature.fox.coffee_counter.util.Utils
 import javax.inject.Inject
 
 interface IItemsViewModel : IToast {
-    var availableItemsState: SnapshotStateList<Item>
+    var availableItemsList: SnapshotStateList<Item>
     var filteredItemsList: SnapshotStateList<Item>
     val itemsInShoppingCartState: SnapshotStateList<Item>
     val currentShoppingCartAmountState: MutableState<Double>
@@ -45,6 +45,7 @@ interface IItemsViewModel : IToast {
     val confirmBuyItemDialogVisible: MutableState<Boolean>
     val balance: MutableState<Double>
     val searchField: MutableState<TextFieldValue>
+    val recommendedItem: MutableState<Item?>
 
     suspend fun getItems()
     suspend fun addItemToShoppingCart(item: Item): Boolean
@@ -55,6 +56,7 @@ interface IItemsViewModel : IToast {
     suspend fun updateItem()
     suspend fun deleteItem()
     suspend fun getTotalBalance()
+    suspend fun generateRecommendation()
     fun search()
 }
 
@@ -65,7 +67,7 @@ class ItemsViewModel @Inject constructor(
     private val preference: AppPreference,
     private val achievementGenerator: AchievementGeneration,
 ) : ViewModel(), IItemsViewModel {
-    override var availableItemsState = mutableStateListOf<Item>()
+    override var availableItemsList = mutableStateListOf<Item>()
     override var filteredItemsList = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val currentShoppingCartAmountState = mutableStateOf(0.0)
@@ -84,6 +86,7 @@ class ItemsViewModel @Inject constructor(
     override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(0.0)
     override val searchField = mutableStateOf(TextFieldValue())
+    override val recommendedItem = mutableStateOf<Item?>(null)
 
     init {
         viewModelScope.launch {
@@ -105,7 +108,7 @@ class ItemsViewModel @Inject constructor(
             return
         }
 
-        availableItemsState = mutableStateListOf()
+        availableItemsList = mutableStateListOf()
         response.data.forEach { item ->
 
             // insert/update Items into db
@@ -118,7 +121,7 @@ class ItemsViewModel @Inject constructor(
                     price = item.price
                 )
             )
-            availableItemsState.add(
+            availableItemsList.add(
                 Item(
                     id = item.id,
                     name = item.name,
@@ -130,7 +133,7 @@ class ItemsViewModel @Inject constructor(
 
         if (itemsInShoppingCartState.isEmpty()) {
             itemsInShoppingCartState = mutableStateListOf()
-            availableItemsState.forEach { item ->
+            availableItemsList.forEach { item ->
                 itemsInShoppingCartState.add(
                     Item(
                         id = item.id,
@@ -141,7 +144,7 @@ class ItemsViewModel @Inject constructor(
                 )
             }
         }
-        filteredItemsList.addAll(availableItemsState)
+        filteredItemsList.addAll(availableItemsList)
         isLoaded.value = true
     }
 
@@ -189,7 +192,7 @@ class ItemsViewModel @Inject constructor(
      */
     override suspend fun addStringItemToShoppingCart(item: String) {
         try {
-            val avItem: Item = availableItemsState.first { it.id == item }
+            val avItem: Item = availableItemsList.first { it.id == item }
 
             val success = addItemToShoppingCart(avItem)
             if (success) {
@@ -259,7 +262,7 @@ class ItemsViewModel @Inject constructor(
             }
         }
         searchField.value = TextFieldValue("")
-        achievementGenerator.checkAchievements(availableItemsState)
+        achievementGenerator.checkAchievements(availableItemsList)
         isLoaded.value = false
         getItems()
         getTotalBalance()
@@ -389,17 +392,67 @@ class ItemsViewModel @Inject constructor(
         balance.value = response.data.balance
     }
 
+    override suspend fun generateRecommendation() {
+        val purchases: List<Purchase> =
+            userRepository.getPurchaseListOfUserDb(preference.getTag(BuildConfig.USER_ID))
+
+        if (purchases.isEmpty()) {
+            return
+        }
+
+        val threeHours = 10800000
+        val twentyFourHours = 86400000
+        val currentTime = System.currentTimeMillis() % twentyFourHours
+        val minTime = currentTime - threeHours
+        val maxTime = currentTime + threeHours
+
+        val filteredPurchases = mutableListOf<Purchase>()
+        for (purchase in purchases) {
+            val moduloTimeStamp = purchase.timestamp % twentyFourHours
+            if (minTime < 0) {
+                if (moduloTimeStamp in (twentyFourHours - minTime)..twentyFourHours
+                    || moduloTimeStamp in 0..maxTime
+                ) {
+                    filteredPurchases.add(purchase)
+                }
+            } else if (twentyFourHours < maxTime) {
+                if (moduloTimeStamp in 0..(maxTime - twentyFourHours)
+                    || moduloTimeStamp in minTime..0
+                ) {
+                    filteredPurchases.add(purchase)
+                }
+            } else {
+                if (moduloTimeStamp in minTime..maxTime) {
+                    filteredPurchases.add(purchase)
+                }
+            }
+        }
+
+        val groupedPurchases =
+            filteredPurchases.groupBy { it.itemId }.map { it.key to it.value.size }
+        val maxValue = groupedPurchases.maxByOrNull { it.second } ?: return
+        if (maxValue.second < 3) {
+            return
+        }
+
+        try {
+            recommendedItem.value = availableItemsList.first { it.id == maxValue.first }
+        } catch (e: NoSuchElementException) {
+            return
+        }
+    }
+
     /**
      * Searches for an item by fuzzy search.
      */
     override fun search() {
-        Utils.fuzzySearchItems(filteredItemsList, availableItemsState, searchField.value.text)
+        Utils.fuzzySearchItems(filteredItemsList, availableItemsList, searchField.value.text)
     }
 }
 
 class ItemsViewModelPreview : IItemsViewModel {
     override val currentShoppingCartAmountState = mutableStateOf(55.0)
-    override var availableItemsState = mutableStateListOf<Item>()
+    override var availableItemsList = mutableStateListOf<Item>()
     override var filteredItemsList = mutableStateListOf<Item>()
     override var itemsInShoppingCartState = mutableStateListOf<Item>()
     override val toastChannel = Channel<UIText>()
@@ -417,9 +470,10 @@ class ItemsViewModelPreview : IItemsViewModel {
     override val confirmBuyItemDialogVisible = mutableStateOf(false)
     override val balance = mutableStateOf(50.0)
     override val searchField = mutableStateOf(TextFieldValue())
+    override val recommendedItem = mutableStateOf<Item?>(null)
 
     init {
-        availableItemsState = mutableStateListOf(
+        availableItemsList = mutableStateListOf(
             Item(id = "a", name = "coffee", amount = 69, price = 5.0),
             Item(id = "b", name = "beer", amount = 42, price = 4.99),
             Item(id = "c", name = "mate", amount = 1337, price = 9.99)
@@ -463,6 +517,10 @@ class ItemsViewModelPreview : IItemsViewModel {
     }
 
     override suspend fun getTotalBalance() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun generateRecommendation() {
         TODO("Not yet implemented")
     }
 

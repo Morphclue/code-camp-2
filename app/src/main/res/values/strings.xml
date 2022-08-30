@@ -79,4 +79,5 @@
     <string name="linechart_nodata">No funding/orders yet</string>
     <string name="edit_profile_image">Edit profile image</string>
     <string name="switch_admin_view">Switch Admin View</string>
+    <string name="recommendation">Recommended:</string>
 </resources>
