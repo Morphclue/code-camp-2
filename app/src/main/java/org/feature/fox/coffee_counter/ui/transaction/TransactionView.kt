@@ -169,7 +169,6 @@ fun QRCodeButton(viewModel: ITransactionViewModel) {
 
 /**
  * Pie Chart to display bought items.
- * TODO: Only display 4 categories and sum up all others
  * @param viewModel the transaction ViewModel.
  */
 @SuppressLint("CoroutineCreationDuringComposition")
