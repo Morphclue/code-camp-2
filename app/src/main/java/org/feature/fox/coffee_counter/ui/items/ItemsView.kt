@@ -61,11 +61,13 @@ fun ItemsViewPreview() {
  * Main composable for the ItemsView.
  * @param viewModel the ItemList ViewModel.
  */
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemsView(
     viewModel: IItemsViewModel,
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     ToastMessage(viewModel, context)
     AddItemDialog(viewModel)
     EditItemDialog(viewModel)
@@ -85,28 +87,30 @@ fun ItemsView(
             if (!viewModel.adminView.value) BuyFAB(viewModel)
         },
         floatingActionButtonPosition = FabPosition.Center,
-        content = {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                )
-                {
-                    SearchBar(
-                        fraction = if (viewModel.isAdmin.value) 0.8f else 1f,
-                        state = viewModel.searchField,
-                        onValueChanged = {
-                            viewModel.search()
-                        },
-                    )
-                    if (viewModel.isAdmin.value) SwitchAdminView(viewModel)
-                }
-                if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
+    ){
+        Column {
+            coroutineScope.launch {
+                viewModel.getTotalBalance()
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            )
+            {
+                SearchBar(
+                    fraction = if (viewModel.isAdmin.value) 0.8f else 1f,
+                    state = viewModel.searchField,
+                    onValueChanged = {
+                        viewModel.search()
+                    },
+                )
+                if (viewModel.isAdmin.value) SwitchAdminView(viewModel)
+            }
+            if (viewModel.isLoaded.value) ItemList(viewModel) else LoadingBox()
         }
-    )
+    }
 }
 
 /**
@@ -128,10 +132,8 @@ fun LoadingBox() {
  * Composable for the item list.
  * @param viewModel the ItemsList ViewModel.
  */
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ItemList(viewModel: IItemsViewModel) {
-    val coroutineScope = rememberCoroutineScope()
     Column {
         Column(
             modifier = Modifier
@@ -140,13 +142,8 @@ fun ItemList(viewModel: IItemsViewModel) {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            coroutineScope.launch {
-                viewModel.getTotalBalance()
-                viewModel.generateRecommendation()
-            }
-
             val recommendedItem = viewModel.recommendedItem.value
-            if (recommendedItem != null) {
+            if (recommendedItem != null && !viewModel.adminView.value) {
                 Text(
                     text = stringResource(id = R.string.recommendation),
                 )
