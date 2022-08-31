@@ -3,38 +3,28 @@ package org.feature.fox.coffee_counter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.feature.fox.coffee_counter.ui.theme.CoffeecounterTheme
+import dagger.hilt.android.AndroidEntryPoint
+import org.feature.fox.coffee_counter.ui.authentication.HomeView
+import org.feature.fox.coffee_counter.ui.theme.CoffeeCounterTheme
 
+/**
+ * Main activity of the application.
+ */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    /**
+     * Called when the activity is created.
+     * TODO: Add further description.
+     *
+     * @param savedInstanceState the saved instance state.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CoffeecounterTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Greeting("Android")
-                }
+            CoffeeCounterTheme {
+                HomeView()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CoffeecounterTheme {
-        Greeting("Android")
     }
 }
